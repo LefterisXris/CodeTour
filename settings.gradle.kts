@@ -1,1 +1,1 @@
-rootProject.name = "testPlugin"
+rootProject.name = "CodeTrailer"

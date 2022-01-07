@@ -16,12 +16,12 @@ This IntelliJ Platform Plugin is going to give a kickstart on getting into a new
 
 - Using IDE built-in plugin system:
 
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "testPlugin"</kbd> >
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "CodeTrailer"</kbd> >
   <kbd>Install Plugin</kbd>
 
 - Manually:
 
-  Download the [latest release](https://github.com/LefterisXris/testPlugin/releases/latest) and install it manually using
+  Download the [latest release](https://github.com/LefterisXris/CodeTrailer/releases/latest) and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
 

@@ -1,6 +1,6 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# testPlugin Changelog
+# CodeTrailer Changelog
 
 ## [Unreleased]
 ### Added
