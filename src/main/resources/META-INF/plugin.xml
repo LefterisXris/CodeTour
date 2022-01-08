@@ -44,6 +44,11 @@
                 description="Select a CodeTour to run, and let the IDE walk you through it">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
+        <action id="org.uom.lefterisxris.trailer.tours.CodeTrailerAction"
+                class="org.uom.lefterisxris.trailer.tours.CodeTrailerAction" text="CodeTrailer Repository"
+                description="Navigate to codeTrailer Repositiory">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
     </actions>
 
 </idea-plugin>
