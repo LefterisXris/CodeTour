@@ -35,8 +35,7 @@ public class ToursStateComponent implements PersistentStateComponent<Tours> {
       if (tours.getTours().isEmpty()) {
          final List<Tour> loadedTours = ReadAction.compute(() -> FilenameIndex.getAllFilesByExt(project, "tour")
                .stream().map(virtualFile -> {
-                  Tour tour = new Tour();
-                  tour.setTitle(virtualFile.getName());
+                  Tour tour;
                   try {
                      tour = new Gson().fromJson(new InputStreamReader(virtualFile.getInputStream()), Tour.class);
                   } catch (IOException e) {
@@ -44,6 +43,7 @@ public class ToursStateComponent implements PersistentStateComponent<Tours> {
                      System.err.println("Skipping file: " + virtualFile.getName());
                      return null;
                   }
+                  tour.setTitle(virtualFile.getName());
                   return tour;
                }).filter(Objects::nonNull)).collect(Collectors.toList());
          tours.getTours().addAll(loadedTours);
