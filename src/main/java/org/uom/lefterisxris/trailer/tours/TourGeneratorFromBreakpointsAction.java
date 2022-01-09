@@ -24,9 +24,10 @@ import static java.util.Objects.nonNull;
 /**
  * Generates Tours from existing Breakpoints, on groups starting with the identified 'NewTour'
  */
-public class CodeTrailerAction extends AnAction {
+public class TourGeneratorFromBreakpointsAction extends AnAction {
 
    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+   private final String TOUR_GROUP_PREFIX = "NewTour";
 
    @Override
    public void actionPerformed(@NotNull AnActionEvent e) {
@@ -40,11 +41,10 @@ public class CodeTrailerAction extends AnAction {
             .filter(bp -> bp instanceof XLineBreakpointImpl)
             .filter(bp -> ((XLineBreakpointImpl<?>)bp).getGroup() != null)
             .forEach(bp -> {
-               System.out.println("Got a BP: Check details");
                final String group = ((XLineBreakpointImpl<?>)bp).getGroup();
 
-               if (nonNull(group) && group.startsWith("NewTour")) {
-                  final String groupName = group.replace("NewTour", "");
+               if (nonNull(group) && group.startsWith(TOUR_GROUP_PREFIX)) {
+                  final String groupName = group.replace(TOUR_GROUP_PREFIX, "");
                   System.out.printf("New Tour With Name: '%s' Requested!!!!%n", groupName);
                   final Tour tour = tours.computeIfAbsent(groupName,
                         s -> Tour.builder()

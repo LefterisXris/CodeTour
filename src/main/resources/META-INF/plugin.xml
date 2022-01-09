@@ -44,8 +44,8 @@
                 description="Select a CodeTour to run, and let the IDE walk you through it">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
-        <action id="org.uom.lefterisxris.trailer.tours.CodeTrailerAction"
-                class="org.uom.lefterisxris.trailer.tours.CodeTrailerAction" text="CodeTrailer - Generate Tours from BreakPoints"
+        <action id="org.uom.lefterisxris.trailer.tours.TourGeneratorFromBreakpointsAction"
+                class="org.uom.lefterisxris.trailer.tours.TourGeneratorFromBreakpointsAction" text="CodeTrailer - Generate Tours from BreakPoints"
                 description="Generate tours from breakPoints">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
