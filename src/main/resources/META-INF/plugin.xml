@@ -1,54 +1,62 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>org.uom.lefterisxris.trailer</id>
-    <name>CodeTrailer</name>
-    <vendor>lefterisxris</vendor>
+   <id>org.uom.lefterisxris.trailer</id>
+   <name>CodeTrailer</name>
+   <vendor>lefterisxris</vendor>
 
-    <depends>com.intellij.modules.platform</depends>
+   <depends>com.intellij.modules.platform</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="org.uom.lefterisxris.trailer.services.MyApplicationService"/>
-        <projectService serviceImplementation="org.uom.lefterisxris.trailer.services.MyProjectService"/>
-    </extensions>
+   <extensions defaultExtensionNs="com.intellij">
+      <applicationService serviceImplementation="org.uom.lefterisxris.trailer.services.MyApplicationService"/>
+      <projectService serviceImplementation="org.uom.lefterisxris.trailer.services.MyProjectService"/>
+   </extensions>
 
-    <applicationListeners>
-        <listener class="org.uom.lefterisxris.trailer.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+   <applicationListeners>
+      <listener class="org.uom.lefterisxris.trailer.listeners.MyProjectManagerListener"
+                topic="com.intellij.openapi.project.ProjectManagerListener"/>
+   </applicationListeners>
 
-    <actions>
-        <action
-              id="StackOverflow.AskQuestion.ToolsMenu"
-              class="org.uom.lefterisxris.trailer.AskQuestionAction"
-              text="Ask Question on Stack Overflow"
-              description="Ask a Question on Stack Overflow">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-        </action>
-        <action
-              id="StackOverflow.Search.Editor"
-              class="org.uom.lefterisxris.trailer.SearchAction"
-              text="Search on Stack Overflow"
-              description="Search on Stack Overflow">
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </action>
-        <action
-              id="StackOverflow.Search.Console"
-              class="org.uom.lefterisxris.trailer.SearchAction"
-              text="Search on Stack Overflow"
-              description="Search on Stack Overflow">
-            <add-to-group group-id="ConsoleEditorPopupMenu" anchor="last"/>
-        </action>
-        <action id="RunToursAction"
-                class="org.uom.lefterisxris.trailer.RunToursAction"
-                text="Run A Tour"
-                description="Select a CodeTour to run, and let the IDE walk you through it">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-        </action>
-        <action id="org.uom.lefterisxris.trailer.tours.TourGeneratorFromBreakpointsAction"
-                class="org.uom.lefterisxris.trailer.tours.TourGeneratorFromBreakpointsAction" text="CodeTrailer - Generate Tours from BreakPoints"
-                description="Generate tours from breakPoints">
-            <add-to-group group-id="ToolsMenu" anchor="first"/>
-        </action>
-    </actions>
+   <actions>
+      <action
+            id="StackOverflow.AskQuestion.ToolsMenu"
+            class="org.uom.lefterisxris.trailer.AskQuestionAction"
+            text="Ask Question on Stack Overflow"
+            description="Ask a Question on Stack Overflow">
+         <add-to-group group-id="ToolsMenu" anchor="last"/>
+      </action>
+      <action
+            id="StackOverflow.Search.Editor"
+            class="org.uom.lefterisxris.trailer.SearchAction"
+            text="Search on Stack Overflow"
+            description="Search on Stack Overflow">
+         <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+      </action>
+      <action
+            id="StackOverflow.Search.Console"
+            class="org.uom.lefterisxris.trailer.SearchAction"
+            text="Search on Stack Overflow"
+            description="Search on Stack Overflow">
+         <add-to-group group-id="ConsoleEditorPopupMenu" anchor="last"/>
+      </action>
+      <action id="RunToursAction"
+              class="org.uom.lefterisxris.trailer.RunToursAction"
+              text="Run A Tour"
+              description="Select a CodeTour to run, and let the IDE walk you through it">
+         <add-to-group group-id="ToolsMenu" anchor="last"/>
+      </action>
+      <action id="org.uom.lefterisxris.trailer.tours.TourGeneratorFromBreakpointsAction"
+              class="org.uom.lefterisxris.trailer.tours.TourGeneratorFromBreakpointsAction"
+              text="CodeTrailer - Generate Tours from BreakPoints"
+              description="Generate tours from breakPoints">
+         <add-to-group group-id="ToolsMenu" anchor="first"/>
+         <add-to-group group-id="Bookmarks" anchor="first"/>
+      </action>
+      <action id="org.uom.lefterisxris.trailer.tours.TourStepGeneratorAction"
+              class="org.uom.lefterisxris.trailer.tours.TourStepGeneratorAction"
+              text="Add Tour Step"
+              description="Set this point a tour step">
+         <add-to-group group-id="EditorGutterPopupMenu" anchor="first"/>
+      </action>
+   </actions>
 
 </idea-plugin>
