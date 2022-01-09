@@ -13,6 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.trailer.tours.domain.Tour;
 import org.uom.lefterisxris.trailer.tours.domain.TourStep;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -32,7 +35,7 @@ public class TourGeneratorFromBreakpointsAction extends AnAction {
    @Override
    public void actionPerformed(@NotNull AnActionEvent e) {
       final Project project = e.getProject();
-      if (isNull(project))
+      if (isNull(project) || isNull(project.getBasePath()))
          return;
 
       final XBreakpointManager breakpointManager = XDebuggerManager.getInstance(project).getBreakpointManager();
@@ -65,20 +68,22 @@ public class TourGeneratorFromBreakpointsAction extends AnAction {
                   final TourStep step = stepBuilder.title("Step " + tour.getSteps().size()).build();
                   tour.getSteps().add(step);
                }
-               // bp.getType().getId() == java-line
-               // bp.getSourcePosition().getFile().getPath()
-               // bp.getSourcePosition().getLine()
             });
-      tours.values().forEach(tour -> {
-         final String tourJson = GSON.toJson(tour);
-         final String fileName = tour.getTitle() + ".tour";
-         // TODO: Persist the file
-         System.out.printf("Parsed BreakPointGroup '%s' (%s steps) and ready to persist it into file '%s' " +
-               "with content '%s'%n", tour.getTitle(), tour.getSteps().size(), fileName, tourJson);
-      });
 
-      // myType.myId = java-exception or myState.myTypeId
-      // myState.myGroup
+      tours.values().forEach(tour -> {
+         final String fileName = tour.getTitle() + ".tour";
+
+         System.out.printf("Parsed BreakPointGroup '%s' (%s steps) and ready to persist it into file '%s'%n",
+               tour.getTitle(), tour.getSteps().size(), fileName);
+         // Persist the file
+         try (FileWriter fileWriter = new FileWriter(Paths.get(project.getBasePath(), ".tours", fileName).toString())) {
+            GSON.toJson(tour, fileWriter);
+         } catch (IOException ex) {
+            ex.printStackTrace();
+            System.err.println(ex.getMessage());
+         }
+
+      });
 
    }
 
