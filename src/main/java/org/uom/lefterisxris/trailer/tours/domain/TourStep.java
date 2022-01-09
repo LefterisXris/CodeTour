@@ -9,7 +9,7 @@ public class TourStep {
    private String file;
    private String directory;
    private String uri;
-   private String line;
+   private int line;
    private String pattern;
    private String title;
 
@@ -17,7 +17,7 @@ public class TourStep {
    }
 
    @Builder
-   public TourStep(String description, String file, String directory, String uri, String line, String pattern,
+   public TourStep(String description, String file, String directory, String uri, int line, String pattern,
                    String title) {
       this.description = description;
       this.file = file;

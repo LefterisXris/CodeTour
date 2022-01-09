@@ -45,8 +45,8 @@
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
         <action id="org.uom.lefterisxris.trailer.tours.CodeTrailerAction"
-                class="org.uom.lefterisxris.trailer.tours.CodeTrailerAction" text="CodeTrailer Repository"
-                description="Navigate to codeTrailer Repositiory">
+                class="org.uom.lefterisxris.trailer.tours.CodeTrailerAction" text="CodeTrailer - Generate Tours from BreakPoints"
+                description="Generate tours from breakPoints">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
     </actions>
