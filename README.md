@@ -1,8 +1,17 @@
-# CodeTrailer
+# CodeTour
 
 MSc Thesis. University of Macedonia, Greece.
 
+**Original Name**: CodeTrailer
+> :exclamation: Renamed to CodeTour as a similar VSCode `GREAT` plugin already exist (https://github.com/microsoft/codetour), and thus this one would be compatible with it and would try to provide more enhanced experience.
+
+
+## :scroll: Thesis Info :mortar_board:
 Check [Zenhub Project](https://app.zenhub.com/workspaces/codetrailer-617b09717581ff0013b440c6/roadmap) for project management details
+
+
+
+## :wrench: Plugin Info :electric_plug:
 
 ![Build](https://github.com/LefterisXris/CodeTrailer/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
