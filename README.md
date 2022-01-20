@@ -9,6 +9,17 @@ MSc Thesis. University of Macedonia, Greece.
 ## :scroll: Thesis Info :mortar_board:
 Check [Zenhub Project](https://app.zenhub.com/workspaces/codetrailer-617b09717581ff0013b440c6/roadmap) for project management details
 
+![alt text](https://www.uom.gr/site/images/logos/UOMLOGOEN.jpg)
+
+### Thesis titile: `Code Reading Challenges & Best Practices`
+Master Thesis, MSc Program: *Computer Science and Technology*, [University of Macedonia]()
+
+#### Thesis Goals
+ 1. to find out, what makes Code reading so challenging, especially when there is no one for direct assistance, 
+ 2. to identify some Best Practices that may improve Code reading and understanding process,
+ 3. to provide a tool, which could be standing as a Virtual guide for a developer, providing navigation and demonstration of important code parts, as instructed/recorded by a Project member.
+
+The whole Thesis (including research and development) is being managed on Github, and more information can be found on the repository: https://github.com/LefterisXris/CodeTour. The final results would be announced on the repo, so keep an eye on that, in case you are interested to check them.
 
 
 ## :wrench: Plugin Info :electric_plug:
@@ -18,7 +29,7 @@ Check [Zenhub Project](https://app.zenhub.com/workspaces/codetrailer-617b0971758
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 
 <!-- Plugin description -->
-This IntelliJ Platform Plugin is going to give a kickstart on getting into a new project or new sections of a project.
+A tool that will stand as a Virtual guide for a new member able to navigate him throughout the code, demonstrating important code parts or features, based on the instructions (configuration) that an experienced project member would provide. Thing of it, like a tutorial-wizard that would present the code with extra info, comments, images and maybe voice as well. The instructions would be as simple as adding a new breakpoint, and would be able to auto-adjust, so that on code changes, the instructions (steps) remain valid. Instructions would also be under version control, for maintainability.
 <!-- Plugin description end -->
 
 ## Installation
