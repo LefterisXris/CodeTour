@@ -5,9 +5,9 @@ MSc Thesis. University of Macedonia, Greece.
 **Original Name**: CodeTrailer
 > :exclamation: Renamed to CodeTour as a similar VSCode `GREAT` plugin already exist (https://github.com/microsoft/codetour), and thus this one would be compatible with it and would try to provide more enhanced experience.
 
+<hr>
 
 ## :scroll: Thesis Info :mortar_board:
-Check [Zenhub Project](https://app.zenhub.com/workspaces/codetrailer-617b09717581ff0013b440c6/roadmap) for project management details
 
 ![alt text](https://www.uom.gr/site/images/logos/UOMLOGOEN.jpg)
 
@@ -21,6 +21,16 @@ Master Thesis, MSc Program: *Computer Science and Technology*, [University of Ma
 
 The whole Thesis (including research and development) is being managed on Github, and more information can be found on the repository: https://github.com/LefterisXris/CodeTour. The final results would be announced on the repo, so keep an eye on that, in case you are interested to check them.
 
+### Management
+
+The following projects have been created for managing the whole Thesis (including research and development):
+- [Thesis Deliverables](https://github.com/LefterisXris/CodeTour/projects/3)
+- [Research](https://github.com/LefterisXris/CodeTour/projects/2)
+- [Plugin - Development](https://github.com/LefterisXris/CodeTour/projects/1)
+
+### 📢 Participate on the research, via the Thesis survey (SurveySparrow): [Code Reading Challenges & Best Practices](https://codetour.surveysparrow.com/s/code-reading-challenges--best-practices/tt-080a698c44)
+
+<hr>
 
 ## :wrench: Plugin Info :electric_plug:
 
@@ -29,7 +39,7 @@ The whole Thesis (including research and development) is being managed on Github
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 
 <!-- Plugin description -->
-A tool that will stand as a Virtual guide for a new member able to navigate him throughout the code, demonstrating important code parts or features, based on the instructions (configuration) that an experienced project member would provide. Thing of it, like a tutorial-wizard that would present the code with extra info, comments, images and maybe voice as well. The instructions would be as simple as adding a new breakpoint, and would be able to auto-adjust, so that on code changes, the instructions (steps) remain valid. Instructions would also be under version control, for maintainability.
+👉 Vision: A tool that stands as a Virtual guide for a new member able to navigate him throughout the code, demonstrating important code parts or features, based on the instructions (configuration) that an experienced project member has already provided. Think of it, like a tutorial-wizard that presents the code with extra info, comments, images and maybe voice as well. Adding instructions is as simple as adding a new breakpoint, and the tool is able to auto-adjust, so that on code changes, the instructions (steps) remain valid. Instructions can also be under version control, for maintainability.
 <!-- Plugin description end -->
 
 ## Installation
