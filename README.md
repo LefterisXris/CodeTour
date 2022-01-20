@@ -9,7 +9,7 @@ MSc Thesis. University of Macedonia, Greece.
 
 ## :scroll: Thesis Info :mortar_board:
 
-![alt text](https://www.uom.gr/site/images/logos/UOMLOGOEN.jpg)
+![alt text](code-tour-uom-logo-white-en.jpg)
 
 ### Thesis titile: `Code Reading Challenges & Best Practices`
 Master Thesis, MSc Program: *Computer Science and Technology*, [University of Macedonia]()
