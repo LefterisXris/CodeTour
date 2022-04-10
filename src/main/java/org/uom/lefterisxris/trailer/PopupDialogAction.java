@@ -24,5 +24,9 @@ public class PopupDialogAction extends AnAction {
       Messages.showMessageDialog(currentProject, dlgMsg.toString(), dlgTitle, Messages.getInformationIcon());
    }
 
+   /*
+   final DnDAwareTree tree = FavoritesTreeViewPanel.FAVORITES_TREE_KEY.getData(dataContext);
+
+    */
 
 }
