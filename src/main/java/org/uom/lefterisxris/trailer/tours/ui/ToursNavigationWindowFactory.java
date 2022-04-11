@@ -19,7 +19,7 @@ public class ToursNavigationWindowFactory implements ToolWindowFactory {
    @Override
    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
-      final ToursNavigationWindow2 toursNavigationWindow = new ToursNavigationWindow2(toolWindow);
+      final ToursNavigationWindow2 toursNavigationWindow = new ToursNavigationWindow2(project, toolWindow);
       final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
       final Content content =
             contentFactory.createContent(toursNavigationWindow.getContent(), "Tours Nav Window", false);

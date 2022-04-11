@@ -1,10 +1,28 @@
 package org.uom.lefterisxris.trailer.tours.domain;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.Language;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.NlsSafe;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.pom.Navigatable;
+import com.intellij.psi.*;
+import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
+import com.intellij.util.IncorrectOperationException;
 import lombok.Builder;
 import lombok.Data;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 @Data
-public class TourStep {
+public class TourStep implements Navigatable {
    private String description;
    private String file;
    private String directory;
@@ -33,5 +51,20 @@ public class TourStep {
       return "TourStep{" +
             "title='" + title + '\'' +
             '}';
+   }
+
+   @Override
+   public void navigate(boolean requestFocus) {
+      final NavigatablePsiElement myElement;
+   }
+
+   @Override
+   public boolean canNavigate() {
+      return true;
+   }
+
+   @Override
+   public boolean canNavigateToSource() {
+      return true;
    }
 }

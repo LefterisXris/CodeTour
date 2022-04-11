@@ -1,7 +1,11 @@
 package org.uom.lefterisxris.trailer.tours.ui;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.treeStructure.Tree;
+import org.jetbrains.annotations.NotNull;
+import org.uom.lefterisxris.trailer.tours.ToursStateComponent;
+import org.uom.lefterisxris.trailer.tours.domain.Tour;
 import org.uom.lefterisxris.trailer.tours.domain.TourStep;
 
 import javax.swing.*;
@@ -10,6 +14,7 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 /**
  * This class ... TODO: Doc
@@ -26,19 +31,30 @@ public class ToursNavigationWindow2 {
 
    int activeRow = -1;
 
-   public ToursNavigationWindow2(ToolWindow toolWindow) {
+   public ToursNavigationWindow2(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
       panel = new JPanel(new BorderLayout());
       panel.add(new JLabel("Tour Navigation UI"), BorderLayout.NORTH);
 
-      createToursTee();
+      createToursTee(project);
 
       createButtons();
    }
 
-   private void createToursTee() {
+   private void createToursTee(Project project) {
+
+      final List<Tour> tours = new ToursStateComponent().getTours(project);
+
       final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Code Tours");
-      for (int i = 1; i <= 3; i++) {
+
+      tours.forEach(tour -> {
+         final DefaultMutableTreeNode aTourNode = new DefaultMutableTreeNode(tour);
+         tour.getSteps().forEach(step -> {
+            aTourNode.add(new DefaultMutableTreeNode(step));
+         });
+         root.add(aTourNode);
+      });
+      /*for (int i = 1; i <= 3; i++) {
          final DefaultMutableTreeNode tour = new DefaultMutableTreeNode("Sample Tour " + i);
          for (int j = 1; j <= 10; j++) {
             final DefaultMutableTreeNode step = new DefaultMutableTreeNode(String.format("Sample Tour %s/%s", i, j));
@@ -46,7 +62,7 @@ public class ToursNavigationWindow2 {
             tour.add(step);
          }
          root.add(tour);
-      }
+      }*/
       toursTree = new Tree(root);
 
       toursTree.addMouseListener(new MouseAdapter() {
@@ -54,8 +70,15 @@ public class ToursNavigationWindow2 {
          public void mouseClicked(MouseEvent e) {
             final int selectedRow = toursTree.getRowForLocation(e.getX(), e.getY());
             final TreePath selectedPath = toursTree.getPathForLocation(e.getX(), e.getY());
-            if (selectedRow >= 0) {
+            if (selectedRow >= 0 && selectedPath != null) {
                System.out.println("Yes! " + selectedPath);
+               if (selectedPath.getLastPathComponent() instanceof DefaultMutableTreeNode) {
+                  final DefaultMutableTreeNode node = (DefaultMutableTreeNode)selectedPath.getLastPathComponent();
+                  if (node.getUserObject() instanceof TourStep) {
+                     final TourStep step = (TourStep)node.getUserObject();
+                     step.navigate(true);
+                  }
+               }
             }
          }
       });
