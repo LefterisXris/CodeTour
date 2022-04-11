@@ -10,7 +10,8 @@
       <applicationService serviceImplementation="org.uom.lefterisxris.trailer.services.MyApplicationService"/>
       <projectService serviceImplementation="org.uom.lefterisxris.trailer.services.MyProjectService"/>
       <favoritesListProvider implementation="org.uom.lefterisxris.trailer.tours.TourFavoritesListProvider"/>
-      <toolWindow id="ToursNavigationWindow" anchor="left" icon="AllIcons.Actions.Back" factoryClass="org.uom.lefterisxris.trailer.tours.ui.ToursNavigationWindowFactory"/>
+      <toolWindow id="ToursNavigationWindow" anchor="left" icon="AllIcons.Actions.Colors"
+                  factoryClass="org.uom.lefterisxris.trailer.tours.ui.ToursNavigationWindowFactory"/>
    </extensions>
 
    <applicationListeners>

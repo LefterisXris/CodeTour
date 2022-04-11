@@ -1,0 +1,103 @@
+package org.uom.lefterisxris.trailer.tours.ui;
+
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.ui.treeStructure.Tree;
+import org.uom.lefterisxris.trailer.tours.domain.TourStep;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+/**
+ * This class ... TODO: Doc
+ *
+ * @author Eleftherios Chrysochoidis
+ * Date: 11/4/2022
+ */
+public class ToursNavigationWindow2 {
+
+   private JPanel panel;
+   private Tree toursTree;
+   private JButton previousButton;
+   private JButton nextButton;
+
+   int activeRow = -1;
+
+   public ToursNavigationWindow2(ToolWindow toolWindow) {
+
+      panel = new JPanel(new BorderLayout());
+      panel.add(new JLabel("Tour Navigation UI"), BorderLayout.NORTH);
+
+      createToursTee();
+
+      createButtons();
+   }
+
+   private void createToursTee() {
+      final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Code Tours");
+      for (int i = 1; i <= 3; i++) {
+         final DefaultMutableTreeNode tour = new DefaultMutableTreeNode("Sample Tour " + i);
+         for (int j = 1; j <= 10; j++) {
+            final DefaultMutableTreeNode step = new DefaultMutableTreeNode(String.format("Sample Tour %s/%s", i, j));
+            step.setUserObject(TourStep.builder().title("LeC Tour Step : " + j).build());
+            tour.add(step);
+         }
+         root.add(tour);
+      }
+      toursTree = new Tree(root);
+
+      toursTree.addMouseListener(new MouseAdapter() {
+         @Override
+         public void mouseClicked(MouseEvent e) {
+            final int selectedRow = toursTree.getRowForLocation(e.getX(), e.getY());
+            final TreePath selectedPath = toursTree.getPathForLocation(e.getX(), e.getY());
+            if (selectedRow >= 0) {
+               System.out.println("Yes! " + selectedPath);
+            }
+         }
+      });
+
+      final JPanel treePanel = new JPanel();
+      treePanel.add(toursTree);
+      panel.add(treePanel, BorderLayout.CENTER);
+   }
+
+   private void createButtons() {
+      previousButton = new JButton("Previous Step");
+      previousButton.addActionListener(e -> {
+         System.out.println("Previous button pressed!");
+
+         // collapse All Tours
+         for (int i = 0; i < toursTree.getRowCount(); i++)
+            toursTree.collapseRow(i);
+
+         // expand Next/Active Tour
+         activeRow++;
+         if (activeRow > toursTree.getRowCount() - 1)
+            activeRow = 0;
+
+         toursTree.expandRow(activeRow);
+
+         // select Next Step
+
+      });
+      nextButton = new JButton("Next Button");
+      nextButton.addActionListener(e -> {
+         System.out.println("Next button pressed!");
+      });
+
+      final JPanel buttonsPanel = new JPanel();
+      buttonsPanel.add(previousButton);
+      buttonsPanel.add(nextButton);
+      panel.add(buttonsPanel, BorderLayout.SOUTH);
+   }
+
+
+   public JPanel getContent() {
+      return panel;
+   }
+
+}

@@ -2,8 +2,10 @@ package org.uom.lefterisxris.trailer.tours.ui;
 
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.tree.ui.DefaultTreeUI;
+import com.intellij.ui.treeStructure.Tree;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * Navigation Window
@@ -22,16 +24,18 @@ public class ToursNavigationWindow {
 
    public ToursNavigationWindow(ToolWindow toolWindow) {
 
-      final JLabel root = new JLabel("Code Tours");
+
+      final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Code Tours");
       for (int i = 1; i <= 3; i++) {
-         final JLabel tour = new JLabel("Sample Tour " + i);
+         final DefaultMutableTreeNode tour = new DefaultMutableTreeNode("Sample Tour " + i);
          for (int j = 1; j <= 10; j++)
-            tour.add(new JLabel(String.format("Sample Tour %s/%s", i, j)));
+            tour.add(new DefaultMutableTreeNode(String.format("Sample Tour %s/%s", i, j)));
 
          root.add(tour);
       }
 
-      toursTree.add(root);
+      toursTree = new Tree(root);
+      // toursTree.add(root);
 
       previousButton.addActionListener(e -> {
          // collapse All Tours
