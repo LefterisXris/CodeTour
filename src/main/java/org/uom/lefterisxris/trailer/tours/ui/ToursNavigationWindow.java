@@ -25,7 +25,7 @@ public class ToursNavigationWindow {
    public ToursNavigationWindow(ToolWindow toolWindow) {
 
 
-      final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Code Tours");
+      final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Code ToursState");
       for (int i = 1; i <= 3; i++) {
          final DefaultMutableTreeNode tour = new DefaultMutableTreeNode("Sample Tour " + i);
          for (int j = 1; j <= 10; j++)
@@ -38,7 +38,7 @@ public class ToursNavigationWindow {
       // toursTree.add(root);
 
       previousButton.addActionListener(e -> {
-         // collapse All Tours
+         // collapse All ToursState
          for (int i = 0; i < toursTree.getRowCount(); i++)
             toursTree.collapseRow(i);
 
@@ -68,7 +68,7 @@ public class ToursNavigationWindow {
 
    /*private void createUIComponents() {
       // TODO: place custom component creation code here
-      final JLabel root = new JLabel("Code Tours");
+      final JLabel root = new JLabel("Code ToursState");
       for (int i = 1; i <= 3; i++) {
          final JLabel tour = new JLabel("Sample Tour " + i);
          for (int j = 1; j <= 10; j++)

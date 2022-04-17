@@ -12,7 +12,7 @@ public class ToursNotification {
    private NotificationGroup group = new NotificationGroupManagerImpl().getNotificationGroup("CodeTours Notification");
 
    public void notifyUser(Project project) {
-      final String title = "View code tours?";
+      final String title = "View code toursState?";
       final String content = "Content";
       final Notification notification =
             group.createNotification(title, content, NotificationType.INFORMATION, (notification1, event) -> {

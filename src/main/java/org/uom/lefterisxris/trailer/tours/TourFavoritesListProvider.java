@@ -40,7 +40,7 @@ public class TourFavoritesListProvider extends AbstractFavoritesListProvider<Str
    final List<Tour> tours;
 
    protected TourFavoritesListProvider(@NotNull Project project) {
-      super(project, "Tours", "Tours for Code Navigation");
+      super(project, "ToursState", "ToursState for Code Navigation");
       tours = new ToursStateComponent().getTours(myProject);
 
       // treeController = new TourItemsTreeController();

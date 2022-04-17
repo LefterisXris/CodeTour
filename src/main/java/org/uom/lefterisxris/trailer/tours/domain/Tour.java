@@ -3,15 +3,14 @@ package org.uom.lefterisxris.trailer.tours.domain;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 public class Tour {
+   private String id;
    private String title;
    private String description;
-   private String isPrimary;
+   private Boolean enabled;
    private String nextTour;
    private List<TourStep> steps;
 
@@ -19,11 +18,11 @@ public class Tour {
    }
 
    @Builder
-   public Tour(String title, String description, String isPrimary, String nextTour,
+   public Tour(String id, String title, String description, Boolean enabled, String nextTour,
                List<TourStep> steps) {
       this.title = title;
       this.description = description;
-      this.isPrimary = isPrimary;
+      this.enabled = enabled;
       this.nextTour = nextTour;
       this.steps = steps;
    }

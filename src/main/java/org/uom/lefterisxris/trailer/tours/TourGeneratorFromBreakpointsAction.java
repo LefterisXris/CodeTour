@@ -25,7 +25,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * Generates Tours from existing Breakpoints, on groups starting with the identified 'NewTour'
+ * Generates ToursState from existing Breakpoints, on groups starting with the identified 'NewTour'
  */
 public class TourGeneratorFromBreakpointsAction extends AnAction {
 
@@ -76,7 +76,7 @@ public class TourGeneratorFromBreakpointsAction extends AnAction {
          System.out.printf("Parsed BreakPointGroup '%s' (%s steps) and ready to persist it into file '%s'%n",
                tour.getTitle(), tour.getSteps().size(), fileName);
          // Persist the file
-         try (FileWriter fileWriter = new FileWriter(Paths.get(project.getBasePath(), ".tours", fileName).toString())) {
+         try (FileWriter fileWriter = new FileWriter(Paths.get(project.getBasePath(), ".toursState", fileName).toString())) {
             GSON.toJson(tour, fileWriter);
          } catch (IOException ex) {
             ex.printStackTrace();

@@ -1,9 +1,14 @@
 package org.uom.lefterisxris.trailer.tours.ui;
 
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
+import org.uom.lefterisxris.trailer.tours.Navigator;
 import org.uom.lefterisxris.trailer.tours.ToursStateComponent;
 import org.uom.lefterisxris.trailer.tours.domain.Tour;
 import org.uom.lefterisxris.trailer.tours.domain.TourStep;
@@ -14,6 +19,8 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -28,11 +35,14 @@ public class ToursNavigationWindow2 {
    private Tree toursTree;
    private JButton previousButton;
    private JButton nextButton;
+   private JButton reloadButton;
 
+   Project project;
    int activeRow = -1;
 
    public ToursNavigationWindow2(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
+      this.project = project;
       panel = new JPanel(new BorderLayout());
       panel.add(new JLabel("Tour Navigation UI"), BorderLayout.NORTH);
 
@@ -43,9 +53,9 @@ public class ToursNavigationWindow2 {
 
    private void createToursTee(Project project) {
 
-      final List<Tour> tours = new ToursStateComponent().getTours(project);
+      final List<Tour> tours = new ToursStateComponent(project).reloadTours();
 
-      final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Code Tours");
+      final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Code ToursState");
 
       tours.forEach(tour -> {
          final DefaultMutableTreeNode aTourNode = new DefaultMutableTreeNode(tour);
@@ -76,7 +86,7 @@ public class ToursNavigationWindow2 {
                   final DefaultMutableTreeNode node = (DefaultMutableTreeNode)selectedPath.getLastPathComponent();
                   if (node.getUserObject() instanceof TourStep) {
                      final TourStep step = (TourStep)node.getUserObject();
-                     step.navigate(true);
+                     Navigator.navigate(step, project);
                   }
                }
             }
@@ -93,7 +103,7 @@ public class ToursNavigationWindow2 {
       previousButton.addActionListener(e -> {
          System.out.println("Previous button pressed!");
 
-         // collapse All Tours
+         // collapse All ToursState
          for (int i = 0; i < toursTree.getRowCount(); i++)
             toursTree.collapseRow(i);
 
@@ -112,9 +122,16 @@ public class ToursNavigationWindow2 {
          System.out.println("Next button pressed!");
       });
 
+      reloadButton = new JButton("Reload");
+      reloadButton.addActionListener(e -> {
+         System.out.println("Re-creating the tree");
+         createToursTee(project);
+      });
+
       final JPanel buttonsPanel = new JPanel();
       buttonsPanel.add(previousButton);
       buttonsPanel.add(nextButton);
+      buttonsPanel.add(reloadButton);
       panel.add(buttonsPanel, BorderLayout.SOUTH);
    }
 

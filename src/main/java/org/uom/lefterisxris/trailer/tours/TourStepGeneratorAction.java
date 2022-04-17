@@ -1,6 +1,5 @@
 package org.uom.lefterisxris.trailer.tours;
 
-import com.intellij.codeInsight.navigation.NavigationGutterIconRenderer;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -12,17 +11,21 @@ import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsContexts;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.IconManager;
 import com.intellij.ui.JBColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.uom.lefterisxris.trailer.tours.domain.Tour;
+import org.uom.lefterisxris.trailer.tours.domain.TourStep;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 public class TourStepGeneratorAction extends AnAction {
 
@@ -46,10 +49,39 @@ public class TourStepGeneratorAction extends AnAction {
 
       final EditorGutter editorGutter = e.getData(EditorGutter.KEY);
       final Object line = e.getDataContext().getData("EditorGutter.LOGICAL_LINE_AT_CURSOR");
-      if (nonNull(editorGutter) && nonNull(line)) {
+      /*if (nonNull(editorGutter) && nonNull(line)) {
          editorGutter
                .registerTextAnnotation(new MyTextAnnotationGutterProvider(Integer.parseInt(line.toString())));
-      }
+      }*/
+
+      final VirtualFile virtualFile = e.getDataContext().getData(CommonDataKeys.VIRTUAL_FILE);
+      if (virtualFile == null)
+         return;
+
+      final ToursStateComponent state = new ToursStateComponent(project);
+      final TourStep step1 = TourStep.builder()
+            .description("Trial Step")
+            .file(virtualFile.getName())
+            .line(line != null ? Integer.parseInt(line.toString()) : 1)
+            .build();
+
+      final TourStep step2 = TourStep.builder()
+            .description("Trial Step")
+            .file(virtualFile.getName())
+            .line(line != null ? Integer.parseInt(line.toString()) : 1)
+            .build();
+
+      final Tour tour = Tour.builder()
+            .id(UUID.randomUUID().toString())
+            .title("LeC")
+            .description("Yolo")
+            .steps(Arrays.asList(step1, step2))
+            .enabled(true)
+            .build();
+      state.createTour(tour);
+
+      // new ToursStateComponent().getTours(project).add(tour);
+      // PsiTreeUtil.getParentOfType(e.getData(CommonDataKeys.PSI_FILE).findElementAt(editor.getCaretModel().getOffset()), com.intellij.psi.PsiMethod.class);
    }
 
    final class MyTextAnnotationGutterProvider implements TextAnnotationGutterProvider {
@@ -117,7 +149,7 @@ public class TourStepGeneratorAction extends AnAction {
 
       @Override
       public @NotNull Icon getIcon() {
-         return IconManager.getInstance().getIcon("search.svg",  MyRenderer.class);
+         return IconManager.getInstance().getIcon("search.svg", MyRenderer.class);
       }
    }
 }
