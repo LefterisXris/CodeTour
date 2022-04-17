@@ -1,11 +1,7 @@
 package org.uom.lefterisxris.trailer.tours.ui;
 
-import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.trailer.tours.Navigator;
@@ -19,9 +15,8 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class ... TODO: Doc
@@ -31,14 +26,11 @@ import java.util.List;
  */
 public class ToursNavigationWindow2 {
 
-   private JPanel panel;
+   private final JPanel panel;
    private Tree toursTree;
-   private JButton previousButton;
-   private JButton nextButton;
-   private JButton reloadButton;
 
-   Project project;
-   int activeRow = -1;
+   private Project project;
+   private int activeRow = -1;
 
    public ToursNavigationWindow2(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
@@ -78,13 +70,15 @@ public class ToursNavigationWindow2 {
       toursTree.addMouseListener(new MouseAdapter() {
          @Override
          public void mouseClicked(MouseEvent e) {
+            activeRow = -1;
             final int selectedRow = toursTree.getRowForLocation(e.getX(), e.getY());
             final TreePath selectedPath = toursTree.getPathForLocation(e.getX(), e.getY());
             if (selectedRow >= 0 && selectedPath != null) {
-               System.out.println("Yes! " + selectedPath);
                if (selectedPath.getLastPathComponent() instanceof DefaultMutableTreeNode) {
                   final DefaultMutableTreeNode node = (DefaultMutableTreeNode)selectedPath.getLastPathComponent();
-                  if (node.getUserObject() instanceof TourStep) {
+                  if (node.getUserObject() instanceof Tour) {
+                     activeRow = selectedRow;
+                  } else if (node.getUserObject() instanceof TourStep) {
                      final TourStep step = (TourStep)node.getUserObject();
                      Navigator.navigate(step, project);
                   }
@@ -94,12 +88,19 @@ public class ToursNavigationWindow2 {
       });
 
       final JPanel treePanel = new JPanel();
+      treePanel.setName("treePanel");
       treePanel.add(toursTree);
+      for (int i = 0; i < panel.getComponentCount(); i++) {
+         if ("treePanel".equals(panel.getComponent(i).getName())) {
+            panel.remove(i);
+            break;
+         }
+      }
       panel.add(treePanel, BorderLayout.CENTER);
    }
 
    private void createButtons() {
-      previousButton = new JButton("Previous Step");
+      final JButton previousButton = new JButton("Previous Step");
       previousButton.addActionListener(e -> {
          System.out.println("Previous button pressed!");
 
@@ -109,20 +110,54 @@ public class ToursNavigationWindow2 {
 
          // expand Next/Active Tour
          activeRow++;
-         if (activeRow > toursTree.getRowCount() - 1)
-            activeRow = 0;
+         if (activeRow > toursTree.getRowCount() - 1) activeRow = 0;
 
          toursTree.expandRow(activeRow);
 
          // select Next Step
 
       });
-      nextButton = new JButton("Next Button");
+      final JButton nextButton = new JButton("Next Button");
       nextButton.addActionListener(e -> {
          System.out.println("Next button pressed!");
       });
 
-      reloadButton = new JButton("Reload");
+      final JButton setActiveButton = new JButton("Set Active");
+      setActiveButton.addActionListener(e -> {
+         // Check if there is any selected Tour
+         // If so, deactivate the previously active
+         // Activate the new one
+
+         if (activeRow < 0) return;
+         final TreePath path = toursTree.getPathForRow(activeRow);
+         if (path == null) return;
+
+         final ToursStateComponent state = new ToursStateComponent(project);
+         if (path.getLastPathComponent() instanceof DefaultMutableTreeNode) {
+            final DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
+            if (node.getUserObject() instanceof Tour) {
+               final Optional<Tour> prev = state.getActive();
+               if (prev.isPresent()) {
+                  System.out.println("De-activating Tour " + prev.get());
+                  prev.get().setEnabled(false);
+                  state.updateTour(prev.get().getTitle(), prev.get());
+               }
+               final Tour active = (Tour)node.getUserObject();
+               final Optional<Tour> tourToEnable = state.getTours().stream()
+                     .filter(tour -> tour.getTitle().equals(active.getTitle()))
+                     .findFirst();
+               if (tourToEnable.isPresent()) {
+                  System.out.println("Activating Tour " + tourToEnable.get());
+                  tourToEnable.get().setEnabled(true);
+                  state.updateTour(tourToEnable.get().getTitle(), tourToEnable.get());
+               } else
+                  System.out.println("Could not find the Tour to activate it");
+            }
+         }
+
+      });
+
+      final JButton reloadButton = new JButton("Reload");
       reloadButton.addActionListener(e -> {
          System.out.println("Re-creating the tree");
          createToursTee(project);
@@ -131,6 +166,7 @@ public class ToursNavigationWindow2 {
       final JPanel buttonsPanel = new JPanel();
       buttonsPanel.add(previousButton);
       buttonsPanel.add(nextButton);
+      buttonsPanel.add(setActiveButton);
       buttonsPanel.add(reloadButton);
       panel.add(buttonsPanel, BorderLayout.SOUTH);
    }

@@ -27,7 +27,7 @@ public class Navigator {
       final Collection<VirtualFile> virtualFiles = FilenameIndex.getVirtualFilesByName(project, step.getFile(),
             GlobalSearchScope.projectScope(project));
       if (!virtualFiles.isEmpty())
-      new OpenFileDescriptor(project, new ArrayList<>(virtualFiles).get(0)).navigate(true);
+      new OpenFileDescriptor(project, new ArrayList<>(virtualFiles).get(0), step.getLine(), 1).navigate(true);
    }
 
 }

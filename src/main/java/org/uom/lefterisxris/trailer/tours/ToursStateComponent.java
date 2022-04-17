@@ -157,14 +157,13 @@ public class ToursStateComponent implements PersistentStateComponent<ToursState>
    }
 
    public Optional<Tour> getActive() {
-      return state.getTours().stream()
+      return getTours().stream()
             .filter(tour -> tour.getEnabled())
             .findFirst();
-      /*.orElseThrow(() -> new RuntimeException("Could not find Enabled Tour"));*/
    }
 
    public Tour setActive(Project project, String id) {
-      final Optional<Tour> aTour = state.getTours().stream()
+      final Optional<Tour> aTour = getTours().stream()
             .filter(tour -> tour.getId().equals(id))
             .findFirst();
 
