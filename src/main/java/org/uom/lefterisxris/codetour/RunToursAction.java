@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.ToursDialog;
 import org.uom.lefterisxris.codetour.tours.RunTourByNameAction;
-import org.uom.lefterisxris.codetour.tours.ToursStateComponent;
+import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class RunToursAction extends AnAction {
          return;
       }
       if (tours.isEmpty()) {
-         tours.addAll(new ToursStateComponent().getTours(project));
+         tours.addAll(new StateManager().getTours(project));
       }
 
       e.getPresentation().setEnabledAndVisible(true);

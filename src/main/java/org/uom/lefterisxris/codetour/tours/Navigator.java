@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
-import org.uom.lefterisxris.codetour.tours.domain.TourStep;
+import org.uom.lefterisxris.codetour.tours.domain.Step;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +19,7 @@ import java.util.Collection;
  */
 public class Navigator {
 
-   public static void navigate(@NotNull TourStep step, @NotNull Project project) {
+   public static void navigate(@NotNull Step step, @NotNull Project project) {
       if (project.getBasePath() == null) return;
 
       final Collection<VirtualFile> virtualFiles = FilenameIndex.getVirtualFilesByName(project, step.getFile(),

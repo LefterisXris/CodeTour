@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class TourStep {
+public class Step {
    private String title;
    private String description;
    private String file;
@@ -13,12 +13,12 @@ public class TourStep {
    private String uri;
    private String pattern;
 
-   public TourStep() {
+   public Step() {
    }
 
    @Builder
-   public TourStep(String description, String file, String directory, String uri, int line, String pattern,
-                   String title) {
+   public Step(String description, String file, String directory, String uri, int line, String pattern,
+               String title) {
       this.description = description;
       this.file = file;
       this.directory = directory;
@@ -30,7 +30,7 @@ public class TourStep {
 
    @Override
    public String toString() {
-      return "TourStep{" +
+      return "Step{" +
             "title='" + title + '\'' +
             '}';
    }

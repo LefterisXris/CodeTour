@@ -17,7 +17,8 @@ import com.intellij.ui.JBColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
-import org.uom.lefterisxris.codetour.tours.domain.TourStep;
+import org.uom.lefterisxris.codetour.tours.domain.Step;
+import org.uom.lefterisxris.codetour.tours.state.StateManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,9 +61,9 @@ public class TourStepGeneratorAction extends AnAction {
       if (virtualFile == null)
          return;
 
-      final ToursStateComponent state = new ToursStateComponent(project);
+      final StateManager stateManager = new StateManager(project);
 
-      List<TourStep> steps = new ArrayList<>();
+      List<Step> steps = new ArrayList<>();
       steps.add(generateStep(virtualFile, line));
 
       // Also generate 2 extra steps (first and last lines) for demonstration
@@ -72,11 +73,11 @@ public class TourStepGeneratorAction extends AnAction {
          steps.add(generateStep(virtualFile, lastLine));
       }
 
-      final Optional<Tour> activeTour = state.getActive();
+      final Optional<Tour> activeTour = stateManager.getActive();
       if (activeTour.isPresent()) {
          // Add steps to active
          activeTour.get().getSteps().addAll(steps);
-         state.updateTour(activeTour.get().getTitle(), activeTour.get());
+         stateManager.updateTour(activeTour.get().getTitle(), activeTour.get());
       } else {
          //TODO: Dialog to Select a Tour
 
@@ -87,16 +88,16 @@ public class TourStepGeneratorAction extends AnAction {
                .steps(steps)
                .enabled(true)
                .build();
-         state.createTour(tour);
+         stateManager.createTour(tour);
       }
 
-      // new ToursStateComponent().getTours(project).add(tour);
+      // new StateManager().getTours(project).add(tour);
       // PsiTreeUtil.getParentOfType(e.getData(CommonDataKeys.PSI_FILE).findElementAt(editor.getCaretModel().getOffset()), com.intellij.psi.PsiMethod.class);
    }
 
-   private TourStep generateStep(VirtualFile virtualFile, int line) {
+   private Step generateStep(VirtualFile virtualFile, int line) {
       final String title = String.format("%s:%s", virtualFile.getName(), line);
-      return TourStep.builder()
+      return Step.builder()
             .title(title)
             .file(virtualFile.getName())
             .line(line)

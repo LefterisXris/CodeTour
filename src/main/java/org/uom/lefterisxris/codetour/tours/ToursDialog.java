@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.state.StateManager;
 
 import javax.swing.*;
 import java.util.List;
@@ -22,7 +23,7 @@ public class ToursDialog extends DialogWrapper {
 
    @Override
    protected @Nullable JComponent createCenterPanel() {
-      final List<Tour> tours = new ToursStateComponent().getTours(project);
+      final List<Tour> tours = new StateManager().getTours(project);
 
       final JComboBox<String> jComboBox = new JComboBox<>();
       tours.stream().map(Tour::getTitle).forEach(jComboBox::addItem);

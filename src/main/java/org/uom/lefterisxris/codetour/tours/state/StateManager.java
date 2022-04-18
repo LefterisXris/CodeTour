@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.codetour.tours;
+package org.uom.lefterisxris.codetour.tours.state;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,7 +12,6 @@ import com.intellij.psi.search.FilenameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
-import org.uom.lefterisxris.codetour.tours.domain.ToursState;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,16 +23,22 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ToursStateComponent implements PersistentStateComponent<ToursState> {
+/**
+ * State Manager component to persist tours between IDE restarts
+ *
+ * @author Eleftherios Chrysochoidis
+ * Date: 7/1/2022
+ */
+public class StateManager implements PersistentStateComponent<ToursState> {
 
    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
    private final ToursState state = new ToursState();
    private Project project;
 
-   public ToursStateComponent() {
+   public StateManager() {
    }
 
-   public ToursStateComponent(Project project) {
+   public StateManager(Project project) {
       this.project = project;
    }
 
@@ -52,7 +57,7 @@ public class ToursStateComponent implements PersistentStateComponent<ToursState>
       //TODO:
       // 1. Check that title is unique
       // 2. Persist to file
-      // 3. Reload the State
+      // 3. Reload the StateManager
       final String fileName = tour.getTitle() + ".tour";
 
       System.out.printf("Saving Tour '%s' (%s steps) into file '%s'%n",
@@ -75,7 +80,7 @@ public class ToursStateComponent implements PersistentStateComponent<ToursState>
       // 1. Find Tour with given name
       // 2. Check whether the title has changed. If so, delete and create the new tour
       // 2. Persist the new object to file
-      // 3. Reload the State
+      // 3. Reload the StateManager
       deleteTour(tourName);
       createTour(tour);
       return tour;
@@ -85,7 +90,7 @@ public class ToursStateComponent implements PersistentStateComponent<ToursState>
       //TODO:
       // 1. Find the file corresponding to the given tourName
       // 2. Delete the file
-      // 3. Reload the State
+      // 3. Reload the StateManager
       findTourFile(tourName).ifPresent(virtualFile -> {
          try {
             virtualFile.delete(this);
@@ -100,7 +105,7 @@ public class ToursStateComponent implements PersistentStateComponent<ToursState>
       //TODO:
       // 1. Find the file corresponding to the given tour
       // 2. Delete the file
-      // 3. Reload the State
+      // 3. Reload the StateManager
       findTourFile(tour.getTitle()).ifPresent(virtualFile -> {
          try {
             virtualFile.delete(this);

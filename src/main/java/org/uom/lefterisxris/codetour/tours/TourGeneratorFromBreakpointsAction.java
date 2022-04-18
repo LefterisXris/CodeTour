@@ -10,8 +10,8 @@ import com.intellij.xdebugger.XSourcePosition;
 import com.intellij.xdebugger.breakpoints.XBreakpointManager;
 import com.intellij.xdebugger.impl.breakpoints.XLineBreakpointImpl;
 import org.jetbrains.annotations.NotNull;
+import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
-import org.uom.lefterisxris.codetour.tours.domain.TourStep;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class TourGeneratorFromBreakpointsAction extends AnAction {
                               .description("Breakpoints Generated Tour")
                               .build());
 
-                  final TourStep.TourStepBuilder stepBuilder = TourStep.builder()
+                  final Step.TourStepBuilder stepBuilder = Step.builder()
                         .description("TODO: Add step description");
                   final XSourcePosition sourcePosition = bp.getSourcePosition();
                   if (isNull(sourcePosition))
@@ -65,7 +65,7 @@ public class TourGeneratorFromBreakpointsAction extends AnAction {
                      stepBuilder.file(sourcePosition.getFile().getPath());
                   stepBuilder.line(sourcePosition.getLine());
 
-                  final TourStep step = stepBuilder.title("Step " + tour.getSteps().size()).build();
+                  final Step step = stepBuilder.title("Step " + tour.getSteps().size()).build();
                   tour.getSteps().add(step);
                }
             });

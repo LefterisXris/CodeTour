@@ -11,7 +11,7 @@
       <projectService serviceImplementation="org.uom.lefterisxris.codetour.services.MyProjectService"/>
       <favoritesListProvider implementation="org.uom.lefterisxris.codetour.tours.TourFavoritesListProvider"/>
       <toolWindow id="ToursNavigationWindow" anchor="left" icon="AllIcons.Actions.Colors"
-                  factoryClass="org.uom.lefterisxris.codetour.tours.ui.ToursNavigationWindowFactory"/>
+                  factoryClass="org.uom.lefterisxris.codetour.tours.ui.ToolPaneWindowFactory"/>
    </extensions>
 
    <applicationListeners>

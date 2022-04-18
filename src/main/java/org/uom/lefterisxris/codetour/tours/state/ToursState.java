@@ -1,5 +1,7 @@
-package org.uom.lefterisxris.codetour.tours.domain;
+package org.uom.lefterisxris.codetour.tours.state;
 
+
+import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
 import java.util.ArrayList;
 import java.util.List;

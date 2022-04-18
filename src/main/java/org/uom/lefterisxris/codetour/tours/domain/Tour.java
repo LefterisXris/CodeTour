@@ -12,14 +12,14 @@ public class Tour {
    private String description;
    private Boolean enabled;
    private String nextTour;
-   private List<TourStep> steps;
+   private List<Step> steps;
 
    public Tour() {
    }
 
    @Builder
    public Tour(String id, String title, String description, Boolean enabled, String nextTour,
-               List<TourStep> steps) {
+               List<Step> steps) {
       this.title = title;
       this.description = description;
       this.enabled = enabled;

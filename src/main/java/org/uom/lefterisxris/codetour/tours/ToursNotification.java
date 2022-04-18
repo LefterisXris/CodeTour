@@ -6,6 +6,7 @@ import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.impl.NotificationGroupManagerImpl;
 import com.intellij.openapi.project.Project;
+import org.uom.lefterisxris.codetour.tours.state.StateManager;
 
 public class ToursNotification {
 
@@ -18,7 +19,7 @@ public class ToursNotification {
             group.createNotification(title, content, NotificationType.INFORMATION, (notification1, event) -> {
                notification1.expire();
                if (event.getDescription().equals("RunTour")) {
-                  new ToursStateComponent().getTours(project);
+                  new StateManager().getTours(project);
                }
             });
       notification.whenExpired(() -> System.out.println("EXPIRED!!!!"));

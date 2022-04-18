@@ -8,18 +8,18 @@ import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Factory class to generate the ToursNavigationWindow2
+ * Factory class to generate the related Tool Pane Window
  *
  * @author Eleftherios Chrysochoidis
  * Date: 10/4/2022
  */
-public class ToursNavigationWindowFactory implements ToolWindowFactory {
+public class ToolPaneWindowFactory implements ToolWindowFactory {
 
 
    @Override
    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
-      final ToursNavigationWindow2 toursNavigationWindow = new ToursNavigationWindow2(project, toolWindow);
+      final ToolPaneWindow toursNavigationWindow = new ToolPaneWindow(project, toolWindow);
       final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
       final Content content =
             contentFactory.createContent(toursNavigationWindow.getContent(), "ToursState Nav Window", false);

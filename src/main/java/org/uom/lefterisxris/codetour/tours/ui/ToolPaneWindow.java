@@ -5,9 +5,9 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.Navigator;
-import org.uom.lefterisxris.codetour.tours.ToursStateComponent;
+import org.uom.lefterisxris.codetour.tours.domain.Step;
+import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
-import org.uom.lefterisxris.codetour.tours.domain.TourStep;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * This class ... TODO: Doc
+ * Class for Tours management
  *
  * @author Eleftherios Chrysochoidis
  * Date: 11/4/2022
  */
-public class ToursNavigationWindow2 {
+public class ToolPaneWindow {
 
    private final JPanel panel;
    private Tree toursTree;
@@ -32,7 +32,7 @@ public class ToursNavigationWindow2 {
    private Project project;
    private int activeRow = -1;
 
-   public ToursNavigationWindow2(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+   public ToolPaneWindow(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
       this.project = project;
       panel = new JPanel(new BorderLayout());
@@ -45,7 +45,7 @@ public class ToursNavigationWindow2 {
 
    private void createToursTee(Project project) {
 
-      final List<Tour> tours = new ToursStateComponent(project).reloadTours();
+      final List<Tour> tours = new StateManager(project).reloadTours();
 
       final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Code ToursState");
 
@@ -60,7 +60,7 @@ public class ToursNavigationWindow2 {
          final DefaultMutableTreeNode tour = new DefaultMutableTreeNode("Sample Tour " + i);
          for (int j = 1; j <= 10; j++) {
             final DefaultMutableTreeNode step = new DefaultMutableTreeNode(String.format("Sample Tour %s/%s", i, j));
-            step.setUserObject(TourStep.builder().title("LeC Tour Step : " + j).build());
+            step.setUserObject(Step.builder().title("LeC Tour Step : " + j).build());
             tour.add(step);
          }
          root.add(tour);
@@ -78,8 +78,8 @@ public class ToursNavigationWindow2 {
                   final DefaultMutableTreeNode node = (DefaultMutableTreeNode)selectedPath.getLastPathComponent();
                   if (node.getUserObject() instanceof Tour) {
                      activeRow = selectedRow;
-                  } else if (node.getUserObject() instanceof TourStep) {
-                     final TourStep step = (TourStep)node.getUserObject();
+                  } else if (node.getUserObject() instanceof Step) {
+                     final Step step = (Step)node.getUserObject();
                      Navigator.navigate(step, project);
                   }
                }
@@ -132,24 +132,24 @@ public class ToursNavigationWindow2 {
          final TreePath path = toursTree.getPathForRow(activeRow);
          if (path == null) return;
 
-         final ToursStateComponent state = new ToursStateComponent(project);
+         final StateManager stateManager = new StateManager(project);
          if (path.getLastPathComponent() instanceof DefaultMutableTreeNode) {
             final DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
             if (node.getUserObject() instanceof Tour) {
-               final Optional<Tour> prev = state.getActive();
+               final Optional<Tour> prev = stateManager.getActive();
                if (prev.isPresent()) {
                   System.out.println("De-activating Tour " + prev.get());
                   prev.get().setEnabled(false);
-                  state.updateTour(prev.get().getTitle(), prev.get());
+                  stateManager.updateTour(prev.get().getTitle(), prev.get());
                }
                final Tour active = (Tour)node.getUserObject();
-               final Optional<Tour> tourToEnable = state.getTours().stream()
+               final Optional<Tour> tourToEnable = stateManager.getTours().stream()
                      .filter(tour -> tour.getTitle().equals(active.getTitle()))
                      .findFirst();
                if (tourToEnable.isPresent()) {
                   System.out.println("Activating Tour " + tourToEnable.get());
                   tourToEnable.get().setEnabled(true);
-                  state.updateTour(tourToEnable.get().getTitle(), tourToEnable.get());
+                  stateManager.updateTour(tourToEnable.get().getTitle(), tourToEnable.get());
                } else
                   System.out.println("Could not find the Tour to activate it");
             }

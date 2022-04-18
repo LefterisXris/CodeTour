@@ -23,7 +23,8 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
-import org.uom.lefterisxris.codetour.tours.domain.TourStep;
+import org.uom.lefterisxris.codetour.tours.domain.Step;
+import org.uom.lefterisxris.codetour.tours.state.StateManager;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -41,7 +42,7 @@ public class TourFavoritesListProvider extends AbstractFavoritesListProvider<Str
 
    protected TourFavoritesListProvider(@NotNull Project project) {
       super(project, "ToursState", "ToursState for Code Navigation");
-      tours = new ToursStateComponent().getTours(myProject);
+      tours = new StateManager().getTours(myProject);
 
       // treeController = new TourItemsTreeController();
       // treeController.setTreeView(new ToursSimpleTree(project, treeController));
@@ -62,7 +63,7 @@ public class TourFavoritesListProvider extends AbstractFavoritesListProvider<Str
       });
 
 
-      /*new ToursStateComponent().getTours(myProject).stream()
+      /*new StateManager().getTours(myProject).stream()
             .map(Tour::getTitle)
             .map(t -> new FavoritesListNode(myProject, t))
             .forEach(myChildren::add);*/
@@ -70,7 +71,7 @@ public class TourFavoritesListProvider extends AbstractFavoritesListProvider<Str
       // new XBreakpointItem()
       // treeController.rebuildTree();
 
-      /*new ToursStateComponent().getTours(myProject).forEach(tour -> {
+      /*new StateManager().getTours(myProject).forEach(tour -> {
          final FavoritesListNode tourNode = new FavoritesListNode(myProject, tour.getTitle());
          tour.getSteps().forEach(step -> {
             final List<FavoritesListNode> children = (ArrayList<FavoritesListNode>)tourNode.getChildren();
@@ -92,7 +93,7 @@ public class TourFavoritesListProvider extends AbstractFavoritesListProvider<Str
    /*private void updateChildren() {
       if (myProject.isDisposed()) return;
       myChildren.clear();
-      final List<TourItem> items = new ToursStateComponent().getTours(myProject).stream().map(t -> new TourItem(t))
+      final List<TourItem> items = new StateManager().getTours(myProject).stream().map(t -> new TourItem(t))
             .collect(Collectors.toList());
       treeController.rebuildTree(items);
 
@@ -511,10 +512,10 @@ class TourNode extends AbstractTreeNode<String> {
 }
 
 class TourStepNode extends AbstractTreeNode<String> {
-   private final TourStep step;
+   private final Step step;
 
    protected TourStepNode(Project project, @NotNull String value,
-                          TourStep step) {
+                          Step step) {
       super(project, value);
       this.step = step;
    }
