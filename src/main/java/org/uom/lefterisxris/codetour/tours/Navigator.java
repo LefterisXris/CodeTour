@@ -1,15 +1,13 @@
-package org.uom.lefterisxris.trailer.tours;
+package org.uom.lefterisxris.codetour.tours;
 
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
-import org.uom.lefterisxris.trailer.tours.domain.TourStep;
+import org.uom.lefterisxris.codetour.tours.domain.TourStep;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 

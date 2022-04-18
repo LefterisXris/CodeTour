@@ -1,9 +1,9 @@
-package org.uom.lefterisxris.trailer.tours;
+package org.uom.lefterisxris.codetour.tours;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
-import org.uom.lefterisxris.trailer.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
 import javax.swing.*;
 import java.util.List;

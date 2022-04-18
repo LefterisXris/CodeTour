@@ -1,7 +1,7 @@
-package org.uom.lefterisxris.trailer.services
+package org.uom.lefterisxris.codetour.services
 
 import com.intellij.openapi.project.Project
-import org.uom.lefterisxris.trailer.MyBundle
+import org.uom.lefterisxris.codetour.MyBundle
 
 class MyProjectService(project: Project) {
 

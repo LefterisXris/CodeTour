@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.trailer
+package org.uom.lefterisxris.codetour
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls

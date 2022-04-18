@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.trailer.tours;
+package org.uom.lefterisxris.codetour.tours;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,8 +11,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.uom.lefterisxris.trailer.tours.domain.Tour;
-import org.uom.lefterisxris.trailer.tours.domain.ToursState;
+import org.uom.lefterisxris.codetour.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.domain.ToursState;
 
 import java.io.FileWriter;
 import java.io.IOException;

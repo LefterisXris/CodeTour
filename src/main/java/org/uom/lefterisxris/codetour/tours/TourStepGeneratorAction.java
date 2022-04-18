@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.trailer.tours;
+package org.uom.lefterisxris.codetour.tours;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -16,8 +16,8 @@ import com.intellij.ui.IconManager;
 import com.intellij.ui.JBColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.uom.lefterisxris.trailer.tours.domain.Tour;
-import org.uom.lefterisxris.trailer.tours.domain.TourStep;
+import org.uom.lefterisxris.codetour.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.domain.TourStep;
 
 import javax.swing.*;
 import java.awt.*;

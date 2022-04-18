@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.trailer.tours;
+package org.uom.lefterisxris.codetour.tours;
 
 import com.intellij.ide.favoritesTreeView.AbstractFavoritesListProvider;
 import com.intellij.ide.projectView.PresentationData;
@@ -22,8 +22,8 @@ import com.intellij.xdebugger.impl.breakpoints.ui.tree.BreakpointsGroupNode;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.uom.lefterisxris.trailer.tours.domain.Tour;
-import org.uom.lefterisxris.trailer.tours.domain.TourStep;
+import org.uom.lefterisxris.codetour.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.domain.TourStep;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;

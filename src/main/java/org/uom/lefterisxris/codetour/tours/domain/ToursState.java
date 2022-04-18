@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.trailer.tours.domain;
+package org.uom.lefterisxris.codetour.tours.domain;
 
 
 import java.util.ArrayList;

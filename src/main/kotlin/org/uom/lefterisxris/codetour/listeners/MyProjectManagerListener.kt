@@ -1,9 +1,9 @@
-package org.uom.lefterisxris.trailer.listeners
+package org.uom.lefterisxris.codetour.listeners
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManagerListener
-import org.uom.lefterisxris.trailer.services.MyProjectService
+import org.uom.lefterisxris.codetour.services.MyProjectService
 
 internal class MyProjectManagerListener : ProjectManagerListener {
 

@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.trailer.tours;
+package org.uom.lefterisxris.codetour.tours;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,8 +10,8 @@ import com.intellij.xdebugger.XSourcePosition;
 import com.intellij.xdebugger.breakpoints.XBreakpointManager;
 import com.intellij.xdebugger.impl.breakpoints.XLineBreakpointImpl;
 import org.jetbrains.annotations.NotNull;
-import org.uom.lefterisxris.trailer.tours.domain.Tour;
-import org.uom.lefterisxris.trailer.tours.domain.TourStep;
+import org.uom.lefterisxris.codetour.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.domain.TourStep;
 
 import java.io.FileWriter;
 import java.io.IOException;

@@ -1,6 +1,6 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# CodeTrailer Changelog
+# CodeTour Changelog
 
 ## [Unreleased]
 ### Added

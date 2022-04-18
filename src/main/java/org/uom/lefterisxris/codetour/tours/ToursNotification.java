@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.trailer.tours;
+package org.uom.lefterisxris.codetour.tours;
 
 
 import com.intellij.notification.Notification;

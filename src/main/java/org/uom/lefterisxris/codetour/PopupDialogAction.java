@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.trailer;
+package org.uom.lefterisxris.codetour;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;

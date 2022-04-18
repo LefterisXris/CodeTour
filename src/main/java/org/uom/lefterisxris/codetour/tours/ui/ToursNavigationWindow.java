@@ -1,7 +1,6 @@
-package org.uom.lefterisxris.trailer.tours.ui;
+package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.ui.tree.ui.DefaultTreeUI;
 import com.intellij.ui.treeStructure.Tree;
 
 import javax.swing.*;

@@ -1,13 +1,13 @@
-package org.uom.lefterisxris.trailer.tours.ui;
+package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
-import org.uom.lefterisxris.trailer.tours.Navigator;
-import org.uom.lefterisxris.trailer.tours.ToursStateComponent;
-import org.uom.lefterisxris.trailer.tours.domain.Tour;
-import org.uom.lefterisxris.trailer.tours.domain.TourStep;
+import org.uom.lefterisxris.codetour.tours.Navigator;
+import org.uom.lefterisxris.codetour.tours.ToursStateComponent;
+import org.uom.lefterisxris.codetour.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.domain.TourStep;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;

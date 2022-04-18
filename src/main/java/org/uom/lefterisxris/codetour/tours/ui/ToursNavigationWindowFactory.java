@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.trailer.tours.ui;
+package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
