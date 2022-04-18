@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 public class Step {
-   private String title;
-   private String description;
-   private String file;
-   private int line;
+   private String title; // Step's title (visible on the tree)
+   private String description; // The description of the Step (visible on the Editor)
+   private String file; // File for navigation
+   private int line; // Line for navigation
    private String directory;
    private String uri;
    private String pattern;
@@ -30,9 +30,7 @@ public class Step {
 
    @Override
    public String toString() {
-      return "Step{" +
-            "title='" + title + '\'' +
-            '}';
+      return title;
    }
 
 }

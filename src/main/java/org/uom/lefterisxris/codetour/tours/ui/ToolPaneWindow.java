@@ -2,6 +2,7 @@ package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.Navigator;
@@ -10,6 +11,7 @@ import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicPanelUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -87,8 +89,10 @@ public class ToolPaneWindow {
          }
       });
 
-      final JPanel treePanel = new JPanel();
-      treePanel.setName("treePanel");
+      final JPanel treePanel = new JPanel(new BorderLayout());
+      final JBScrollPane scrollPane = new JBScrollPane(toursTree);
+      scrollPane.setName("treePanel");
+      treePanel.add(scrollPane, BorderLayout.CENTER);
       treePanel.add(toursTree);
       for (int i = 0; i < panel.getComponentCount(); i++) {
          if ("treePanel".equals(panel.getComponent(i).getName())) {
