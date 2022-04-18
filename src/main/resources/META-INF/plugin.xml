@@ -9,7 +9,7 @@
    <extensions defaultExtensionNs="com.intellij">
       <applicationService serviceImplementation="org.uom.lefterisxris.codetour.services.MyApplicationService"/>
       <projectService serviceImplementation="org.uom.lefterisxris.codetour.services.MyProjectService"/>
-      <favoritesListProvider implementation="org.uom.lefterisxris.codetour.tours.TourFavoritesListProvider"/>
+      <favoritesListProvider implementation="org.uom.lefterisxris.codetour.other.TourFavoritesListProvider"/>
       <toolWindow id="ToursNavigationWindow" anchor="left" icon="AllIcons.Actions.Colors"
                   factoryClass="org.uom.lefterisxris.codetour.tours.ui.ToolPaneWindowFactory"/>
    </extensions>
@@ -22,46 +22,46 @@
    <actions>
       <action
             id="StackOverflow.AskQuestion.ToolsMenu"
-            class="org.uom.lefterisxris.codetour.AskQuestionAction"
+            class="org.uom.lefterisxris.codetour.other.AskQuestionAction"
             text="Ask Question on Stack Overflow"
             description="Ask a Question on Stack Overflow">
          <add-to-group group-id="ToolsMenu" anchor="last"/>
       </action>
       <action
             id="StackOverflow.Search.Editor"
-            class="org.uom.lefterisxris.codetour.SearchAction"
+            class="org.uom.lefterisxris.codetour.other.SearchAction"
             text="Search on Stack Overflow"
             description="Search on Stack Overflow">
          <add-to-group group-id="EditorPopupMenu" anchor="last"/>
       </action>
       <action
             id="StackOverflow.Search.Console"
-            class="org.uom.lefterisxris.codetour.SearchAction"
+            class="org.uom.lefterisxris.codetour.other.SearchAction"
             text="Search on Stack Overflow"
             description="Search on Stack Overflow">
          <add-to-group group-id="ConsoleEditorPopupMenu" anchor="last"/>
       </action>
       <action id="RunToursAction"
-              class="org.uom.lefterisxris.codetour.RunToursAction"
+              class="org.uom.lefterisxris.codetour.tours.actions.RunToursAction"
               text="Run A Tour"
               description="Select a CodeTour to run, and let the IDE walk you through it">
          <add-to-group group-id="ToolsMenu" anchor="last"/>
       </action>
-      <action id="org.uom.lefterisxris.codetour.tours.TourGeneratorFromBreakpointsAction"
-              class="org.uom.lefterisxris.codetour.tours.TourGeneratorFromBreakpointsAction"
+      <action id="org.uom.lefterisxris.codetour.tours.actions.TourGeneratorFromBreakpointsAction"
+              class="org.uom.lefterisxris.codetour.tours.actions.TourGeneratorFromBreakpointsAction"
               text="CodeTour - Generate Tours from BreakPoints"
               description="Generate tours from breakPoints">
          <add-to-group group-id="ToolsMenu" anchor="first"/>
          <add-to-group group-id="Bookmarks" anchor="first"/>
       </action>
-      <action id="org.uom.lefterisxris.codetour.tours.TourStepGeneratorAction"
-              class="org.uom.lefterisxris.codetour.tours.TourStepGeneratorAction"
+      <action id="org.uom.lefterisxris.codetour.tours.actions.TourStepGeneratorAction"
+              class="org.uom.lefterisxris.codetour.tours.actions.TourStepGeneratorAction"
               text="Add Tour Step"
               description="Set this point a tour step">
          <add-to-group group-id="EditorGutterPopupMenu" anchor="first"/>
       </action>
-      <action id="org.uom.lefterisxris.codetour.PopupDialogAction"
-              class="org.uom.lefterisxris.codetour.PopupDialogAction"
+      <action id="org.uom.lefterisxris.codetour.other.PopupDialogAction"
+              class="org.uom.lefterisxris.codetour.other.PopupDialogAction"
               text="Action Basics Plugin: Pop Dialog Action"
               description="SDK action example"
               icon="AllIcons.Actions.Forward">

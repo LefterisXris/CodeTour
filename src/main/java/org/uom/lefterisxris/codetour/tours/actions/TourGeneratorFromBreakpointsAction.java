@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.codetour.tours;
+package org.uom.lefterisxris.codetour.tours.actions;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -56,7 +56,7 @@ public class TourGeneratorFromBreakpointsAction extends AnAction {
                               .description("Breakpoints Generated Tour")
                               .build());
 
-                  final Step.TourStepBuilder stepBuilder = Step.builder()
+                  final Step.StepBuilder stepBuilder = Step.builder()
                         .description("TODO: Add step description");
                   final XSourcePosition sourcePosition = bp.getSourcePosition();
                   if (isNull(sourcePosition))

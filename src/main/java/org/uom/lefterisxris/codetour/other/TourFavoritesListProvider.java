@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.codetour.tours;
+package org.uom.lefterisxris.codetour.other;
 
 import com.intellij.ide.favoritesTreeView.AbstractFavoritesListProvider;
 import com.intellij.ide.projectView.PresentationData;

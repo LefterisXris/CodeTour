@@ -1,12 +1,11 @@
-package org.uom.lefterisxris.codetour;
+package org.uom.lefterisxris.codetour.tours.actions;
 
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import org.uom.lefterisxris.codetour.tours.ToursDialog;
-import org.uom.lefterisxris.codetour.tours.RunTourByNameAction;
+import org.uom.lefterisxris.codetour.tours.ui.ToursDialog;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
