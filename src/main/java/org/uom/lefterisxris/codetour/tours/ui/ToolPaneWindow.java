@@ -7,11 +7,10 @@ import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.Navigator;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
-import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.state.StateManager;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicPanelUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -33,6 +32,7 @@ public class ToolPaneWindow {
 
    private Project project;
    private int activeRow = -1;
+   private DefaultMutableTreeNode selectedNode;
 
    public ToolPaneWindow(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
@@ -42,7 +42,7 @@ public class ToolPaneWindow {
 
       createToursTee(project);
 
-      createButtons();
+      createNavigationButtons();
    }
 
    private void createToursTee(Project project) {
@@ -58,15 +58,6 @@ public class ToolPaneWindow {
          });
          root.add(aTourNode);
       });
-      /*for (int i = 1; i <= 3; i++) {
-         final DefaultMutableTreeNode tour = new DefaultMutableTreeNode("Sample Tour " + i);
-         for (int j = 1; j <= 10; j++) {
-            final DefaultMutableTreeNode step = new DefaultMutableTreeNode(String.format("Sample Tour %s/%s", i, j));
-            step.setUserObject(Step.builder().title("LeC Tour Step : " + j).build());
-            tour.add(step);
-         }
-         root.add(tour);
-      }*/
       toursTree = new Tree(root);
 
       toursTree.addMouseListener(new MouseAdapter() {
@@ -74,16 +65,19 @@ public class ToolPaneWindow {
          public void mouseClicked(MouseEvent e) {
             activeRow = -1;
             final int selectedRow = toursTree.getRowForLocation(e.getX(), e.getY());
-            final TreePath selectedPath = toursTree.getPathForLocation(e.getX(), e.getY());
-            if (selectedRow >= 0 && selectedPath != null) {
-               if (selectedPath.getLastPathComponent() instanceof DefaultMutableTreeNode) {
-                  final DefaultMutableTreeNode node = (DefaultMutableTreeNode)selectedPath.getLastPathComponent();
-                  if (node.getUserObject() instanceof Tour) {
-                     activeRow = selectedRow;
-                  } else if (node.getUserObject() instanceof Step) {
-                     final Step step = (Step)node.getUserObject();
-                     Navigator.navigate(step, project);
-                  }
+            final TreePath pathSelected = toursTree.getPathForLocation(e.getX(), e.getY());
+
+            if (selectedRow < 0 || pathSelected == null) {
+               selectedNode = null;
+               return;
+            }
+
+            if (pathSelected.getLastPathComponent() instanceof DefaultMutableTreeNode) {
+               final DefaultMutableTreeNode node = (DefaultMutableTreeNode)pathSelected.getLastPathComponent();
+               if (node.getUserObject() instanceof Step) {
+                  selectedNode = node;
+                  final Step step = (Step)node.getUserObject();
+                  Navigator.navigate(step, project);
                }
             }
          }
@@ -103,27 +97,33 @@ public class ToolPaneWindow {
       panel.add(treePanel, BorderLayout.CENTER);
    }
 
-   private void createButtons() {
+   private void createNavigationButtons() {
       final JButton previousButton = new JButton("Previous Step");
       previousButton.addActionListener(e -> {
          System.out.println("Previous button pressed!");
 
-         // collapse All ToursState
-         for (int i = 0; i < toursTree.getRowCount(); i++)
-            toursTree.collapseRow(i);
-
-         // expand Next/Active Tour
-         activeRow++;
-         if (activeRow > toursTree.getRowCount() - 1) activeRow = 0;
-
-         toursTree.expandRow(activeRow);
-
-         // select Next Step
+         if (selectedNode == null || selectedNode.getPreviousSibling() == null) return;
+         final DefaultMutableTreeNode previousNode = selectedNode.getPreviousSibling();
+         if (previousNode.getUserObject() instanceof Step) {
+            selectedNode = previousNode;
+            toursTree.getSelectionModel().setSelectionPath(new TreePath(selectedNode.getPath()));
+            final Step step = (Step)previousNode.getUserObject();
+            Navigator.navigate(step, project);
+         }
 
       });
-      final JButton nextButton = new JButton("Next Button");
+
+      final JButton nextButton = new JButton("Next Step");
       nextButton.addActionListener(e -> {
          System.out.println("Next button pressed!");
+         if (selectedNode == null || selectedNode.getNextSibling() == null) return;
+         final DefaultMutableTreeNode nextNode = selectedNode.getNextSibling();
+         if (nextNode.getUserObject() instanceof Step) {
+            selectedNode = nextNode;
+            toursTree.getSelectionModel().setSelectionPath(new TreePath(selectedNode.getPath()));
+            final Step step = (Step)nextNode.getUserObject();
+            Navigator.navigate(step, project);
+         }
       });
 
       final JButton setActiveButton = new JButton("Set Active");
