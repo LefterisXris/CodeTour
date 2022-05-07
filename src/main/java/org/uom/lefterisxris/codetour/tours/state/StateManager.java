@@ -75,6 +75,17 @@ public class StateManager {
       return tour;
    }
 
+   public Tour updateTour(Tour tour) {
+      //TODO:
+      // 1. Find Tour with given name
+      // 2. Check whether the title has changed. If so, delete and create the new tour
+      // 2. Persist the new object to file
+      // 3. Reload the StateManager
+      deleteTour(tour);
+      createTour(tour);
+      return tour;
+   }
+
    public void deleteTour(String tourId) {
       //TODO:
       // 1. Find the file corresponding to the given tourId
