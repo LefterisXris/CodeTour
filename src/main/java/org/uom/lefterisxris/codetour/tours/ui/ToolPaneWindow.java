@@ -16,8 +16,9 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Class for Tours management
@@ -31,7 +32,6 @@ public class ToolPaneWindow {
    private Tree toursTree;
 
    private Project project;
-   private int activeRow = -1;
    private DefaultMutableTreeNode selectedNode;
 
    public ToolPaneWindow(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -63,13 +63,18 @@ public class ToolPaneWindow {
       toursTree.addMouseListener(new MouseAdapter() {
          @Override
          public void mouseClicked(MouseEvent e) {
-            activeRow = -1;
+            // activeRow = -1;
             final int selectedRow = toursTree.getRowForLocation(e.getX(), e.getY());
             final TreePath pathSelected = toursTree.getPathForLocation(e.getX(), e.getY());
 
             if (selectedRow < 0 || pathSelected == null) {
                selectedNode = null;
                return;
+            }
+
+            // On right click, show a context menu
+            if (e.getButton() == MouseEvent.BUTTON3) {
+               // Delete
             }
 
             if (pathSelected.getLastPathComponent() instanceof DefaultMutableTreeNode) {
@@ -126,8 +131,29 @@ public class ToolPaneWindow {
          }
       });
 
-      final JButton setActiveButton = new JButton("Set Active");
-      setActiveButton.addActionListener(e -> {
+      final JButton createNewButton = new JButton("Create New Tour");
+      createNewButton.addActionListener(e -> {
+
+         final Tour newTour = Tour.builder()
+               .id(UUID.randomUUID().toString())
+               .touFile("newTour.tour")
+               .title("A New Tour")
+               .description("A New Tour")
+               .enabled(false)
+               .steps(Arrays.asList(Step.builder()
+                     .title("Step 1")
+                     .description("Sample Description")
+                     .file("")
+                     .line(1)
+                     .build()))
+               .build();
+
+         final StateManager stateManager = new StateManager(project);
+         stateManager.createTour(newTour);
+         createToursTee(project);
+
+      });
+      /*setActiveButton.addActionListener(e -> {
          // Check if there is any selected Tour
          // If so, deactivate the previously active
          // Activate the new one
@@ -159,7 +185,7 @@ public class ToolPaneWindow {
             }
          }
 
-      });
+      });*/
 
       final JButton reloadButton = new JButton("Reload");
       reloadButton.addActionListener(e -> {
@@ -170,7 +196,7 @@ public class ToolPaneWindow {
       final JPanel buttonsPanel = new JPanel();
       buttonsPanel.add(previousButton);
       buttonsPanel.add(nextButton);
-      buttonsPanel.add(setActiveButton);
+      buttonsPanel.add(createNewButton);
       buttonsPanel.add(reloadButton);
       panel.add(buttonsPanel, BorderLayout.SOUTH);
    }

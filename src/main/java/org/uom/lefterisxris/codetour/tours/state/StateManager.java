@@ -58,7 +58,7 @@ public class StateManager implements PersistentStateComponent<ToursState> {
       // 1. Check that title is unique
       // 2. Persist to file
       // 3. Reload the StateManager
-      final String fileName = tour.getTitle() + ".tour";
+      final String fileName = tour.getTourFile();
 
       System.out.printf("Saving Tour '%s' (%s steps) into file '%s'%n",
             tour.getTitle(), tour.getSteps().size(), fileName);
@@ -143,7 +143,7 @@ public class StateManager implements PersistentStateComponent<ToursState> {
    public List<Tour> persist(Project project, Tour tour) {
       if (project == null || project.getBasePath() == null) return getTours(project);
 
-      final String fileName = tour.getTitle() + ".tour";
+      final String fileName = tour.getTourFile();
 
       System.out.printf("Saving Tour '%s' (%s steps) into file '%s'%n",
             tour.getTitle(), tour.getSteps().size(), fileName);
@@ -195,6 +195,7 @@ public class StateManager implements PersistentStateComponent<ToursState> {
                   .map(virtualFile -> {
                      Tour tour;
                      try {
+                        System.out.println("Reading (from Index) Tour from file: " + virtualFile.getName());
                         tour = new Gson().fromJson(new InputStreamReader(virtualFile.getInputStream()), Tour.class);
                      } catch (IOException e) {
                         e.printStackTrace();
@@ -230,6 +231,7 @@ public class StateManager implements PersistentStateComponent<ToursState> {
          return Optional.empty();
 
       try {
+         System.out.println("Reading (from FS) Tour from file: " + file.getName());
          return Optional.of(new Gson().fromJson(new InputStreamReader(file.getInputStream()), Tour.class));
       } catch (IOException e) {
          e.printStackTrace();
