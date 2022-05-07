@@ -16,16 +16,15 @@ import com.intellij.ui.IconManager;
 import com.intellij.ui.JBColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
+import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
+import org.uom.lefterisxris.codetour.tours.ui.TourSelectionDialogWrapper;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static java.util.Objects.isNull;
 
@@ -63,32 +62,21 @@ public class TourStepGeneratorAction extends AnAction {
 
       final StateManager stateManager = new StateManager(project);
 
-      List<Step> steps = new ArrayList<>();
-      steps.add(generateStep(virtualFile, line));
-
-      // Also generate 2 extra steps (first and last lines) for demonstration
-      if (editor != null) {
-         final int lastLine = editor.getDocument().getLineCount();
-         steps.add(generateStep(virtualFile, 1));
-         steps.add(generateStep(virtualFile, lastLine));
+      // If no activeTour is present, prompt to select one
+      if (StateManager.getActiveTour().isEmpty()) {
+         final TourSelectionDialogWrapper dialog = new TourSelectionDialogWrapper(project,
+               "Please Select the Tour to add the Step to");
+         if (dialog.showAndGet()) {
+            final Optional<Tour> selected = dialog.getSelected();
+            selected.ifPresent(tour -> StateManager.setActiveTour(tour));
+         }
       }
 
-      final Optional<Tour> activeTour = stateManager.getActive();
+      final Optional<Tour> activeTour = StateManager.getActiveTour();
       if (activeTour.isPresent()) {
-         // Add steps to active
-         activeTour.get().getSteps().addAll(steps);
-         stateManager.updateTour(activeTour.get().getId(), activeTour.get());
-      } else {
-         //TODO: Dialog to Select a Tour
-
-         // For now, just create a new one
-         final Tour tour = Tour.builder()
-               .id(UUID.randomUUID().toString())
-               .title("LeC") //TODO: Interactive Tour Name
-               .steps(steps)
-               .enabled(true)
-               .build();
-         stateManager.createTour(tour);
+         final Step step = generateStep(virtualFile, line);
+         activeTour.get().getSteps().add(step);
+         stateManager.updateTour(activeTour.get());
       }
 
       // new StateManager().getTours(project).add(tour);
@@ -99,6 +87,7 @@ public class TourStepGeneratorAction extends AnAction {
       final String title = String.format("%s:%s", virtualFile.getName(), line);
       return Step.builder()
             .title(title)
+            .description("Simple Navigation to " + title)
             .file(virtualFile.getName())
             .line(line)
             .build();

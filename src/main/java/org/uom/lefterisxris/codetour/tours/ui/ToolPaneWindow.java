@@ -97,6 +97,8 @@ public class ToolPaneWindow {
                      final JMenuItem editAction = new JMenuItem("Edit Tour", AllIcons.Actions.Edit);
                      editAction.addActionListener(d -> {
                         //TODO: Implement
+                        StateManager.setActiveTour(tour);
+                        System.out.println("Active Tour: " + tour.getTitle());
                      });
 
                      // Add new Step
@@ -118,24 +120,13 @@ public class ToolPaneWindow {
                         CodeTourNotifier.notifyTourAction(project, tour, "New Step",
                               String.format("A New Step added on Tour '%s'", tour.getTitle()));
 
-                        // Select the New Step on the tree
-                        for (int i = 0; i < toursTree.getRowCount(); i++) {
-                           if (toursTree.getPathForRow(i).getLastPathComponent().toString().equals(tour.getTitle())) {
-                              final Object component = toursTree.getPathForRow(i).getLastPathComponent();
-                              if (component instanceof DefaultMutableTreeNode) {
-                                 final DefaultMutableTreeNode pNode = (DefaultMutableTreeNode)component;
-                                 if (pNode.getUserObject() instanceof Tour) {
-                                    toursTree.expandPath(new TreePath(pNode.getPath()));
-                                    toursTree.getSelectionModel().setSelectionPath(new TreePath(pNode.getLastLeaf().getPath()));
-                                 }
-                              }
-                           }
-                        }
+                        // Expand and select the last Step of the active Tour on the tree
+                        selectTourLastStep(tour);
                      });
 
-                     menu.add(deleteAction);
-                     menu.add(editAction);
                      menu.add(newStepAction);
+                     menu.add(editAction);
+                     menu.add(deleteAction);
                      menu.show(toursTree, e.getX(), e.getY());
                      return;
                   }
@@ -159,19 +150,8 @@ public class ToolPaneWindow {
                         CodeTourNotifier.notifyTourAction(project, tour, "Step Deletion", String.format("Step " +
                               "'%s' has been removed from Tour '%s'", step.getTitle(), tour.getTitle()));
 
-                        // Select the Parent Tour on the tree
-                        for (int i = 0; i < toursTree.getRowCount(); i++) {
-                           if (toursTree.getPathForRow(i).getLastPathComponent().toString().equals(tour.getTitle())) {
-                              final Object component = toursTree.getPathForRow(i).getLastPathComponent();
-                              if (component instanceof DefaultMutableTreeNode) {
-                                 final DefaultMutableTreeNode pNode = (DefaultMutableTreeNode)component;
-                                 if (pNode.getUserObject() instanceof Tour) {
-                                    toursTree.expandPath(new TreePath(pNode.getPath()));
-                                    toursTree.getSelectionModel().setSelectionPath(new TreePath(pNode.getLastLeaf().getPath()));
-                                 }
-                              }
-                           }
-                        }
+                        // Expand and select the last Step of the active Tour on the tree
+                        selectTourLastStep(tour);
                      });
 
                      // Edit Action
@@ -202,6 +182,22 @@ public class ToolPaneWindow {
          }
       }
       panel.add(treePanel, BorderLayout.CENTER);
+   }
+
+   private void selectTourLastStep(Tour tour) {
+      // Expand and select the last Step of the active Tour on the tree
+      for (int i = 0; i < toursTree.getRowCount(); i++) {
+         if (!toursTree.getPathForRow(i).getLastPathComponent().toString().equals(tour.getTitle())) continue;
+
+         final Object component = toursTree.getPathForRow(i).getLastPathComponent();
+         if (component instanceof DefaultMutableTreeNode) {
+            final DefaultMutableTreeNode pNode = (DefaultMutableTreeNode)component;
+            if (pNode.getUserObject() instanceof Tour) {
+               toursTree.expandPath(new TreePath(pNode.getPath()));
+               toursTree.getSelectionModel().setSelectionPath(new TreePath(pNode.getLastLeaf().getPath()));
+            }
+         }
+      }
    }
 
    private void createNavigationButtons() {
@@ -248,7 +244,6 @@ public class ToolPaneWindow {
                .touFile(newTourFileName)
                .title("A New Tour")
                .description("A New Tour")
-               .enabled(false)
                .steps(Arrays.asList(Step.builder()
                      .title("Step 1")
                      .description("Sample Description")

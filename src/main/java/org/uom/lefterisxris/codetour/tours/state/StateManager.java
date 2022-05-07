@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
  */
 public class StateManager {
 
+   private static Optional<Tour> activeTour = Optional.empty();
+
    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
    private final ToursState state = new ToursState();
    private Project project;
@@ -120,6 +122,7 @@ public class StateManager {
    }
 
    public List<Tour> reloadState() {
+      activeTour = Optional.empty();
       state.clear();
       return getTours();
    }
@@ -128,12 +131,6 @@ public class StateManager {
       if (state.getTours().isEmpty())
          state.getTours().addAll(loadTours(project));
       return state.getTours();
-   }
-
-   public Optional<Tour> getActive() {
-      return getTours().stream()
-            .filter(tour -> tour.getEnabled())
-            .findFirst();
    }
 
    public boolean shouldNotify(Project project) {
@@ -222,5 +219,13 @@ public class StateManager {
       return Arrays.stream(virtualFile.getChildren())
             .filter(file -> file.isDirectory() && file.getName().equals(".tours"))
             .findFirst();
+   }
+
+   public static Optional<Tour> getActiveTour() {
+      return activeTour;
+   }
+
+   public static void setActiveTour(Tour aTour) {
+      activeTour = Optional.of(aTour);
    }
 }
