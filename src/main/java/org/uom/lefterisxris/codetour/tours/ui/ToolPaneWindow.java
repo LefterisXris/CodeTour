@@ -1,7 +1,6 @@
 package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.impl.ActionManagerImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.wm.ToolWindow;
@@ -9,7 +8,6 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.Navigator;
-import org.uom.lefterisxris.codetour.tours.actions.RunTourByNameAction;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
@@ -79,7 +77,6 @@ public class ToolPaneWindow {
             }
 
 
-
             if (pathSelected.getLastPathComponent() instanceof DefaultMutableTreeNode) {
                final DefaultMutableTreeNode node = (DefaultMutableTreeNode)pathSelected.getLastPathComponent();
                if (node.getUserObject() instanceof Tour) {
@@ -93,7 +90,9 @@ public class ToolPaneWindow {
                      deleteAction.addActionListener(d -> {
                         stateManager.deleteTour(tour);
                         createToursTee(project);
-                        CodeTourNotifier.notifyStepDescription(project, "Tour Deleted. Please Reload Tours");
+                        CodeTourNotifier.notifyTourAction(project, tour, "Deletion",
+                              String.format("Tour '%s' (file %s) has been deleted", tour.getTitle(),
+                                    tour.getTourFile()));
                      });
                      deleteAction.setIcon(AllIcons.Actions.DeleteTag);
                      menu.add(deleteAction);
@@ -190,7 +189,8 @@ public class ToolPaneWindow {
 
          stateManager.createTour(newTour);
          createToursTee(project);
-         CodeTourNotifier.notifyStepDescription(project, "Tour Created. Please Reload Tours");
+         CodeTourNotifier.notifyTourAction(project, newTour, "Creation",
+               String.format("Tour '%s' (file %s) has been created", newTour.getTitle(), newTour.getTourFile()));
 
       });
       /*setActiveButton.addActionListener(e -> {

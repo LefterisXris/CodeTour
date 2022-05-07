@@ -19,7 +19,8 @@ public class ToursNotification {
             group.createNotification(title, content, NotificationType.INFORMATION, (notification1, event) -> {
                notification1.expire();
                if (event.getDescription().equals("RunTour")) {
-                  new StateManager().getTours(project);
+                  //TODO: Implement
+                  //new StateManager(project).getTours();
                }
             });
       notification.whenExpired(() -> System.out.println("EXPIRED!!!!"));

@@ -23,7 +23,7 @@ public class ToursDialog extends DialogWrapper {
 
    @Override
    protected @Nullable JComponent createCenterPanel() {
-      final List<Tour> tours = new StateManager().getTours(project);
+      final List<Tour> tours = new StateManager(project).getTours();
 
       final JComboBox<String> jComboBox = new JComboBox<>();
       tours.stream().map(Tour::getTitle).forEach(jComboBox::addItem);

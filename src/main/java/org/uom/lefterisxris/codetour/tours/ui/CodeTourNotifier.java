@@ -4,6 +4,7 @@ import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nullable;
+import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
 /**
  * Notifier class to show a notification to the user
@@ -17,6 +18,13 @@ public class CodeTourNotifier {
       NotificationGroupManager.getInstance()
             .getNotificationGroup("CodeTour Notification")
             .createNotification(content, NotificationType.INFORMATION)
+            .notify(project);
+   }
+
+   public static void notifyTourAction(@Nullable Project project, Tour tour, String action, String content) {
+      NotificationGroupManager.getInstance()
+            .getNotificationGroup("CodeTour Notification")
+            .createNotification("Tour action", action, content, NotificationType.INFORMATION)
             .notify(project);
    }
 

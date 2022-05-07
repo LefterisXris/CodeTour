@@ -36,7 +36,7 @@ public class RunToursAction extends AnAction {
          return;
       }
       if (tours.isEmpty()) {
-         tours.addAll(new StateManager().getTours(project));
+         tours.addAll(new StateManager(project).getTours());
       }
 
       e.getPresentation().setEnabledAndVisible(true);

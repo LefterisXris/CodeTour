@@ -6,15 +6,15 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
+import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,14 +49,16 @@ public class StateManager {
             tour.getTitle(), tour.getSteps().size(), fileName);
 
       WriteAction.runAndWait(() -> {
+         final Optional<VirtualFile> toursDir = getToursDir();
+         if (toursDir.isEmpty()) return;
          // Persist the file
-         try (FileWriter fileWriter = new FileWriter(
-               Paths.get(project.getBasePath(), ".tours", fileName).toString())) {
-            GSON.toJson(tour, fileWriter);
+         try {
+            final VirtualFile newTourVfile = toursDir.get().createChildData(this, fileName);
+            newTourVfile.setBinaryContent(GSON.toJson(tour).getBytes(StandardCharsets.UTF_8));
             reloadState();
-         } catch (IOException ex) {
-            ex.printStackTrace();
-            System.err.println(ex.getMessage());
+         } catch (IOException e) {
+            System.err.println("Failed to create tour file: " + e.getMessage());
+            e.printStackTrace();
          }
       });
       return tour;
@@ -108,13 +110,7 @@ public class StateManager {
 
    public List<Tour> reloadState() {
       state.clear();
-      return getTours(project);
-   }
-
-   public List<Tour> getTours(Project project) {
-      if (state.getTours().isEmpty())
-         state.getTours().addAll(loadTours(project));
-      return state.getTours();
+      return getTours();
    }
 
    public List<Tour> getTours() {
@@ -123,52 +119,10 @@ public class StateManager {
       return state.getTours();
    }
 
-   public List<Tour> reloadTours() {
-      state.clear();
-      state.getTours().addAll(loadTours(project));
-      return state.getTours();
-   }
-
-   public List<Tour> persist(Project project, Tour tour) {
-      if (project == null || project.getBasePath() == null) return getTours(project);
-
-      final String fileName = tour.getTourFile();
-
-      System.out.printf("Saving Tour '%s' (%s steps) into file '%s'%n",
-            tour.getTitle(), tour.getSteps().size(), fileName);
-
-      // Persist the file
-      try (FileWriter fileWriter = new FileWriter(
-            Paths.get(project.getBasePath(), ".toursState", fileName).toString())) {
-         GSON.toJson(tour, fileWriter);
-      } catch (IOException ex) {
-         ex.printStackTrace();
-         System.err.println(ex.getMessage());
-      }
-
-      state.getTours().clear();
-      return getTours(project);
-   }
-
    public Optional<Tour> getActive() {
       return getTours().stream()
             .filter(tour -> tour.getEnabled())
             .findFirst();
-   }
-
-   public Tour setActive(Project project, String id) {
-      final Optional<Tour> aTour = getTours().stream()
-            .filter(tour -> tour.getId().equals(id))
-            .findFirst();
-
-      // Persist it
-      aTour.ifPresent(tour -> {
-         tour.setEnabled(true);
-         persist(project, tour);
-      });
-
-      return getActive()
-            .orElseThrow(() -> new RuntimeException("Could not find Enabled Tour"));
    }
 
    public boolean shouldNotify(Project project) {
@@ -176,7 +130,7 @@ public class StateManager {
    }
 
    private List<Tour> loadTours(@NotNull Project project) {
-      return project.getBasePath() == null ? loadFromIndex(project) : loadFromFS(project);
+      return project.getBasePath() == null ? loadFromIndex(project) : loadFromFS();
    }
 
    private List<Tour> loadFromIndex(@NotNull Project project) {
@@ -198,23 +152,18 @@ public class StateManager {
             .collect(Collectors.toList());
    }
 
-   private List<Tour> loadFromFS(@NotNull Project project) {
-      List<Tour> tours = new ArrayList<>();
-      getToursDir().ifPresent(dir -> Arrays.stream(dir.getChildren())
-            .filter(file -> !file.isDirectory() && "tour".equals(file.getExtension()))
-            .map(this::parse)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .forEach(tours::add));
+   private List<Tour> loadFromFS() {
+      final List<Tour> tours = new ArrayList<>();
+      final Optional<VirtualFile> toursDir = getToursDir();
+      if (toursDir.isEmpty()) return new ArrayList<>();
 
-      /*VfsUtilCore.iterateChildrenRecursively(virtualFile,
+      VfsUtilCore.iterateChildrenRecursively(toursDir.get(),
             null,
             fileOrDir -> {
                if (!fileOrDir.isDirectory() && "tour".equals(fileOrDir.getExtension()))
                   parse(fileOrDir).ifPresent(tours::add);
                return true;
-            });*/
-
+            });
       return tours;
    }
 
@@ -232,21 +181,20 @@ public class StateManager {
       return Optional.empty();
    }
 
-
-   @SuppressWarnings("OptionalIsPresent")
    private Optional<VirtualFile> findTourFile(Tour tour) {
-      //TODO: Any way to 'update' the indexes?
-      /*return FilenameIndex.getAllFilesByExt(project, "tour").stream()
-            .filter(file -> file.getName().equals(tourName))
-            .findFirst();*/
-
       final Optional<VirtualFile> toursDir = getToursDir();
-      if (toursDir.isPresent())
-         return Arrays.stream(toursDir.get().getChildren())
-               .filter(file -> !file.isDirectory() && file.getName().equals(tour.getTourFile()))
-               .findFirst();
+      if (toursDir.isEmpty()) return Optional.empty();
 
-      return Optional.empty();
+      final List<VirtualFile> virtualFiles = new ArrayList<>();
+      VfsUtilCore.iterateChildrenRecursively(toursDir.get(),
+            null,
+            fileOrDir -> {
+               if (!fileOrDir.isDirectory() && tour.getTourFile().equals(fileOrDir.getName()))
+                  virtualFiles.add(fileOrDir);
+               return true;
+            });
+
+      return virtualFiles.isEmpty() ? Optional.empty() : Optional.of(virtualFiles.get(0));
    }
 
    private Optional<VirtualFile> findTourFile(String tourId) {
@@ -260,7 +208,6 @@ public class StateManager {
       final VirtualFile virtualFile = ProjectUtil.guessProjectDir(project);
       if (virtualFile == null) return Optional.empty();
 
-      List<Tour> tours = new ArrayList<>();
       return Arrays.stream(virtualFile.getChildren())
             .filter(file -> file.isDirectory() && file.getName().equals(".tours"))
             .findFirst();
