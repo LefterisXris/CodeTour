@@ -32,11 +32,13 @@ public class ToolPaneWindow {
    private Tree toursTree;
 
    private Project project;
+   private StateManager stateManager;
    private DefaultMutableTreeNode selectedNode;
 
    public ToolPaneWindow(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
       this.project = project;
+      this.stateManager = new StateManager(project);
       panel = new JPanel(new BorderLayout());
       panel.add(new JLabel("Tour Navigation UI"), BorderLayout.NORTH);
 
@@ -47,7 +49,7 @@ public class ToolPaneWindow {
 
    private void createToursTee(Project project) {
 
-      final List<Tour> tours = new StateManager(project).reloadTours();
+      final List<Tour> tours = stateManager.getTours();
 
       final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Code ToursState");
 
@@ -133,9 +135,16 @@ public class ToolPaneWindow {
       final JButton createNewButton = new JButton("Create New Tour");
       createNewButton.addActionListener(e -> {
 
+         final long index = stateManager.getTours().stream()
+               .map(tour -> tour.getTourFile())
+               .filter(tourFile -> tourFile != null)
+               .filter(tourFile -> tourFile.startsWith("newTour") && tourFile.endsWith(".tour"))
+               .count();
+         final String newTourFileName = String.format("newTour%s.tour", (index > 0 ? index : ""));
+
          final Tour newTour = Tour.builder()
                .id(UUID.randomUUID().toString())
-               .touFile("newTour.tour")
+               .touFile(newTourFileName)
                .title("A New Tour")
                .description("A New Tour")
                .enabled(false)
@@ -147,9 +156,9 @@ public class ToolPaneWindow {
                      .build()))
                .build();
 
-         final StateManager stateManager = new StateManager(project);
          stateManager.createTour(newTour);
          createToursTee(project);
+         CodeTourNotifier.notifyStepDescription(project, "Tour Created. Please Reload Tours");
 
       });
       /*setActiveButton.addActionListener(e -> {
@@ -189,6 +198,7 @@ public class ToolPaneWindow {
       final JButton reloadButton = new JButton("Reload");
       reloadButton.addActionListener(e -> {
          System.out.println("Re-creating the tree");
+         stateManager.reloadState();
          createToursTee(project);
       });
 
