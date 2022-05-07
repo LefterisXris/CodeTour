@@ -3,24 +3,18 @@ package org.uom.lefterisxris.codetour.tours.state;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +23,7 @@ import java.util.stream.Collectors;
  * @author Eleftherios Chrysochoidis
  * Date: 7/1/2022
  */
-public class StateManager implements PersistentStateComponent<ToursState> {
+public class StateManager {
 
    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
    private final ToursState state = new ToursState();
@@ -40,17 +34,6 @@ public class StateManager implements PersistentStateComponent<ToursState> {
 
    public StateManager(Project project) {
       this.project = project;
-   }
-
-   @Override
-   public @Nullable ToursState getState() {
-      return state;
-   }
-
-   @Override
-   public void loadState(@NotNull ToursState state) {
-      this.state.clear();
-      this.state.getTours().addAll(state.getTours());
    }
 
    public Tour createTour(Tour tour) {
@@ -215,13 +198,23 @@ public class StateManager implements PersistentStateComponent<ToursState> {
          return new ArrayList<>();
 
       List<Tour> tours = new ArrayList<>();
-      VfsUtilCore.iterateChildrenRecursively(virtualFile,
+      final Optional<VirtualFile> toursDir = Arrays.stream(virtualFile.getChildren())
+            .filter(file -> file.isDirectory() && file.getName().equals(".tours"))
+            .findFirst();
+      toursDir.ifPresent(dir -> Arrays.stream(dir.getChildren())
+            .filter(file -> !file.isDirectory() && "tour".equals(file.getExtension()))
+            .map(this::parse)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .forEach(tours::add));
+
+      /*VfsUtilCore.iterateChildrenRecursively(virtualFile,
             null,
             fileOrDir -> {
                if (!fileOrDir.isDirectory() && "tour".equals(fileOrDir.getExtension()))
                   parse(fileOrDir).ifPresent(tours::add);
                return true;
-            });
+            });*/
 
       return tours;
    }

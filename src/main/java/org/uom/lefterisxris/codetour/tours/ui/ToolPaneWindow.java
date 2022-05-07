@@ -89,10 +89,9 @@ public class ToolPaneWindow {
       });
 
       final JPanel treePanel = new JPanel(new BorderLayout());
+      treePanel.setName("treePanel");
       final JBScrollPane scrollPane = new JBScrollPane(toursTree);
-      scrollPane.setName("treePanel");
       treePanel.add(scrollPane, BorderLayout.CENTER);
-      treePanel.add(toursTree);
       for (int i = 0; i < panel.getComponentCount(); i++) {
          if ("treePanel".equals(panel.getComponent(i).getName())) {
             panel.remove(i);
