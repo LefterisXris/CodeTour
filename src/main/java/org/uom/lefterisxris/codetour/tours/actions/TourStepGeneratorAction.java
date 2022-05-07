@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
+import org.uom.lefterisxris.codetour.tours.state.TourUpdateNotifier;
 import org.uom.lefterisxris.codetour.tours.ui.TourSelectionDialogWrapper;
 
 import javax.swing.*;
@@ -77,6 +78,9 @@ public class TourStepGeneratorAction extends AnAction {
          final Step step = generateStep(virtualFile, line);
          activeTour.get().getSteps().add(step);
          stateManager.updateTour(activeTour.get());
+
+         // Notify UI to re-render
+         project.getMessageBus().syncPublisher(TourUpdateNotifier.TOPIC).tourUpdated(activeTour.get());
       }
 
       // new StateManager().getTours(project).add(tour);

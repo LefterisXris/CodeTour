@@ -11,6 +11,7 @@ import org.uom.lefterisxris.codetour.tours.Navigator;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
+import org.uom.lefterisxris.codetour.tours.state.TourUpdateNotifier;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -20,6 +21,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -47,6 +49,8 @@ public class ToolPaneWindow {
       createToursTee(project);
 
       createNavigationButtons();
+
+      initMessageBus();
    }
 
    private void createToursTee(Project project) {
@@ -55,12 +59,18 @@ public class ToolPaneWindow {
 
       final DefaultMutableTreeNode root = new DefaultMutableTreeNode("Code ToursState");
 
+      final String activeId = StateManager.getActiveTour().map(tour -> tour.getId()).orElse("Null");
       tours.forEach(tour -> {
          final DefaultMutableTreeNode aTourNode = new DefaultMutableTreeNode(tour);
-         tour.getSteps().forEach(step -> {
-            aTourNode.add(new DefaultMutableTreeNode(step));
-         });
+         System.out.printf("Rendering Tour '%s' with %s steps%n", tour.getTitle(), tour.getSteps().size());
+         tour.getSteps().forEach(step -> aTourNode.add(new DefaultMutableTreeNode(step)));
+
+         if (tour.getId().equals(activeId)) {
+            //TODO: Set active in bold
+         }
+
          root.add(aTourNode);
+         System.out.println();
       });
       toursTree = new Tree(root);
 
@@ -136,6 +146,7 @@ public class ToolPaneWindow {
                   final Step step = (Step)node.getUserObject();
                   final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)node.getParent();
                   final Tour tour = (Tour)parentNode.getUserObject();
+                  StateManager.setActiveTour(tour);
 
                   // On Tour right click, show a context menu (Delete, Edit)
                   if (e.getButton() == MouseEvent.BUTTON3) {
@@ -263,6 +274,7 @@ public class ToolPaneWindow {
       reloadButton.addActionListener(e -> {
          System.out.println("Re-creating the tree");
          stateManager.reloadState();
+         StateManager.setActiveTour(null); // reset the activeTour
          createToursTee(project);
       });
 
@@ -278,4 +290,11 @@ public class ToolPaneWindow {
       return panel;
    }
 
+   public void initMessageBus() {
+      project.getMessageBus().connect().subscribe(TourUpdateNotifier.TOPIC, (tour) -> {
+         stateManager.reloadState();
+         createToursTee(project);
+         selectTourLastStep(tour);
+      });
+   }
 }

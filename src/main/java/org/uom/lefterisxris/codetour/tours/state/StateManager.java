@@ -109,20 +109,19 @@ public class StateManager {
       // 2. Delete the file
       // 3. Reload the StateManager
       findTourFile(tour).ifPresent(virtualFile -> {
-         WriteAction.run(() -> {
+         WriteAction.runAndWait(() -> {
             try {
                virtualFile.delete(this);
+               reloadState();
             } catch (IOException e) {
                e.printStackTrace();
             }
          });
       });
-      reloadState();
       return tour;
    }
 
    public List<Tour> reloadState() {
-      activeTour = Optional.empty();
       state.clear();
       return getTours();
    }
@@ -226,6 +225,6 @@ public class StateManager {
    }
 
    public static void setActiveTour(Tour aTour) {
-      activeTour = Optional.of(aTour);
+      activeTour = Optional.ofNullable(aTour);
    }
 }
