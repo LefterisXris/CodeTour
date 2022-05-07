@@ -3,6 +3,7 @@ package org.uom.lefterisxris.codetour.tours.actions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorGutter;
 import com.intellij.openapi.editor.TextAnnotationGutterProvider;
@@ -31,6 +32,8 @@ import static java.util.Objects.isNull;
 
 public class TourStepGeneratorAction extends AnAction {
 
+   private static final Logger LOG = Logger.getInstance(TourStepGeneratorAction.class);
+
    @Override
    public void actionPerformed(@NotNull AnActionEvent e) {
       final Project project = e.getProject();
@@ -40,7 +43,7 @@ public class TourStepGeneratorAction extends AnAction {
       // TODO: Get the current location and add it on active Tour
       //  check e.getData(CommonDataKeys.EDITOR).getGutter()
       //  NavigationGutterIconRenderer
-      System.out.println();
+
       // e.getData(CommonDataKeys.VIRTUAL_FILE)
       // e.getDataContext().getData("EditorGutter.LOGICAL_LINE_AT_CURSOR")
       final Editor editor = e.getData(CommonDataKeys.EDITOR);
@@ -89,6 +92,7 @@ public class TourStepGeneratorAction extends AnAction {
 
    private Step generateStep(VirtualFile virtualFile, int line) {
       final String title = String.format("%s:%s", virtualFile.getName(), line);
+      LOG.info("Generating Step: " + title);
       return Step.builder()
             .title(title)
             .description("Simple Navigation to " + title)
@@ -132,7 +136,7 @@ public class TourStepGeneratorAction extends AnAction {
 
       @Override
       public List<AnAction> getPopupActions(int line, Editor editor) {
-         System.out.println("Requested popup actions!");
+         LOG.info("Requested popup actions!");
          return null;
       }
 
@@ -146,7 +150,7 @@ public class TourStepGeneratorAction extends AnAction {
 
       @Override
       public @Nullable AnAction getClickAction() {
-         System.out.println("Clicked!!");
+         LOG.info("Clicked!!");
          return super.getClickAction();
       }
 

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class StateManager {
 
    private static Optional<Tour> activeTour = Optional.empty();
+   private static final Logger LOG = Logger.getInstance(StateManager.class);
 
    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
    private final ToursState state = new ToursState();
@@ -47,8 +49,8 @@ public class StateManager {
       if (project.getBasePath() == null) return null;
       final String fileName = tour.getTourFile();
 
-      System.out.printf("Saving Tour '%s' (%s steps) into file '%s'%n",
-            tour.getTitle(), tour.getSteps().size(), fileName);
+      LOG.info(String.format("Saving Tour '%s' (%s steps) into file '%s'%n",
+            tour.getTitle(), tour.getSteps().size(), fileName));
 
       WriteAction.runAndWait(() -> {
          final Optional<VirtualFile> toursDir = getToursDir();
@@ -59,8 +61,7 @@ public class StateManager {
             newTourVfile.setBinaryContent(GSON.toJson(tour).getBytes(StandardCharsets.UTF_8));
             reloadState();
          } catch (IOException e) {
-            System.err.println("Failed to create tour file: " + e.getMessage());
-            e.printStackTrace();
+            LOG.error("Failed to create tour file: " + e.getMessage(), e);
          }
       });
       return tour;
@@ -145,11 +146,10 @@ public class StateManager {
                   .map(virtualFile -> {
                      Tour tour;
                      try {
-                        System.out.println("Reading (from Index) Tour from file: " + virtualFile.getName());
+                        LOG.info("Reading (from Index) Tour from file: " + virtualFile.getName());
                         tour = new Gson().fromJson(new InputStreamReader(virtualFile.getInputStream()), Tour.class);
                      } catch (IOException e) {
-                        e.printStackTrace();
-                        System.err.println("Skipping file: " + virtualFile.getName());
+                        LOG.error("Skipping file: " + virtualFile.getName(), e);
                         return null;
                      }
                      tour.setTitle(virtualFile.getName());
@@ -179,11 +179,11 @@ public class StateManager {
          return Optional.empty();
 
       try {
-         System.out.println("Reading (from FS) Tour from file: " + file.getName());
+         LOG.info("Reading (from FS) Tour from file: " + file.getName());
          return Optional.of(new Gson().fromJson(new InputStreamReader(file.getInputStream()), Tour.class));
       } catch (IOException e) {
          e.printStackTrace();
-         System.err.println("Skipping file: " + file.getName());
+         LOG.error("Skipping file: " + file.getName());
       }
       return Optional.empty();
    }

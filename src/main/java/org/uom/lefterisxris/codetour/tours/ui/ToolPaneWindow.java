@@ -1,6 +1,7 @@
 package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.wm.ToolWindow;
@@ -21,7 +22,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -31,6 +31,8 @@ import java.util.UUID;
  * Date: 11/4/2022
  */
 public class ToolPaneWindow {
+
+   private static final Logger LOG = Logger.getInstance(ToolPaneWindow.class);
 
    private final JPanel panel;
    private Tree toursTree;
@@ -62,7 +64,7 @@ public class ToolPaneWindow {
       final String activeId = StateManager.getActiveTour().map(tour -> tour.getId()).orElse("Null");
       tours.forEach(tour -> {
          final DefaultMutableTreeNode aTourNode = new DefaultMutableTreeNode(tour);
-         System.out.printf("Rendering Tour '%s' with %s steps%n", tour.getTitle(), tour.getSteps().size());
+         LOG.info(String.format("Rendering Tour '%s' with %s steps%n", tour.getTitle(), tour.getSteps().size()));
          tour.getSteps().forEach(step -> aTourNode.add(new DefaultMutableTreeNode(step)));
 
          if (tour.getId().equals(activeId)) {
@@ -70,7 +72,6 @@ public class ToolPaneWindow {
          }
 
          root.add(aTourNode);
-         System.out.println();
       });
       toursTree = new Tree(root);
 
@@ -94,45 +95,17 @@ public class ToolPaneWindow {
                   if (e.getButton() == MouseEvent.BUTTON3) {
                      final JBPopupMenu menu = new JBPopupMenu("Tour Context Menu");
 
-                     // Delete Action
-                     final JMenuItem deleteAction = new JMenuItem("Delete Tour", AllIcons.Actions.DeleteTag);
-                     deleteAction.addActionListener(d -> {
-                        stateManager.deleteTour(tour);
-                        createToursTee(project);
-                        CodeTourNotifier.notifyTourAction(project, tour, "Deletion", String.format("Tour " +
-                              "'%s' (file %s) has been deleted", tour.getTitle(), tour.getTourFile()));
-                     });
+                     // Add new Step
+                     final JMenuItem newStepAction = new JMenuItem("Add new Step", AllIcons.Actions.AddFile);
+                     newStepAction.addActionListener(d -> addNewStepOnTourListener(tour));
 
                      // Edit Action
                      final JMenuItem editAction = new JMenuItem("Edit Tour", AllIcons.Actions.Edit);
-                     editAction.addActionListener(d -> {
-                        //TODO: Implement
-                        StateManager.setActiveTour(tour);
-                        System.out.println("Active Tour: " + tour.getTitle());
-                     });
+                     editAction.addActionListener(d -> editTourListener(tour));
 
-                     // Add new Step
-                     final JMenuItem newStepAction = new JMenuItem("Add new Step", AllIcons.Actions.AddFile);
-                     newStepAction.addActionListener(d -> {
-                        final long index = tour.getSteps().stream()
-                              .filter(step -> step.getTitle().startsWith("New Step"))
-                              .count();
-
-                        final String stepTitle = String.format("New Step%s", (index > 0) ? index : "");
-                        tour.getSteps().add(Step.builder()
-                              .title(stepTitle)
-                              .description("Step Description")
-                              .file("")
-                              .line(1)
-                              .build());
-                        stateManager.updateTour(tour);
-                        createToursTee(project);
-                        CodeTourNotifier.notifyTourAction(project, tour, "New Step",
-                              String.format("A New Step added on Tour '%s'", tour.getTitle()));
-
-                        // Expand and select the last Step of the active Tour on the tree
-                        selectTourLastStep(tour);
-                     });
+                     // Delete Action
+                     final JMenuItem deleteAction = new JMenuItem("Delete Tour", AllIcons.Actions.DeleteTag);
+                     deleteAction.addActionListener(d -> deleteTourListener(tour));
 
                      menu.add(newStepAction);
                      menu.add(editAction);
@@ -152,26 +125,16 @@ public class ToolPaneWindow {
                   if (e.getButton() == MouseEvent.BUTTON3) {
                      final JBPopupMenu menu = new JBPopupMenu("Tour Context Menu");
 
-                     // Delete Action
-                     final JMenuItem deleteAction = new JMenuItem("Delete Step", AllIcons.Actions.DeleteTag);
-                     deleteAction.addActionListener(d -> {
-                        tour.getSteps().removeIf(tourStep -> tourStep.getTitle().equals(step.getTitle()));
-                        stateManager.updateTour(tour);
-                        createToursTee(project);
-                        CodeTourNotifier.notifyTourAction(project, tour, "Step Deletion", String.format("Step " +
-                              "'%s' has been removed from Tour '%s'", step.getTitle(), tour.getTitle()));
-
-                        // Expand and select the last Step of the active Tour on the tree
-                        selectTourLastStep(tour);
-                     });
-
                      // Edit Action
                      final JMenuItem editAction = new JMenuItem("Edit Step", AllIcons.Actions.Edit);
-                     editAction.addActionListener(d -> {
-                        //TODO: Implement
-                     });
+                     editAction.addActionListener(d -> editStepListener(step));
 
-                     menu.add(deleteAction, editAction);
+                     // Delete Action
+                     final JMenuItem deleteAction = new JMenuItem("Delete Step", AllIcons.Actions.DeleteTag);
+                     deleteAction.addActionListener(d -> deleteStepListener(step, tour));
+
+
+                     menu.add(editAction, deleteAction);
                      menu.show(toursTree, e.getX(), e.getY());
                      return;
                   }
@@ -214,7 +177,7 @@ public class ToolPaneWindow {
    private void createNavigationButtons() {
       final JButton previousButton = new JButton("Previous Step");
       previousButton.addActionListener(e -> {
-         System.out.println("Previous button pressed!");
+         LOG.info("Previous button pressed!");
 
          if (selectedNode == null || selectedNode.getPreviousSibling() == null) return;
          final DefaultMutableTreeNode previousNode = selectedNode.getPreviousSibling();
@@ -229,7 +192,7 @@ public class ToolPaneWindow {
 
       final JButton nextButton = new JButton("Next Step");
       nextButton.addActionListener(e -> {
-         System.out.println("Next button pressed!");
+         LOG.info("Next button pressed!");
          if (selectedNode == null || selectedNode.getNextSibling() == null) return;
          final DefaultMutableTreeNode nextNode = selectedNode.getNextSibling();
          if (nextNode.getUserObject() instanceof Step) {
@@ -272,7 +235,7 @@ public class ToolPaneWindow {
 
       final JButton reloadButton = new JButton("Reload");
       reloadButton.addActionListener(e -> {
-         System.out.println("Re-creating the tree");
+         LOG.info("Re-creating the tree");
          stateManager.reloadState();
          StateManager.setActiveTour(null); // reset the activeTour
          createToursTee(project);
@@ -297,4 +260,54 @@ public class ToolPaneWindow {
          selectTourLastStep(tour);
       });
    }
+
+   private void addNewStepOnTourListener(Tour tour) {
+      final long index = tour.getSteps().stream()
+            .filter(step -> step.getTitle().startsWith("New Step"))
+            .count();
+
+      final String stepTitle = String.format("New Step%s", (index > 0) ? index : "");
+      tour.getSteps().add(Step.builder()
+            .title(stepTitle)
+            .description("Step Description")
+            .file("")
+            .line(1)
+            .build());
+      stateManager.updateTour(tour);
+      createToursTee(project);
+      CodeTourNotifier.notifyTourAction(project, tour, "New Step",
+            String.format("A New Step added on Tour '%s'", tour.getTitle()));
+
+      // Expand and select the last Step of the active Tour on the tree
+      selectTourLastStep(tour);
+   }
+
+   private void editTourListener(Tour tour) {
+      //TODO: Implement
+      StateManager.setActiveTour(tour);
+      LOG.info("Active Tour: " + tour.getTitle());
+   }
+
+   private void deleteTourListener(Tour tour) {
+      stateManager.deleteTour(tour);
+      createToursTee(project);
+      CodeTourNotifier.notifyTourAction(project, tour, "Deletion", String.format("Tour " +
+            "'%s' (file %s) has been deleted", tour.getTitle(), tour.getTourFile()));
+   }
+
+   private void editStepListener(Step step) {
+      //TODO:Implement
+   }
+
+   private void deleteStepListener(Step step, Tour tour) {
+      tour.getSteps().removeIf(tourStep -> tourStep.getTitle().equals(step.getTitle()));
+      stateManager.updateTour(tour);
+      createToursTee(project);
+      CodeTourNotifier.notifyTourAction(project, tour, "Step Deletion", String.format("Step " +
+            "'%s' has been removed from Tour '%s'", step.getTitle(), tour.getTitle()));
+
+      // Expand and select the last Step of the active Tour on the tree
+      selectTourLastStep(tour);
+   }
+
 }

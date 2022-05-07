@@ -6,7 +6,6 @@ import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.impl.NotificationGroupManagerImpl;
 import com.intellij.openapi.project.Project;
-import org.uom.lefterisxris.codetour.tours.state.StateManager;
 
 public class ToursNotification {
 
