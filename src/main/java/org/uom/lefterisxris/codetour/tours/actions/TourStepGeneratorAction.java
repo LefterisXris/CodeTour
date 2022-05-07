@@ -77,7 +77,7 @@ public class TourStepGeneratorAction extends AnAction {
       if (activeTour.isPresent()) {
          // Add steps to active
          activeTour.get().getSteps().addAll(steps);
-         stateManager.updateTour(activeTour.get().getTitle(), activeTour.get());
+         stateManager.updateTour(activeTour.get().getId(), activeTour.get());
       } else {
          //TODO: Dialog to Select a Tour
 

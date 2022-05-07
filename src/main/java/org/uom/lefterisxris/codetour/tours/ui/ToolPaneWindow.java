@@ -1,11 +1,15 @@
 package org.uom.lefterisxris.codetour.tours.ui;
 
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.impl.ActionManagerImpl;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.Navigator;
+import org.uom.lefterisxris.codetour.tours.actions.RunTourByNameAction;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
@@ -74,14 +78,42 @@ public class ToolPaneWindow {
                return;
             }
 
-            // On right click, show a context menu
-            if (e.getButton() == MouseEvent.BUTTON3) {
-               // Delete
-            }
+
 
             if (pathSelected.getLastPathComponent() instanceof DefaultMutableTreeNode) {
                final DefaultMutableTreeNode node = (DefaultMutableTreeNode)pathSelected.getLastPathComponent();
+               if (node.getUserObject() instanceof Tour) {
+                  final Tour tour = (Tour)node.getUserObject();
+                  // On Tour right click, show a context menu (Delete, Edit)
+                  if (e.getButton() == MouseEvent.BUTTON3) {
+                     final JBPopupMenu menu = new JBPopupMenu("Tour Context Menu");
+
+                     // Delete Action
+                     final JMenuItem deleteAction = new JMenuItem("Delete Tour");
+                     deleteAction.addActionListener(d -> {
+                        stateManager.deleteTour(tour);
+                        createToursTee(project);
+                        CodeTourNotifier.notifyStepDescription(project, "Tour Deleted. Please Reload Tours");
+                     });
+                     deleteAction.setIcon(AllIcons.Actions.DeleteTag);
+                     menu.add(deleteAction);
+
+                     // Edit Action
+                     final JMenuItem editAction = new JMenuItem("Edit Tour");
+                     editAction.setIcon(AllIcons.Actions.Edit);
+                     //TODO: Implement
+                     menu.add(editAction);
+
+                     menu.show(toursTree, e.getX(), e.getY());
+                     System.out.println();
+                     return;
+                  }
+               }
                if (node.getUserObject() instanceof Step) {
+                  // On Tour right click, show a context menu (Delete, Edit)
+                  if (e.getButton() == MouseEvent.BUTTON3) {
+                     //TODO: Implement
+                  }
                   selectedNode = node;
                   final Step step = (Step)node.getUserObject();
                   Navigator.navigate(step, project);
@@ -209,7 +241,6 @@ public class ToolPaneWindow {
       buttonsPanel.add(reloadButton);
       panel.add(buttonsPanel, BorderLayout.SOUTH);
    }
-
 
    public JPanel getContent() {
       return panel;

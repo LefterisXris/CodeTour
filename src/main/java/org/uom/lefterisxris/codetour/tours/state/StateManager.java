@@ -3,6 +3,7 @@ package org.uom.lefterisxris.codetour.tours.state;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -41,40 +42,43 @@ public class StateManager {
       // 1. Check that title is unique
       // 2. Persist to file
       // 3. Reload the StateManager
+      if (project.getBasePath() == null) return null;
       final String fileName = tour.getTourFile();
 
       System.out.printf("Saving Tour '%s' (%s steps) into file '%s'%n",
             tour.getTitle(), tour.getSteps().size(), fileName);
 
-      // Persist the file
-      try (FileWriter fileWriter = new FileWriter(
-            Paths.get(project.getBasePath(), ".tours", fileName).toString())) {
-         GSON.toJson(tour, fileWriter);
-      } catch (IOException ex) {
-         ex.printStackTrace();
-         System.err.println(ex.getMessage());
-      }
-      reloadState();
+      WriteAction.runAndWait(() -> {
+         // Persist the file
+         try (FileWriter fileWriter = new FileWriter(
+               Paths.get(project.getBasePath(), ".tours", fileName).toString())) {
+            GSON.toJson(tour, fileWriter);
+            reloadState();
+         } catch (IOException ex) {
+            ex.printStackTrace();
+            System.err.println(ex.getMessage());
+         }
+      });
       return tour;
    }
 
-   public Tour updateTour(String tourName, Tour tour) {
+   public Tour updateTour(String tourId, Tour tour) {
       //TODO:
       // 1. Find Tour with given name
       // 2. Check whether the title has changed. If so, delete and create the new tour
       // 2. Persist the new object to file
       // 3. Reload the StateManager
-      deleteTour(tourName);
+      deleteTour(tourId);
       createTour(tour);
       return tour;
    }
 
-   public void deleteTour(String tourName) {
+   public void deleteTour(String tourId) {
       //TODO:
-      // 1. Find the file corresponding to the given tourName
+      // 1. Find the file corresponding to the given tourId
       // 2. Delete the file
       // 3. Reload the StateManager
-      findTourFile(tourName).ifPresent(virtualFile -> {
+      findTourFile(tourId).ifPresent(virtualFile -> {
          try {
             virtualFile.delete(this);
          } catch (IOException e) {
@@ -89,12 +93,14 @@ public class StateManager {
       // 1. Find the file corresponding to the given tour
       // 2. Delete the file
       // 3. Reload the StateManager
-      findTourFile(tour.getTitle()).ifPresent(virtualFile -> {
-         try {
-            virtualFile.delete(this);
-         } catch (IOException e) {
-            e.printStackTrace();
-         }
+      findTourFile(tour).ifPresent(virtualFile -> {
+         WriteAction.run(() -> {
+            try {
+               virtualFile.delete(this);
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+         });
       });
       reloadState();
       return tour;
@@ -193,15 +199,8 @@ public class StateManager {
    }
 
    private List<Tour> loadFromFS(@NotNull Project project) {
-      final VirtualFile virtualFile = ProjectUtil.guessProjectDir(project);
-      if (virtualFile == null)
-         return new ArrayList<>();
-
       List<Tour> tours = new ArrayList<>();
-      final Optional<VirtualFile> toursDir = Arrays.stream(virtualFile.getChildren())
-            .filter(file -> file.isDirectory() && file.getName().equals(".tours"))
-            .findFirst();
-      toursDir.ifPresent(dir -> Arrays.stream(dir.getChildren())
+      getToursDir().ifPresent(dir -> Arrays.stream(dir.getChildren())
             .filter(file -> !file.isDirectory() && "tour".equals(file.getExtension()))
             .map(this::parse)
             .filter(Optional::isPresent)
@@ -234,9 +233,36 @@ public class StateManager {
    }
 
 
-   private Optional<VirtualFile> findTourFile(String tourName) {
-      return FilenameIndex.getAllFilesByExt(project, "tour").stream()
+   @SuppressWarnings("OptionalIsPresent")
+   private Optional<VirtualFile> findTourFile(Tour tour) {
+      //TODO: Any way to 'update' the indexes?
+      /*return FilenameIndex.getAllFilesByExt(project, "tour").stream()
             .filter(file -> file.getName().equals(tourName))
+            .findFirst();*/
+
+      final Optional<VirtualFile> toursDir = getToursDir();
+      if (toursDir.isPresent())
+         return Arrays.stream(toursDir.get().getChildren())
+               .filter(file -> !file.isDirectory() && file.getName().equals(tour.getTourFile()))
+               .findFirst();
+
+      return Optional.empty();
+   }
+
+   private Optional<VirtualFile> findTourFile(String tourId) {
+      return getTours().stream()
+            .filter(tour -> tourId.equals(tour.getId()))
+            .findFirst()
+            .flatMap(tour -> findTourFile(tour));
+   }
+
+   private Optional<VirtualFile> getToursDir() {
+      final VirtualFile virtualFile = ProjectUtil.guessProjectDir(project);
+      if (virtualFile == null) return Optional.empty();
+
+      List<Tour> tours = new ArrayList<>();
+      return Arrays.stream(virtualFile.getChildren())
+            .filter(file -> file.isDirectory() && file.getName().equals(".tours"))
             .findFirst();
    }
 }
