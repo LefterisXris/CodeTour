@@ -8,6 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.ui.CodeTourNotifier;
+import org.uom.lefterisxris.codetour.tours.ui.StepDocumentationRenderer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +31,10 @@ public class Navigator {
          new OpenFileDescriptor(project, new ArrayList<>(virtualFiles).get(0), step.getLine(), 1).navigate(true);
 
       CodeTourNotifier.notifyStepDescription(project, step.getDescription());
+
+      //TODO: It would be nice to provide the Tour as well, for info like 1/5 steps etc
+      new StepDocumentationRenderer(step, project)
+            .showDoc();
    }
 
 }
