@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.codetour.tours;
+package org.uom.lefterisxris.codetour.tours.service;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;

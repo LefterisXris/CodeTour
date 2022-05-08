@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.codetour.tours.ui;
+package org.uom.lefterisxris.codetour.tours.service;
 
 import com.intellij.codeInsight.documentation.DocumentationComponent;
 import com.intellij.codeInsight.documentation.DocumentationManager;
@@ -16,11 +16,11 @@ import javax.swing.*;
  * @author Eleftherios Chrysochoidis
  * Date: 8/5/2022
  */
-public class StepDocumentationRenderer {
+public class StepRenderer {
    private final Step step;
    private final Project project;
 
-   public StepDocumentationRenderer(Step step, Project project) {
+   public StepRenderer(Step step, Project project) {
       this.step = step;
       this.project = project;
    }

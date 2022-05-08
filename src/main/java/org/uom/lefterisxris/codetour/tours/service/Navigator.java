@@ -1,4 +1,4 @@
-package org.uom.lefterisxris.codetour.tours;
+package org.uom.lefterisxris.codetour.tours.service;
 
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -8,7 +8,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.ui.CodeTourNotifier;
-import org.uom.lefterisxris.codetour.tours.ui.StepDocumentationRenderer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +32,7 @@ public class Navigator {
       CodeTourNotifier.notifyStepDescription(project, step.getDescription());
 
       //TODO: It would be nice to provide the Tour as well, for info like 1/5 steps etc
-      new StepDocumentationRenderer(step, project)
+      new StepRenderer(step, project)
             .showDoc();
    }
 

@@ -180,7 +180,7 @@ public class StateManager {
 
       try {
          LOG.info("Reading (from FS) Tour from file: " + file.getName());
-         return Optional.of(new Gson().fromJson(new InputStreamReader(file.getInputStream()), Tour.class));
+         return Optional.of(new Gson().fromJson(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8), Tour.class));
       } catch (IOException e) {
          e.printStackTrace();
          LOG.error("Skipping file: " + file.getName());
