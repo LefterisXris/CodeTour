@@ -4,4 +4,10 @@
 
 ## [Unreleased]
 ### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+- Load from json, Show In Tool Pane, Navigate with click
+- Navigate with Previous/Next buttons on Tool Pane
+- Create|Delete Tour from Tool Pane
+- Add|Delete Steps to a Tour (just file and line)
+- Edit steps (CRUD + add text)
+- Preview Step description on the code (after Navigation)
+- HTML support on steps

@@ -22,7 +22,7 @@ public class ToolPaneWindowFactory implements ToolWindowFactory {
       final ToolPaneWindow toursNavigationWindow = new ToolPaneWindow(project, toolWindow);
       final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
       final Content content =
-            contentFactory.createContent(toursNavigationWindow.getContent(), "ToursState Nav Window", false);
+            contentFactory.createContent(toursNavigationWindow.getContent(), null, false);
       toolWindow.getContentManager().addContent(content);
    }
 }

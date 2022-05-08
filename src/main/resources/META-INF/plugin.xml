@@ -9,7 +9,6 @@
    <extensions defaultExtensionNs="com.intellij">
       <applicationService serviceImplementation="org.uom.lefterisxris.codetour.services.MyApplicationService"/>
       <projectService serviceImplementation="org.uom.lefterisxris.codetour.services.MyProjectService"/>
-      <favoritesListProvider implementation="org.uom.lefterisxris.codetour.other.TourFavoritesListProvider"/>
       <toolWindow id="ToursNavigationWindow" anchor="left" icon="AllIcons.Actions.Colors"
                   factoryClass="org.uom.lefterisxris.codetour.tours.ui.ToolPaneWindowFactory"/>
       <notificationGroup id="CodeTour Notification" displayType="BALLOON" icon="AllIcons.Actions.Colors"/>
