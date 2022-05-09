@@ -9,9 +9,9 @@
    <extensions defaultExtensionNs="com.intellij">
       <applicationService serviceImplementation="org.uom.lefterisxris.codetour.services.MyApplicationService"/>
       <projectService serviceImplementation="org.uom.lefterisxris.codetour.services.MyProjectService"/>
-      <toolWindow id="ToursNavigationWindow" anchor="left" icon="AllIcons.Actions.Colors"
+      <toolWindow id="ToolPaneWindow" anchor="left" icon="icon-xs.png"
                   factoryClass="org.uom.lefterisxris.codetour.tours.ui.ToolPaneWindowFactory"/>
-      <notificationGroup id="CodeTour Notification" displayType="BALLOON" icon="AllIcons.Actions.Colors"/>
+      <notificationGroup id="CodeTour-Notification" displayType="BALLOON" icon="icon-xs.png"/>
    </extensions>
 
    <applicationListeners>
