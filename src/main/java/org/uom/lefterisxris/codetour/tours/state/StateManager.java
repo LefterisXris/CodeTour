@@ -11,6 +11,7 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import org.jetbrains.annotations.NotNull;
+import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
 import java.io.IOException;
@@ -142,7 +143,7 @@ public class StateManager {
    }
 
    private List<Tour> loadFromIndex(@NotNull Project project) {
-      return ReadAction.compute(() -> FilenameIndex.getAllFilesByExt(project, "tour").stream()
+      return ReadAction.compute(() -> FilenameIndex.getAllFilesByExt(project, Props.TOUR_EXTENSION).stream()
                   .map(virtualFile -> {
                      Tour tour;
                      try {
@@ -167,7 +168,7 @@ public class StateManager {
       VfsUtilCore.iterateChildrenRecursively(toursDir.get(),
             null,
             fileOrDir -> {
-               if (!fileOrDir.isDirectory() && "tour".equals(fileOrDir.getExtension()))
+               if (!fileOrDir.isDirectory() && Props.TOUR_EXTENSION.equals(fileOrDir.getExtension()))
                   parse(fileOrDir).ifPresent(tours::add);
                return true;
             });
@@ -180,7 +181,8 @@ public class StateManager {
 
       try {
          LOG.info("Reading (from FS) Tour from file: " + file.getName());
-         return Optional.of(new Gson().fromJson(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8), Tour.class));
+         return Optional.of(
+               new Gson().fromJson(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8), Tour.class));
       } catch (IOException e) {
          e.printStackTrace();
          LOG.error("Skipping file: " + file.getName());
@@ -216,7 +218,7 @@ public class StateManager {
       if (virtualFile == null) return Optional.empty();
 
       return Arrays.stream(virtualFile.getChildren())
-            .filter(file -> file.isDirectory() && file.getName().equals(".tours"))
+            .filter(file -> file.isDirectory() && file.getName().equals(Props.TOURS_DIR))
             .findFirst();
    }
 

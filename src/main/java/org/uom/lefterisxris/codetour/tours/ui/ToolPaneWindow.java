@@ -9,6 +9,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
 import org.jetbrains.annotations.NotNull;
+import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.service.Navigator;
@@ -275,9 +276,9 @@ public class ToolPaneWindow {
       final long index = stateManager.getTours().stream()
             .map(tour -> tour.getTourFile())
             .filter(tourFile -> tourFile != null)
-            .filter(tourFile -> tourFile.startsWith("newTour") && tourFile.endsWith(".tour"))
+            .filter(tourFile -> tourFile.startsWith("newTour") && tourFile.endsWith(Props.TOUR_EXTENSION_FULL))
             .count();
-      final String newTourFileName = String.format("newTour%s.tour", (index > 0 ? index : ""));
+      final String newTourFileName = String.format("newTour%s.%s", (index > 0 ? index : ""), Props.TOUR_EXTENSION);
 
       final Tour newTour = Tour.builder()
             .id(UUID.randomUUID().toString())

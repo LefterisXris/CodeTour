@@ -41,4 +41,12 @@ public class CodeTourNotifier {
       LOG.warn("CodeTourNotifier: " + content);
    }
 
+   public static void error(@Nullable Project project, String content) {
+      NotificationGroupManager.getInstance()
+            .getNotificationGroup("CodeTour Notification")
+            .createNotification(content, NotificationType.ERROR)
+            .notify(project);
+      LOG.error("CodeTourNotifier: " + content);
+   }
+
 }

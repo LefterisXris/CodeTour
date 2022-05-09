@@ -10,6 +10,7 @@ import com.intellij.xdebugger.XSourcePosition;
 import com.intellij.xdebugger.breakpoints.XBreakpointManager;
 import com.intellij.xdebugger.impl.breakpoints.XLineBreakpointImpl;
 import org.jetbrains.annotations.NotNull;
+import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
@@ -71,7 +72,7 @@ public class TourGeneratorFromBreakpointsAction extends AnAction {
             });
 
       tours.values().forEach(tour -> {
-         final String fileName = tour.getTitle() + ".tour";
+         final String fileName = tour.getTitle() + Props.TOUR_EXTENSION_FULL;
 
          System.out.printf("Parsed BreakPointGroup '%s' (%s steps) and ready to persist it into file '%s'%n",
                tour.getTitle(), tour.getSteps().size(), fileName);
