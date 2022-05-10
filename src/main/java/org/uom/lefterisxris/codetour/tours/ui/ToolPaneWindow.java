@@ -96,7 +96,7 @@ public class ToolPaneWindow {
 
       toursTree.addMouseListener(new MouseAdapter() {
          @Override
-         public void mouseClicked(MouseEvent e) {
+         public void mouseReleased(MouseEvent e) {
             final int selectedRow = toursTree.getRowForLocation(e.getX(), e.getY());
             final TreePath pathSelected = toursTree.getPathForLocation(e.getX(), e.getY());
 
