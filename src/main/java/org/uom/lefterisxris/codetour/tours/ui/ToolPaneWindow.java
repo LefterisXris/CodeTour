@@ -22,6 +22,8 @@ import org.uom.lefterisxris.codetour.tours.state.TourUpdateNotifier;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -85,15 +87,14 @@ public class ToolPaneWindow {
          final DefaultMutableTreeNode aTourNode = new DefaultMutableTreeNode(tour);
          LOG.info(String.format("Rendering Tour '%s' with %s steps%n", tour.getTitle(), tour.getSteps().size()));
          tour.getSteps().forEach(step -> aTourNode.add(new DefaultMutableTreeNode(step)));
-
-         if (tour.getId().equals(activeId)) {
-            //TODO: Set active in bold
-         }
-
          root.add(aTourNode);
       });
       toursTree = new Tree(root);
 
+      // Set custom renderer to have control of formatting (e.g. icons, size etc)
+      toursTree.setCellRenderer(new TreeRenderer(activeId));
+
+      // Handle click events
       toursTree.addMouseListener(new MouseAdapter() {
          @Override
          public void mouseReleased(MouseEvent e) {
@@ -177,7 +178,7 @@ public class ToolPaneWindow {
       final Step step = (Step)node.getUserObject();
       final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)node.getParent();
       final Tour tour = (Tour)parentNode.getUserObject();
-      StateManager.setActiveTour(tour);
+      updateActiveTour(tour);
 
       // On Tour right click, show a context menu (Delete, Edit)
       if (e.getButton() == MouseEvent.BUTTON3) {
@@ -266,7 +267,7 @@ public class ToolPaneWindow {
       reloadButton.addActionListener(e -> {
          LOG.info("Re-creating the tree");
          stateManager.reloadState();
-         StateManager.setActiveTour(null); // reset the activeTour
+         updateActiveTour(null); // reset the activeTour
          createToursTee(project);
       });
 
@@ -344,12 +345,24 @@ public class ToolPaneWindow {
 
       LOG.info("Active Tour: " + tour.getTitle());
       createToursTee(project);
-      StateManager.setActiveTour(tour);
+      updateActiveTour(tour);
       CodeTourNotifier.notifyTourAction(project, tour, "Tour Update",
             String.format("Tour's '%s' Title has been updated", tour.getTitle()));
 
       // Expand and select the last Step of the active Tour on the tree
       selectTourLastStep(tour);
+   }
+
+   /**
+    * Persist the selected tour and also notify the tree (for proper rendering)
+    */
+   private void updateActiveTour(Tour tour) {
+      StateManager.setActiveTour(tour);
+      if (toursTree != null && toursTree.getCellRenderer() instanceof TreeRenderer) {
+         final TreeRenderer renderer = (TreeRenderer) toursTree.getCellRenderer();
+
+         renderer.setSelectedTourId(tour != null ? tour.getId() : "");
+      }
    }
 
    private void deleteTourListener(Tour tour) {

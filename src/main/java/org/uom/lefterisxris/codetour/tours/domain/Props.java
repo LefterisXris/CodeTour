@@ -18,6 +18,7 @@ public class Props {
    public static final Icon ICON = load("icon.png");
    public static final Icon ICON_S = load("icon-small.png");
    public static final Icon ICON_XS = load("icon-xs.png");
+   public static final Icon STEP = load("step.svg");
 
    private static @NotNull Icon load(@NotNull String path) {
       return IconManager.getInstance().getIcon(path, Props.class);
