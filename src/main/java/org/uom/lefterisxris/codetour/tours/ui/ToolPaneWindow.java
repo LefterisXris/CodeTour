@@ -5,9 +5,13 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.util.SlowOperations;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
@@ -24,6 +28,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Class for Tours management
@@ -278,7 +283,7 @@ public class ToolPaneWindow {
             .filter(tourFile -> tourFile != null)
             .filter(tourFile -> tourFile.startsWith("newTour") && tourFile.endsWith(Props.TOUR_EXTENSION_FULL))
             .count();
-      final String newTourFileName = String.format("newTour%s.%s", (index > 0 ? index : ""), Props.TOUR_EXTENSION);
+      String newTourFileName = String.format("newTour%s.%s", (index > 0 ? index : ""), Props.TOUR_EXTENSION);
 
       final Tour newTour = Tour.builder()
             .id(UUID.randomUUID().toString())
@@ -287,6 +292,19 @@ public class ToolPaneWindow {
             .description("A New Tour")
             .steps(new ArrayList<>())
             .build();
+
+      // Just make sure that the new file is unique
+      AtomicBoolean nameIsFine = new AtomicBoolean(false);
+      int nTry = 1;
+      while (!nameIsFine.get()) {
+         SlowOperations.allowSlowOperations(() -> {
+            final Collection<VirtualFile> files =
+                  FilenameIndex.getVirtualFilesByName(newTour.getTourFile(), GlobalSearchScope.projectScope(project));
+            if (files.isEmpty()) nameIsFine.set(true);
+            else newTour.setTourFile(
+                  String.format("newTour%s-%s.%s", (index > 0 ? index : ""), nTry, Props.TOUR_EXTENSION));
+         });
+      }
 
       stateManager.createTour(newTour);
       createToursTee(project);

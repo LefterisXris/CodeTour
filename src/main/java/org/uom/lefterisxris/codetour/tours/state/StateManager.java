@@ -2,9 +2,11 @@ package org.uom.lefterisxris.codetour.tours.state;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.intellij.diagnostic.PluginException;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
@@ -54,8 +56,13 @@ public class StateManager {
             tour.getTitle(), tour.getSteps().size(), fileName));
 
       WriteAction.runAndWait(() -> {
-         final Optional<VirtualFile> toursDir = getToursDir();
-         if (toursDir.isEmpty()) return;
+         Optional<VirtualFile> toursDir = getToursDir();
+         if (toursDir.isEmpty()) {
+            toursDir = createToursDir();
+            if (toursDir.isEmpty())
+               throw new PluginException("Could not find or creat '.tours' directory. Tour creation failed",
+                     PluginId.findId("org.uom.lefterisxris.codetour"));
+         }
          // Persist the file
          try {
             final VirtualFile newTourVfile = toursDir.get().createChildData(this, fileName);
@@ -220,6 +227,20 @@ public class StateManager {
       return Arrays.stream(virtualFile.getChildren())
             .filter(file -> file.isDirectory() && file.getName().equals(Props.TOURS_DIR))
             .findFirst();
+   }
+
+   private Optional<VirtualFile> createToursDir() {
+      final VirtualFile virtualFile = ProjectUtil.guessProjectDir(project);
+      if (virtualFile == null) return Optional.empty();
+
+      try {
+         virtualFile.createChildDirectory(this, Props.TOURS_DIR);
+      } catch (IOException e) {
+         LOG.error("Failed to create .tours Directory: " + e.getMessage(), e);
+         return Optional.empty();
+      }
+
+      return getToursDir();
    }
 
    public static Optional<Tour> getActiveTour() {
