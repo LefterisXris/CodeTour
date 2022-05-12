@@ -3,12 +3,21 @@ package org.uom.lefterisxris.codetour.tours.service;
 import com.intellij.codeInsight.documentation.DocumentationComponent;
 import com.intellij.codeInsight.documentation.DocumentationManager;
 import com.intellij.lang.documentation.DocumentationMarkup;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.ui.popup.PopupComponent;
+import org.jetbrains.annotations.Nullable;
+import org.uom.lefterisxris.codetour.other.PopupDialogAction;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
+import org.uom.lefterisxris.codetour.tours.ui.TourSelectionDialogWrapper;
+import org.uom.lefterisxris.codetour.tours.ui.ToursDialog;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Renders a Popup which includes the Step Documentation
@@ -16,16 +25,26 @@ import javax.swing.*;
  * @author Eleftherios Chrysochoidis
  * Date: 8/5/2022
  */
-public class StepRenderer {
+public class StepRenderer extends DialogWrapper {
    private final Step step;
    private final Project project;
 
+
    public StepRenderer(Step step, Project project) {
+      super(true);
       this.step = step;
       this.project = project;
+      setTitle("Step Documentation");
+      init();
+      setModal(false);
+      setResizable(true);
    }
 
-   public void showDoc() {
+   /**
+    * //TODO: Delete
+    */
+   @Deprecated
+   private void showDoc() {
 
       final JComponent component = getComponent();
 
@@ -55,6 +74,8 @@ public class StepRenderer {
       final DocumentationManager documentationManager = DocumentationManager.getInstance(project);
       final DocumentationComponent component = new DocumentationComponent(documentationManager);
       component.setData(null, stepDoc, null, null, null);
+      /*component.setToolwindowCallback();
+      component.geAct*/
 
       return component;
    }
@@ -83,4 +104,10 @@ public class StepRenderer {
       sb.append(DocumentationMarkup.SECTION_END);
    }
 
+   @Override
+   protected @Nullable JComponent createCenterPanel() {
+      JPanel dialogPanel = new JPanel(new BorderLayout());
+      dialogPanel.add(getComponent(), BorderLayout.CENTER);
+      return dialogPanel;
+   }
 }

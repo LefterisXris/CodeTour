@@ -1,6 +1,7 @@
 package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
@@ -25,12 +26,12 @@ public class ToursDialog extends DialogWrapper {
    protected @Nullable JComponent createCenterPanel() {
       final List<Tour> tours = new StateManager(project).getTours();
 
-      final JComboBox<String> jComboBox = new JComboBox<>();
-      tours.stream().map(Tour::getTitle).forEach(jComboBox::addItem);
-      jComboBox.addActionListener(e -> tourName = (String)jComboBox.getSelectedItem());
+      final ComboBox<String> comboBox = new ComboBox<>();
+      tours.stream().map(Tour::getTitle).forEach(comboBox::addItem);
+      comboBox.addActionListener(e -> tourName = (String)comboBox.getSelectedItem());
 
       final JPanel panel = new JPanel();
-      panel.add(jComboBox);
+      panel.add(comboBox);
 
       return panel;
    }

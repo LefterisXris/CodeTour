@@ -46,8 +46,9 @@ public class Navigator {
 
          // Show a Popup
          //TODO: It would be nice to provide the Tour as well, for info like 1/5 steps etc
-         new StepRenderer(step, project)
-               .showDoc();
+
+         final StepRenderer renderer = new StepRenderer(step, project);
+         renderer.show();
       });
    }
 
