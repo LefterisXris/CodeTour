@@ -29,8 +29,9 @@ public class StepRenderer extends DialogWrapper {
    private final Step step;
    private final Project project;
 
+   private static StepRenderer instance;
 
-   public StepRenderer(Step step, Project project) {
+   private StepRenderer(Step step, Project project) {
       super(true);
       this.step = step;
       this.project = project;
@@ -38,6 +39,14 @@ public class StepRenderer extends DialogWrapper {
       init();
       setModal(false);
       setResizable(true);
+   }
+
+   public static StepRenderer getInstance(Step step, Project project) {
+      if (instance != null)
+         instance.close(0);
+
+      instance = new StepRenderer(step, project);
+      return instance;
    }
 
    /**
