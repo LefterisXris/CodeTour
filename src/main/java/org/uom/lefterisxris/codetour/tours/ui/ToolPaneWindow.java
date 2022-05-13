@@ -18,7 +18,6 @@ import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.service.Navigator;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
-import org.uom.lefterisxris.codetour.tours.state.StateUpdateNotifier;
 import org.uom.lefterisxris.codetour.tours.state.StepSelectionNotifier;
 import org.uom.lefterisxris.codetour.tours.state.TourUpdateNotifier;
 
@@ -48,7 +47,6 @@ public class ToolPaneWindow {
 
    private final Project project;
    private final StateManager stateManager;
-   private DefaultMutableTreeNode selectedNode;
 
    public ToolPaneWindow(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
@@ -73,12 +71,6 @@ public class ToolPaneWindow {
          stateManager.reloadState();
          createToursTee(project);
          selectTourLastStep(tour);
-      });
-
-      project.getMessageBus().connect().subscribe(StateUpdateNotifier.TOPIC, () -> {
-         stateManager.reloadState();
-         createToursTee(project);
-         StateManager.getActiveTour().ifPresent(tour -> selectTourStep(tour, StateManager.getActiveStepIndex()));
       });
 
       project.getMessageBus().connect().subscribe(StepSelectionNotifier.TOPIC, (step) -> {
@@ -112,7 +104,6 @@ public class ToolPaneWindow {
             final TreePath pathSelected = toursTree.getPathForLocation(e.getX(), e.getY());
 
             if (selectedRow < 0 || pathSelected == null) {
-               selectedNode = null;
                return;
             }
 
@@ -184,7 +175,6 @@ public class ToolPaneWindow {
    }
 
    private void stepClickListener(MouseEvent e, DefaultMutableTreeNode node, Project project) {
-      selectedNode = node;
       final Step step = (Step)node.getUserObject();
       final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)node.getParent();
       final Tour tour = (Tour)parentNode.getUserObject();
@@ -254,19 +244,10 @@ public class ToolPaneWindow {
       previousButton.addActionListener(e -> {
          LOG.info("Previous button pressed!");
 
-         if (selectedNode == null || selectedNode.getPreviousSibling() == null) {
-            CodeTourNotifier.warn(project, "No active Tour found. " +
-                  "Select a Step of a Tour and then use Previous/Next buttons");
-            return;
-         }
-
-         final DefaultMutableTreeNode previousNode = selectedNode.getPreviousSibling();
-         if (previousNode.getUserObject() instanceof Step) {
-            selectedNode = previousNode;
-            toursTree.getSelectionModel().setSelectionPath(new TreePath(selectedNode.getPath()));
-            final Step step = (Step)previousNode.getUserObject();
-            Navigator.navigate(step, project);
-         }
+         // Navigate to the previous Step if exist
+         StateManager.getActiveTour().ifPresent(tour -> {
+            StateManager.getPrevStep().ifPresent(step -> selectTourStep(tour, StateManager.getActiveStepIndex()));
+         });
 
       });
 
@@ -275,19 +256,10 @@ public class ToolPaneWindow {
       nextButton.addActionListener(e -> {
          LOG.info("Next button pressed!");
 
-         if (selectedNode == null || selectedNode.getPreviousSibling() == null) {
-            CodeTourNotifier.warn(project, "No active Tour found. " +
-                  "Select a Step of a Tour and then use Previous/Next buttons");
-            return;
-         }
-
-         final DefaultMutableTreeNode nextNode = selectedNode.getNextSibling();
-         if (nextNode.getUserObject() instanceof Step) {
-            selectedNode = nextNode;
-            toursTree.getSelectionModel().setSelectionPath(new TreePath(selectedNode.getPath()));
-            final Step step = (Step)nextNode.getUserObject();
-            Navigator.navigate(step, project);
-         }
+         // Navigate to the next Step if exist
+         StateManager.getActiveTour().ifPresent(tour -> {
+            StateManager.getNextStep().ifPresent(step -> selectTourStep(tour, StateManager.getActiveStepIndex()));
+         });
       });
 
       final JButton reloadButton = new JButton("Reload");
