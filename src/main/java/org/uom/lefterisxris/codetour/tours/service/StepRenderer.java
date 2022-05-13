@@ -3,18 +3,12 @@ package org.uom.lefterisxris.codetour.tours.service;
 import com.intellij.codeInsight.documentation.DocumentationComponent;
 import com.intellij.codeInsight.documentation.DocumentationManager;
 import com.intellij.lang.documentation.DocumentationMarkup;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.ui.popup.PopupComponent;
 import org.jetbrains.annotations.Nullable;
-import org.uom.lefterisxris.codetour.other.PopupDialogAction;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
-import org.uom.lefterisxris.codetour.tours.ui.TourSelectionDialogWrapper;
-import org.uom.lefterisxris.codetour.tours.ui.ToursDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,8 +77,6 @@ public class StepRenderer extends DialogWrapper {
       final DocumentationManager documentationManager = DocumentationManager.getInstance(project);
       final DocumentationComponent component = new DocumentationComponent(documentationManager);
       component.setData(null, stepDoc, null, null, null);
-      /*component.setToolwindowCallback();
-      component.geAct*/
 
       return component;
    }

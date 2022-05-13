@@ -12,6 +12,7 @@ import java.awt.*;
 
 /**
  * Handles the rendering of each tree item. It is currently used for defining icons
+ *
  * @author Eleftherios Chrysochoidis
  * Date: 10/5/2022
  */

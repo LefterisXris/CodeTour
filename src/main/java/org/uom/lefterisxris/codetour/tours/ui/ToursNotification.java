@@ -1,15 +1,14 @@
 package org.uom.lefterisxris.codetour.tours.ui;
 
 
-import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroup;
-import com.intellij.notification.NotificationType;
 import com.intellij.notification.impl.NotificationGroupManagerImpl;
 import com.intellij.openapi.project.Project;
 
 public class ToursNotification {
 
-   private final NotificationGroup group = new NotificationGroupManagerImpl().getNotificationGroup("CodeTours Notification");
+   private final NotificationGroup group =
+         new NotificationGroupManagerImpl().getNotificationGroup("CodeTours Notification");
 
    public void notifyUser(Project project) {
       final String title = "View code toursState?";

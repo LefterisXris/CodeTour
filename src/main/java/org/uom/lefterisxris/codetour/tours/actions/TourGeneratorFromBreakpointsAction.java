@@ -77,7 +77,8 @@ public class TourGeneratorFromBreakpointsAction extends AnAction {
          System.out.printf("Parsed BreakPointGroup '%s' (%s steps) and ready to persist it into file '%s'%n",
                tour.getTitle(), tour.getSteps().size(), fileName);
          // Persist the file
-         try (FileWriter fileWriter = new FileWriter(Paths.get(project.getBasePath(), ".toursState", fileName).toString())) {
+         try (FileWriter fileWriter = new FileWriter(
+               Paths.get(project.getBasePath(), ".toursState", fileName).toString())) {
             GSON.toJson(tour, fileWriter);
          } catch (IOException ex) {
             ex.printStackTrace();
