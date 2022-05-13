@@ -1,14 +1,13 @@
-package org.uom.lefterisxris.trailer;
+package org.uom.lefterisxris.codetour.tours.actions;
 
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import org.uom.lefterisxris.trailer.tours.ToursDialog;
-import org.uom.lefterisxris.trailer.tours.RunTourByNameAction;
-import org.uom.lefterisxris.trailer.tours.ToursStateComponent;
-import org.uom.lefterisxris.trailer.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.state.StateManager;
+import org.uom.lefterisxris.codetour.tours.ui.ToursDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class RunToursAction extends AnAction {
          return;
       }
       if (tours.isEmpty()) {
-         tours.addAll(new ToursStateComponent().getTours(project));
+         tours.addAll(new StateManager(project).getTours());
       }
 
       e.getPresentation().setEnabledAndVisible(true);

@@ -1,11 +1,11 @@
-package org.uom.lefterisxris.trailer
+package org.uom.lefterisxris.codetour
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 
 @NonNls
-private const val BUNDLE ="messages.MyBundle"
+private const val BUNDLE = "messages.MyBundle"
 
 object MyBundle : DynamicBundle(BUNDLE) {
 

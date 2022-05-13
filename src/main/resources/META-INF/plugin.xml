@@ -1,49 +1,91 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>org.uom.lefterisxris.trailer</id>
-    <name>CodeTrailer</name>
-    <vendor>lefterisxris</vendor>
+   <id>org.uom.lefterisxris.codetour</id>
+   <name>CodeTour</name>
+   <vendor>lefterisxris</vendor>
 
-    <depends>com.intellij.modules.platform</depends>
+   <depends>com.intellij.modules.platform</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="org.uom.lefterisxris.trailer.services.MyApplicationService"/>
-        <projectService serviceImplementation="org.uom.lefterisxris.trailer.services.MyProjectService"/>
-    </extensions>
+   <extensions defaultExtensionNs="com.intellij">
+      <applicationService serviceImplementation="org.uom.lefterisxris.codetour.services.MyApplicationService"/>
+      <projectService serviceImplementation="org.uom.lefterisxris.codetour.services.MyProjectService"/>
+      <toolWindow id="Tours Navigation" anchor="left" icon="icon-xs.png"
+                  factoryClass="org.uom.lefterisxris.codetour.tours.ui.ToolPaneWindowFactory"/>
+      <notificationGroup id="CodeTour-Notification" displayType="BALLOON" icon="icon-xs.png"/>
+   </extensions>
 
-    <applicationListeners>
-        <listener class="org.uom.lefterisxris.trailer.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+   <applicationListeners>
+      <listener class="org.uom.lefterisxris.codetour.listeners.MyProjectManagerListener"
+                topic="com.intellij.openapi.project.ProjectManagerListener"/>
+   </applicationListeners>
 
-    <actions>
-        <action
-              id="StackOverflow.AskQuestion.ToolsMenu"
-              class="org.uom.lefterisxris.trailer.AskQuestionAction"
-              text="Ask Question on Stack Overflow"
-              description="Ask a Question on Stack Overflow">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-        </action>
-        <action
-              id="StackOverflow.Search.Editor"
-              class="org.uom.lefterisxris.trailer.SearchAction"
-              text="Search on Stack Overflow"
-              description="Search on Stack Overflow">
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </action>
-        <action
-              id="StackOverflow.Search.Console"
-              class="org.uom.lefterisxris.trailer.SearchAction"
-              text="Search on Stack Overflow"
-              description="Search on Stack Overflow">
-            <add-to-group group-id="ConsoleEditorPopupMenu" anchor="last"/>
-        </action>
-        <action id="RunToursAction"
-                class="org.uom.lefterisxris.trailer.RunToursAction"
-                text="Run A Tour"
-                description="Select a CodeTour to run, and let the IDE walk you through it">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-        </action>
-    </actions>
+   <actions>
+
+      <group id="CodeTourGroupedActions" text="Code Tour" description="Code Tour related actions"
+             popup="true" icon="icon-xs.png">
+         <add-to-group group-id="ToolsMenu" anchor="last"/>
+         <action id="NextStepNav" class="org.uom.lefterisxris.codetour.tours.actions.NavigateNextStepAction"
+                 text="Next Step" description="Navigate to the Next Step"
+                 icon="AllIcons.Actions.Forward">
+            <keyboard-shortcut first-keystroke="control alt W" keymap="$default"/>
+         </action>
+         <action id="PrevStepNav" class="org.uom.lefterisxris.codetour.tours.actions.NavigatePrevStepAction"
+                 text="Previous Step" description="Navigate to the Previous Step"
+                 icon="AllIcons.Actions.Back">
+            <keyboard-shortcut first-keystroke="control alt Q" keymap="$default"/>
+         </action>
+      </group>
+
+      <action
+            id="StackOverflow.AskQuestion.ToolsMenu"
+            class="org.uom.lefterisxris.codetour.other.AskQuestionAction"
+            text="Ask Question on Stack Overflow"
+            description="Ask a Question on Stack Overflow">
+         <add-to-group group-id="ToolsMenu" anchor="last"/>
+      </action>
+      <action
+            id="StackOverflow.Search.Editor"
+            class="org.uom.lefterisxris.codetour.other.SearchAction"
+            text="Search on Stack Overflow"
+            description="Search on Stack Overflow">
+         <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+      </action>
+      <action
+            id="StackOverflow.Search.Console"
+            class="org.uom.lefterisxris.codetour.other.SearchAction"
+            text="Search on Stack Overflow"
+            description="Search on Stack Overflow">
+         <add-to-group group-id="ConsoleEditorPopupMenu" anchor="last"/>
+      </action>
+      <action id="RunToursAction"
+              class="org.uom.lefterisxris.codetour.tours.actions.RunToursAction"
+              text="Run A Tour"
+              description="Select a CodeTour to run, and let the IDE walk you through it">
+         <add-to-group group-id="ToolsMenu" anchor="last"/>
+      </action>
+      <action id="org.uom.lefterisxris.codetour.tours.actions.TourGeneratorFromBreakpointsAction"
+              class="org.uom.lefterisxris.codetour.tours.actions.TourGeneratorFromBreakpointsAction"
+              text="CodeTour - Generate Tours from BreakPoints"
+              description="Generate tours from breakPoints">
+         <add-to-group group-id="ToolsMenu" anchor="first"/>
+         <add-to-group group-id="Bookmarks" anchor="first"/>
+      </action>
+      <action id="org.uom.lefterisxris.codetour.tours.actions.TourStepGeneratorAction"
+              class="org.uom.lefterisxris.codetour.tours.actions.TourStepGeneratorAction"
+              text="Add Tour Step"
+              description="Set this point a tour step">
+         <add-to-group group-id="EditorGutterPopupMenu" anchor="first"/>
+      </action>
+      <action id="org.uom.lefterisxris.codetour.other.PopupDialogAction"
+              class="org.uom.lefterisxris.codetour.other.PopupDialogAction"
+              text="Action Basics Plugin: Pop Dialog Action"
+              description="SDK action example"
+              icon="AllIcons.Actions.Forward">
+         <override-text place="MainMenu" text="Pop Dialog Action"/>
+         <keyboard-shortcut first-keystroke="control alt A" second-keystroke="C" keymap="$default"/>
+         <mouse-shortcut keystroke="control button3 doubleClick" keymap="$default"/>
+         <add-to-group group-id="ToolsMenu" anchor="first"/>
+      </action>
+   </actions>
 
 </idea-plugin>
