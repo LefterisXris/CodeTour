@@ -109,6 +109,7 @@ public class StepRenderer extends DialogWrapper {
    protected @Nullable JComponent createCenterPanel() {
       JPanel dialogPanel = new JPanel(new BorderLayout());
       dialogPanel.add(getComponent(), BorderLayout.CENTER);
+      dialogPanel.setPreferredSize(new Dimension(320, 160));
       return dialogPanel;
    }
 }
