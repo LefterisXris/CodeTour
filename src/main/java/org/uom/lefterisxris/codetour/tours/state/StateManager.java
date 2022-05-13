@@ -14,6 +14,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Props;
+import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 public class StateManager {
 
    private static Optional<Tour> activeTour = Optional.empty();
+   private static Optional<Integer> activeStepIndex = Optional.empty();
    private static final Logger LOG = Logger.getInstance(StateManager.class);
 
    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -247,7 +249,45 @@ public class StateManager {
       return activeTour;
    }
 
+   public static Optional<Integer> getActiveStepIndex() {
+      return activeStepIndex;
+   }
+
+   /**
+    * Retrieves the Next Step of the currently active Tour. Also updates the activeStepIndex
+    */
+   public static Optional<Step> getNextStep() {
+      return getNextOrPrevStep(true);
+   }
+
+   /**
+    * Retrieves the Previous Step of the currently active Tour. Also updates the activeStepIndex
+    */
+   public static Optional<Step> getPrevStep() {
+      return getNextOrPrevStep(false);
+   }
+
+   private static Optional<Step> getNextOrPrevStep(boolean next) {
+      final Optional<Tour> activeTour = getActiveTour();
+      if (activeTour.isEmpty()) return Optional.empty();
+
+      final Optional<Integer> activeIndex = getActiveStepIndex();
+      if (activeIndex.isEmpty()) return Optional.empty();
+
+      final int candidate = next ? activeIndex.get() + 1 : activeIndex.get() - 1;
+      if (candidate >= 0 && activeTour.get().getSteps().size() > candidate) {
+         setActiveStepIndex(candidate);
+         return Optional.of(activeTour.get().getSteps().get(candidate));
+      }
+
+      return Optional.empty();
+   }
+
    public static void setActiveTour(Tour aTour) {
       activeTour = Optional.ofNullable(aTour);
+   }
+
+   public static void setActiveStepIndex(Integer index) {
+      activeStepIndex = Optional.ofNullable(index);
    }
 }

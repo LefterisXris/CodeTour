@@ -20,6 +20,22 @@
    </applicationListeners>
 
    <actions>
+
+      <group id="CodeTourGroupedActions" text="Code Tour" description="Code Tour related actions"
+             popup="true" icon="icon-xs.png">
+         <add-to-group group-id="ToolsMenu" anchor="last"/>
+         <action id="NextStepNav" class="org.uom.lefterisxris.codetour.tours.actions.NavigateNextStepAction"
+                 text="Next Step" description="Navigate to the Next Step"
+                 icon="AllIcons.Actions.Forward">
+            <keyboard-shortcut first-keystroke="control alt W" keymap="$default"/>
+         </action>
+         <action id="PrevStepNav" class="org.uom.lefterisxris.codetour.tours.actions.NavigatePrevStepAction"
+                 text="Previous Step" description="Navigate to the Previous Step"
+                 icon="AllIcons.Actions.Back">
+            <keyboard-shortcut first-keystroke="control alt Q" keymap="$default"/>
+         </action>
+      </group>
+
       <action
             id="StackOverflow.AskQuestion.ToolsMenu"
             class="org.uom.lefterisxris.codetour.other.AskQuestionAction"

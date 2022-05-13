@@ -18,12 +18,12 @@ import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.service.Navigator;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
+import org.uom.lefterisxris.codetour.tours.state.StateUpdateNotifier;
+import org.uom.lefterisxris.codetour.tours.state.StepSelectionNotifier;
 import org.uom.lefterisxris.codetour.tours.state.TourUpdateNotifier;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -73,6 +73,16 @@ public class ToolPaneWindow {
          stateManager.reloadState();
          createToursTee(project);
          selectTourLastStep(tour);
+      });
+
+      project.getMessageBus().connect().subscribe(StateUpdateNotifier.TOPIC, () -> {
+         stateManager.reloadState();
+         createToursTee(project);
+         StateManager.getActiveTour().ifPresent(tour -> selectTourStep(tour, StateManager.getActiveStepIndex()));
+      });
+
+      project.getMessageBus().connect().subscribe(StepSelectionNotifier.TOPIC, (step) -> {
+         StateManager.getActiveTour().ifPresent(tour -> selectTourStep(tour, StateManager.getActiveStepIndex()));
       });
    }
 
@@ -201,11 +211,18 @@ public class ToolPaneWindow {
          return;
       }
 
+      final int index = parentNode.getIndex(node);
+      if (index >= 0)
+         StateManager.setActiveStepIndex(index);
       Navigator.navigate(step, project);
    }
 
    private void selectTourLastStep(Tour tour) {
-      // Expand and select the last Step of the active Tour on the tree
+      selectTourStep(tour, Optional.empty());
+   }
+
+   private void selectTourStep(Tour tour, Optional<Integer> activeStepIndex) {
+      // Expand and select the given or the last Step of the active Tour on the tree
       for (int i = 0; i < toursTree.getRowCount(); i++) {
          if (!toursTree.getPathForRow(i).getLastPathComponent().toString().equals(tour.getTitle())) continue;
 
@@ -214,7 +231,18 @@ public class ToolPaneWindow {
             final DefaultMutableTreeNode pNode = (DefaultMutableTreeNode)component;
             if (pNode.getUserObject() instanceof Tour) {
                toursTree.expandPath(new TreePath(pNode.getPath()));
-               toursTree.getSelectionModel().setSelectionPath(new TreePath(pNode.getLastLeaf().getPath()));
+               if (activeStepIndex.isPresent()) {
+                  // If activeIndex is provided, select it
+                  final DefaultMutableTreeNode stepNodeToSelect =
+                        (DefaultMutableTreeNode)pNode.getChildAt(activeStepIndex.get());
+                  toursTree.getSelectionModel().setSelectionPath(new TreePath(stepNodeToSelect.getPath()));
+                  // Also navigate to that step
+                  Navigator.navigate((Step)stepNodeToSelect.getUserObject(), project);
+               } else {
+                  // otherwise, select the last step of the tour Node, and update the selected step index
+                  toursTree.getSelectionModel().setSelectionPath(new TreePath(pNode.getLastLeaf().getPath()));
+                  StateManager.setActiveStepIndex(((Tour)pNode.getUserObject()).getSteps().size() - 1);
+               }
             }
          }
       }
@@ -359,7 +387,7 @@ public class ToolPaneWindow {
    private void updateActiveTour(Tour tour) {
       StateManager.setActiveTour(tour);
       if (toursTree != null && toursTree.getCellRenderer() instanceof TreeRenderer) {
-         final TreeRenderer renderer = (TreeRenderer) toursTree.getCellRenderer();
+         final TreeRenderer renderer = (TreeRenderer)toursTree.getCellRenderer();
 
          renderer.setSelectedTourId(tour != null ? tour.getId() : "");
       }
