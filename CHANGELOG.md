@@ -9,5 +9,5 @@
 - Create|Delete Tour from Tool Pane
 - Add|Delete Steps to a Tour (just file and line)
 - Edit steps (CRUD + add text)
-- Preview Step description on the code (after Navigation)
+- Preview Step description on the code (as a resizable/movable modal, after Navigation)
 - HTML support on steps

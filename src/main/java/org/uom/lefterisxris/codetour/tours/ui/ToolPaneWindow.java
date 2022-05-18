@@ -32,7 +32,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Class for Tours management
+ * Code Tour - Tool Window (Tours Navigation and Management).
+ * Contains the editable tree representation of all the available Tours and provides
+ * easy single-click navigation on Steps and Prev/Next buttons
  *
  * @author Eleftherios Chrysochoidis
  * Date: 11/4/2022
@@ -66,6 +68,9 @@ public class ToolPaneWindow {
       return panel;
    }
 
+   /**
+    * Handle plugin messaging
+    */
    public void registerMessageBusListener() {
       project.getMessageBus().connect().subscribe(TourUpdateNotifier.TOPIC, (tour) -> {
          stateManager.reloadState();
@@ -137,6 +142,47 @@ public class ToolPaneWindow {
       panel.add(treePanel, BorderLayout.CENTER);
    }
 
+   private void createNavigationButtons() {
+      final JButton previousButton = new JButton("Previous Step");
+      previousButton.setToolTipText("Navigate to the Previous Step of the active Tour");
+      previousButton.addActionListener(e -> {
+         LOG.info("Previous button pressed!");
+
+         // Navigate to the previous Step if exist
+         StateManager.getActiveTour().ifPresent(tour -> {
+            StateManager.getPrevStep().ifPresent(step -> selectTourStep(tour, StateManager.getActiveStepIndex()));
+         });
+
+      });
+
+      final JButton nextButton = new JButton("Next Step");
+      nextButton.setToolTipText("Navigate to the Next Step of the active Tour");
+      nextButton.addActionListener(e -> {
+         LOG.info("Next button pressed!");
+
+         // Navigate to the next Step if exist
+         StateManager.getActiveTour().ifPresent(tour -> {
+            StateManager.getNextStep().ifPresent(step -> selectTourStep(tour, StateManager.getActiveStepIndex()));
+         });
+      });
+
+      final JButton reloadButton = new JButton("Reload");
+      reloadButton.setToolTipText("Reload the tours from the related files");
+      reloadButton.addActionListener(e -> {
+         LOG.info("Re-creating the tree");
+         stateManager.reloadState();
+         updateActiveTour(null); // reset the activeTour
+         createToursTee(project);
+      });
+
+      final JPanel buttonsPanel = new JPanel();
+      buttonsPanel.add(previousButton);
+      buttonsPanel.add(nextButton);
+      buttonsPanel.add(reloadButton);
+      panel.add(buttonsPanel, BorderLayout.SOUTH);
+   }
+
+   //region Tree Nodes listeners
    private void rootClickListener(MouseEvent e) {
       // Create new Tour option
       if (e.getButton() == MouseEvent.BUTTON3) {
@@ -206,77 +252,7 @@ public class ToolPaneWindow {
          StateManager.setActiveStepIndex(index);
       Navigator.navigate(step, project);
    }
-
-   private void selectTourLastStep(Tour tour) {
-      selectTourStep(tour, Optional.empty());
-   }
-
-   private void selectTourStep(Tour tour, Optional<Integer> activeStepIndex) {
-      // Expand and select the given or the last Step of the active Tour on the tree
-      for (int i = 0; i < toursTree.getRowCount(); i++) {
-         if (!toursTree.getPathForRow(i).getLastPathComponent().toString().equals(tour.getTitle())) continue;
-
-         final Object component = toursTree.getPathForRow(i).getLastPathComponent();
-         if (component instanceof DefaultMutableTreeNode) {
-            final DefaultMutableTreeNode pNode = (DefaultMutableTreeNode)component;
-            if (pNode.getUserObject() instanceof Tour) {
-               toursTree.expandPath(new TreePath(pNode.getPath()));
-               if (activeStepIndex.isPresent()) {
-                  // If activeIndex is provided, select it
-                  final DefaultMutableTreeNode stepNodeToSelect =
-                        (DefaultMutableTreeNode)pNode.getChildAt(activeStepIndex.get());
-                  toursTree.getSelectionModel().setSelectionPath(new TreePath(stepNodeToSelect.getPath()));
-                  // Also navigate to that step
-                  Navigator.navigate((Step)stepNodeToSelect.getUserObject(), project);
-               } else {
-                  // otherwise, select the last step of the tour Node, and update the selected step index
-                  toursTree.getSelectionModel().setSelectionPath(new TreePath(pNode.getLastLeaf().getPath()));
-                  StateManager.setActiveStepIndex(((Tour)pNode.getUserObject()).getSteps().size() - 1);
-               }
-            }
-         }
-      }
-   }
-
-   private void createNavigationButtons() {
-      final JButton previousButton = new JButton("Previous Step");
-      previousButton.setToolTipText("Navigate to the Previous Step of the active Tour");
-      previousButton.addActionListener(e -> {
-         LOG.info("Previous button pressed!");
-
-         // Navigate to the previous Step if exist
-         StateManager.getActiveTour().ifPresent(tour -> {
-            StateManager.getPrevStep().ifPresent(step -> selectTourStep(tour, StateManager.getActiveStepIndex()));
-         });
-
-      });
-
-      final JButton nextButton = new JButton("Next Step");
-      nextButton.setToolTipText("Navigate to the Next Step of the active Tour");
-      nextButton.addActionListener(e -> {
-         LOG.info("Next button pressed!");
-
-         // Navigate to the next Step if exist
-         StateManager.getActiveTour().ifPresent(tour -> {
-            StateManager.getNextStep().ifPresent(step -> selectTourStep(tour, StateManager.getActiveStepIndex()));
-         });
-      });
-
-      final JButton reloadButton = new JButton("Reload");
-      reloadButton.setToolTipText("Reload the tours from the related files");
-      reloadButton.addActionListener(e -> {
-         LOG.info("Re-creating the tree");
-         stateManager.reloadState();
-         updateActiveTour(null); // reset the activeTour
-         createToursTee(project);
-      });
-
-      final JPanel buttonsPanel = new JPanel();
-      buttonsPanel.add(previousButton);
-      buttonsPanel.add(nextButton);
-      buttonsPanel.add(reloadButton);
-      panel.add(buttonsPanel, BorderLayout.SOUTH);
-   }
+   //endregion
 
    private void createNewTourListener() {
       final long index = stateManager.getTours().stream()
@@ -313,6 +289,7 @@ public class ToolPaneWindow {
             String.format("Tour '%s' (file %s) has been created", newTour.getTitle(), newTour.getTourFile()));
    }
 
+   //region Tour Context menu actions
    private void addNewStepOnTourListener(Tour tour) {
       final long index = tour.getSteps().stream()
             .filter(step -> step.getTitle().startsWith("New Step"))
@@ -353,25 +330,15 @@ public class ToolPaneWindow {
       selectTourLastStep(tour);
    }
 
-   /**
-    * Persist the selected tour and also notify the tree (for proper rendering)
-    */
-   private void updateActiveTour(Tour tour) {
-      StateManager.setActiveTour(tour);
-      if (toursTree != null && toursTree.getCellRenderer() instanceof TreeRenderer) {
-         final TreeRenderer renderer = (TreeRenderer)toursTree.getCellRenderer();
-
-         renderer.setSelectedTourId(tour != null ? tour.getId() : "");
-      }
-   }
-
    private void deleteTourListener(Tour tour) {
       stateManager.deleteTour(tour);
       createToursTee(project);
       CodeTourNotifier.notifyTourAction(project, tour, "Deletion", String.format("Tour " +
             "'%s' (file %s) has been deleted", tour.getTitle(), tour.getTourFile()));
    }
+   //endregion
 
+   //region Step Context menu actions
    private void editStepTitleListener(Step step, Tour tour) {
       final String updatedTitle = Messages.showInputDialog(project, "Edit Step's title",
             "Edit Step", AllIcons.Actions.Edit, step.getTitle(), null);
@@ -428,5 +395,48 @@ public class ToolPaneWindow {
       // Expand and select the last Step of the active Tour on the tree
       selectTourLastStep(tour);
    }
+   //endregion
 
+   /**
+    * Persist the selected tour and also notify the tree (for proper rendering)
+    */
+   private void updateActiveTour(Tour tour) {
+      StateManager.setActiveTour(tour);
+      if (toursTree != null && toursTree.getCellRenderer() instanceof TreeRenderer) {
+         final TreeRenderer renderer = (TreeRenderer)toursTree.getCellRenderer();
+
+         renderer.setSelectedTourId(tour != null ? tour.getId() : "");
+      }
+   }
+
+   private void selectTourLastStep(Tour tour) {
+      selectTourStep(tour, Optional.empty());
+   }
+
+   private void selectTourStep(Tour tour, Optional<Integer> activeStepIndex) {
+      // Expand and select the given or the last Step of the active Tour on the tree
+      for (int i = 0; i < toursTree.getRowCount(); i++) {
+         if (!toursTree.getPathForRow(i).getLastPathComponent().toString().equals(tour.getTitle())) continue;
+
+         final Object component = toursTree.getPathForRow(i).getLastPathComponent();
+         if (component instanceof DefaultMutableTreeNode) {
+            final DefaultMutableTreeNode pNode = (DefaultMutableTreeNode)component;
+            if (pNode.getUserObject() instanceof Tour) {
+               toursTree.expandPath(new TreePath(pNode.getPath()));
+               if (activeStepIndex.isPresent()) {
+                  // If activeIndex is provided, select it
+                  final DefaultMutableTreeNode stepNodeToSelect =
+                        (DefaultMutableTreeNode)pNode.getChildAt(activeStepIndex.get());
+                  toursTree.getSelectionModel().setSelectionPath(new TreePath(stepNodeToSelect.getPath()));
+                  // Also navigate to that step
+                  Navigator.navigate((Step)stepNodeToSelect.getUserObject(), project);
+               } else {
+                  // otherwise, select the last step of the tour Node, and update the selected step index
+                  toursTree.getSelectionModel().setSelectionPath(new TreePath(pNode.getLastLeaf().getPath()));
+                  StateManager.setActiveStepIndex(((Tour)pNode.getUserObject()).getSteps().size() - 1);
+               }
+            }
+         }
+      }
+   }
 }

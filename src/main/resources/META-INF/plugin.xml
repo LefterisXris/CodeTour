@@ -7,8 +7,14 @@
    <depends>com.intellij.modules.platform</depends>
 
    <extensions defaultExtensionNs="com.intellij">
+      <!-- Default services. Consider using, or deleting them -->
       <applicationService serviceImplementation="org.uom.lefterisxris.codetour.services.MyApplicationService"/>
       <projectService serviceImplementation="org.uom.lefterisxris.codetour.services.MyProjectService"/>
+
+      <!-- Code Tour - Tool Window (Tours Navigation).
+           Contains the tree representation of all the available Tours and provides
+           easy single-click navigation on Steps and Prev/Next buttons
+      -->
       <toolWindow id="Tours Navigation" anchor="left" icon="icon-xs.png"
                   factoryClass="org.uom.lefterisxris.codetour.tours.ui.ToolPaneWindowFactory"/>
       <notificationGroup id="CodeTour-Notification" displayType="BALLOON" icon="icon-xs.png"/>
@@ -21,6 +27,11 @@
 
    <actions>
 
+      <!-- Navigate to Previous/Next Step, available as Group actions on Tools menu
+           Shortcuts:
+            - Previous Step: Ctrl+Alt+Q
+            - Next Step: Ctrl+Alt+W
+      -->
       <group id="CodeTourGroupedActions" text="Code Tour" description="Code Tour related actions"
              popup="true" icon="icon-xs.png">
          <add-to-group group-id="ToolsMenu" anchor="last"/>
@@ -36,6 +47,7 @@
          </action>
       </group>
 
+      <!-- Action on Gutter right click (popup menu), to add a Step -->
       <action id="org.uom.lefterisxris.codetour.tours.actions.TourStepGeneratorAction"
               class="org.uom.lefterisxris.codetour.tours.actions.TourStepGeneratorAction"
               text="Add Tour Step"

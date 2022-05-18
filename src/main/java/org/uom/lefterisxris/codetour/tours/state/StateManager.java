@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * State Manager component to persist tours between IDE restarts
+ * State Manager component to read/write the Tours on the project
  *
  * @author Eleftherios Chrysochoidis
  * Date: 7/1/2022
@@ -37,10 +37,7 @@ public class StateManager {
 
    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
    private final ToursState state = new ToursState();
-   private Project project;
-
-   public StateManager() {
-   }
+   private final Project project;
 
    public StateManager(Project project) {
       this.project = project;

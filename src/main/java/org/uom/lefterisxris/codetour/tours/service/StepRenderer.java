@@ -5,8 +5,6 @@ import com.intellij.codeInsight.documentation.DocumentationManager;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.popup.JBPopup;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 
@@ -41,29 +39,6 @@ public class StepRenderer extends DialogWrapper {
 
       instance = new StepRenderer(step, project);
       return instance;
-   }
-
-   /**
-    * //TODO: Delete
-    */
-   @Deprecated
-   private void showDoc() {
-
-      final JComponent component = getComponent();
-
-      final JBPopup popup = JBPopupFactory.getInstance()
-            .createComponentPopupBuilder(component, component)
-            .setProject(project)
-            .setResizable(true)
-            .setMovable(true)
-            .setFocusable(true)
-            .setModalContext(true)
-            .createPopup();
-
-      popup.setUiVisible(true);
-
-      //TODO: This seems to make the popup not moving. Should check another 'show' option
-      popup.showCenteredInCurrentWindow(project);
    }
 
    private JComponent getComponent() {

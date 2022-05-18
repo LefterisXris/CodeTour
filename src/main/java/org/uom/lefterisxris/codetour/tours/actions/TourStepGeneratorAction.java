@@ -17,6 +17,11 @@ import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
+/**
+ * Action that generates a Step for the selected file:line from Gutter's Editor context menu
+ *
+ * @author Eleftherios Chrysochoidis
+ */
 public class TourStepGeneratorAction extends AnAction {
 
    private static final Logger LOG = Logger.getInstance(TourStepGeneratorAction.class);
