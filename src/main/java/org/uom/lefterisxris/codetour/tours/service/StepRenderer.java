@@ -5,11 +5,14 @@ import com.intellij.codeInsight.documentation.DocumentationManager;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Optional;
 
 /**
  * Renders a Popup which includes the Step Documentation
@@ -34,10 +37,16 @@ public class StepRenderer extends DialogWrapper {
    }
 
    public static StepRenderer getInstance(Step step, Project project) {
-      if (instance != null)
+
+      Optional<UserSettings> userSettings = Optional.empty();
+      if (instance != null) {
+         // Keep the user settings (size and location of Modal)
+         userSettings = Optional.of(new UserSettings(instance));
          instance.close(0);
+      }
 
       instance = new StepRenderer(step, project);
+      userSettings.ifPresent(settings -> settings.inject(instance));
       return instance;
    }
 
@@ -86,5 +95,34 @@ public class StepRenderer extends DialogWrapper {
       dialogPanel.add(getComponent(), BorderLayout.CENTER);
       dialogPanel.setPreferredSize(new Dimension(320, 160));
       return dialogPanel;
+   }
+
+   /**
+    * Aux class to hold User settings for the Step documentation modal
+    */
+   @Getter
+   @AllArgsConstructor
+   final static class UserSettings {
+      private int x;
+      private int y;
+      private int width;
+      private int height;
+
+      public UserSettings(StepRenderer instance) {
+         final Point location = instance.getLocation();
+         this.x = location.x;
+         this.y = location.y;
+
+         final Dimension size = instance.getSize();
+         if (size != null) {
+            this.width = size.width;
+            this.height = size.height;
+         }
+      }
+
+      void inject(StepRenderer instance) {
+         instance.setLocation(x, y);
+         instance.setSize(width, height);
+      }
    }
 }
