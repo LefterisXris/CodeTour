@@ -11,3 +11,4 @@
 - Edit steps (CRUD + add text)
 - Preview Step description on the code (as a resizable/movable modal, after Navigation)
 - HTML support on steps
+- Persisting user preferences on Size/Location of Step Documentation modal
