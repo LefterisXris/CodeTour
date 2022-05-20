@@ -55,8 +55,7 @@ public class StepRenderer extends DialogWrapper {
       final String stepDoc = renderFullDoc(
             String.format("Description of Step '%s'", step.getTitle()),
             step.getDescription(),
-            String.format("%s:%s", step.getFile(), step.getLine()),
-            "A sample comment");
+            String.format("%s:%s", step.getFile(), step.getLine()));
 
       final DocumentationManager documentationManager = DocumentationManager.getInstance(project);
       final DocumentationComponent component = new DocumentationComponent(documentationManager);
@@ -65,7 +64,7 @@ public class StepRenderer extends DialogWrapper {
       return component;
    }
 
-   private String renderFullDoc(String title, String description, String file, String docComment) {
+   private String renderFullDoc(String title, String description, String file) {
       StringBuilder sb = new StringBuilder();
       sb.append(DocumentationMarkup.DEFINITION_START);
       sb.append(title);
@@ -75,7 +74,6 @@ public class StepRenderer extends DialogWrapper {
       sb.append(DocumentationMarkup.CONTENT_END);
       sb.append(DocumentationMarkup.SECTIONS_START);
       addKeyValueSection("File:", file, sb);
-      addKeyValueSection("Comment:", docComment, sb);
       sb.append(DocumentationMarkup.SECTIONS_END);
       return sb.toString();
    }

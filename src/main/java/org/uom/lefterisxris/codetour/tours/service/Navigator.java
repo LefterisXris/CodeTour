@@ -42,7 +42,7 @@ public class Navigator {
          new OpenFileDescriptor(project, virtualFile.get(), step.getLine(), 1).navigate(true);
 
          // Show a Balloon
-         CodeTourNotifier.notifyStepDescription(project, step.getDescription());
+         // CodeTourNotifier.notifyStepDescription(project, step.getDescription());
 
          // Show a Popup
          //TODO: It would be nice to provide the Tour as well, for info like 1/5 steps etc
