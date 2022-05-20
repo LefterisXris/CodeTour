@@ -363,8 +363,11 @@ public class ToolPaneWindow {
    }
 
    private void editStepDescriptionListener(Step step, Tour tour) {
-      final String updatedDescription = Messages.showMultilineInputDialog(project, "Edit Step's description",
-            "Edit Step", step.getDescription(), AllIcons.Actions.Edit, null);
+      final String updatedDescription = Messages.showMultilineInputDialog(project,
+            String.format("Edit Step's '%s' description", step.getTitle()),
+            "Edit Step",
+            step.getDescription(),
+            AllIcons.Actions.Edit, null);
       if (updatedDescription == null || updatedDescription.equals(step.getDescription())) return;
 
       final Optional<Step> origStep = tour.getSteps().stream()
