@@ -144,7 +144,7 @@ public class ToolPaneWindow {
 
    private void createNavigationButtons() {
       final JButton previousButton = new JButton("Previous Step");
-      previousButton.setToolTipText("Navigate to the Previous Step of the active Tour");
+      previousButton.setToolTipText("Navigate to the Previous Step of the active Tour (Ctrl+Alt+Q)");
       previousButton.addActionListener(e -> {
          LOG.info("Previous button pressed!");
 
@@ -156,7 +156,7 @@ public class ToolPaneWindow {
       });
 
       final JButton nextButton = new JButton("Next Step");
-      nextButton.setToolTipText("Navigate to the Next Step of the active Tour");
+      nextButton.setToolTipText("Navigate to the Next Step of the active Tour (Ctrl+Alt+W)");
       nextButton.addActionListener(e -> {
          LOG.info("Next button pressed!");
 
