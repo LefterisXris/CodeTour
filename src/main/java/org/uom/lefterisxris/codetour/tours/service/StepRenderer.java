@@ -2,6 +2,7 @@ package org.uom.lefterisxris.codetour.tours.service;
 
 import com.intellij.codeInsight.documentation.DocumentationComponent;
 import com.intellij.codeInsight.documentation.DocumentationManager;
+import com.intellij.icons.AllIcons;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -9,9 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
+import org.uom.lefterisxris.codetour.tours.state.StateManager;
+import org.uom.lefterisxris.codetour.tours.state.StepSelectionNotifier;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Optional;
 
 /**
@@ -91,6 +96,36 @@ public class StepRenderer extends DialogWrapper {
    protected @Nullable JComponent createCenterPanel() {
       JPanel dialogPanel = new JPanel(new BorderLayout());
       dialogPanel.add(getComponent(), BorderLayout.CENTER);
+
+      final JPanel buttons = new JPanel();
+      final JButton previousStepButton = new JButton(AllIcons.Actions.Back);
+      previousStepButton.addMouseListener(new MouseAdapter() {
+         @Override
+         public void mouseReleased(MouseEvent e) {
+            StateManager.getPrevStep().ifPresent(step -> {
+               // Notify UI to select the step which will trigger its navigation
+               project.getMessageBus().syncPublisher(StepSelectionNotifier.TOPIC).selectStep(step);
+            });
+         }
+      });
+      previousStepButton.setToolTipText("Navigate to the Previous Step (Ctrl+Alt+Q)");
+      buttons.add(previousStepButton);
+
+
+      final JButton nextStepButton = new JButton(AllIcons.Actions.Forward);
+      nextStepButton.addMouseListener(new MouseAdapter() {
+         @Override
+         public void mouseReleased(MouseEvent e) {
+            StateManager.getNextStep().ifPresent(step -> {
+               // Notify UI to select the step which will trigger its navigation
+               project.getMessageBus().syncPublisher(StepSelectionNotifier.TOPIC).selectStep(step);
+            });
+         }
+      });
+      nextStepButton.setToolTipText("Navigate to the Next Step (Ctrl+Alt+Q)");
+      buttons.add(nextStepButton);
+
+      dialogPanel.add(buttons, BorderLayout.SOUTH);
       dialogPanel.setPreferredSize(new Dimension(320, 160));
       return dialogPanel;
    }
