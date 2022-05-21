@@ -5,18 +5,17 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
-import com.intellij.util.SlowOperations;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.service.Navigator;
+import org.uom.lefterisxris.codetour.tours.service.TourValidator;
+import org.uom.lefterisxris.codetour.tours.service.Utils;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.state.StepSelectionNotifier;
 import org.uom.lefterisxris.codetour.tours.state.TourUpdateNotifier;
@@ -29,7 +28,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * Code Tour - Tool Window (Tours Navigation and Management).
@@ -255,33 +254,37 @@ public class ToolPaneWindow {
    //endregion
 
    private void createNewTourListener() {
-      final long index = stateManager.getTours().stream()
-            .map(tour -> tour.getTourFile())
-            .filter(tourFile -> tourFile != null)
-            .filter(tourFile -> tourFile.startsWith("newTour") && tourFile.endsWith(Props.TOUR_EXTENSION_FULL))
-            .count();
-      String newTourFileName = String.format("newTour%s.%s", (index > 0 ? index : ""), Props.TOUR_EXTENSION);
-
       final Tour newTour = Tour.builder()
             .id(UUID.randomUUID().toString())
-            .touFile(newTourFileName)
+            .touFile("newTour" + Props.TOUR_EXTENSION_FULL)
             .title("A New Tour")
             .description("A New Tour")
             .steps(new ArrayList<>())
             .build();
 
+      // Interactive creation (Title and filename) making sure that they are unique
+      final Set<String> tourTitles = stateManager.getTours().stream()
+            .map(Tour::getTitle)
+            .collect(Collectors.toSet());
+      final String updatedTitle = Messages.showInputDialog(project,
+            "Input the title of the new Tour (should be unique)",
+            "New Tour", AllIcons.Actions.NewFolder, newTour.getTitle(),
+            new TourValidator(title -> StringUtils.isNotEmpty(title) && !tourTitles.contains(title)));
+      if (updatedTitle == null) return; // i.e. hit cancel
+      newTour.setTitle(updatedTitle);
+
+
       // Just make sure that the new file is unique
-      AtomicBoolean nameIsFine = new AtomicBoolean(false);
-      int nTry = 1;
-      while (!nameIsFine.get()) {
-         SlowOperations.allowSlowOperations(() -> {
-            final Collection<VirtualFile> files =
-                  FilenameIndex.getVirtualFilesByName(newTour.getTourFile(), GlobalSearchScope.projectScope(project));
-            if (files.isEmpty()) nameIsFine.set(true);
-            else newTour.setTourFile(
-                  String.format("newTour%s-%s.%s", (index > 0 ? index : ""), nTry, Props.TOUR_EXTENSION));
-         });
-      }
+      final Set<String> tourFiles = stateManager.getTours().stream()
+            .map(Tour::getTourFile)
+            .collect(Collectors.toSet());
+      final String updatedFilename = Messages.showInputDialog(project,
+            "Input the file name of the new Tour (should end with .tour and be unique)",
+            "New Tour", AllIcons.Actions.NewFolder, Utils.fileNameFromTitle(newTour.getTitle()),
+            new TourValidator(fileName -> StringUtils.isNotEmpty(fileName) &&
+                  fileName.endsWith(Props.TOUR_EXTENSION_FULL) && !tourFiles.contains(fileName)));
+      if (updatedFilename == null) return; // i.e. hit cancel
+      newTour.setTourFile(updatedFilename);
 
       stateManager.createTour(newTour);
       createToursTee(project);
