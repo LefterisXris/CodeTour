@@ -1,10 +1,12 @@
 package org.uom.lefterisxris.codetour.tours.actions;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
@@ -40,7 +42,7 @@ public class TourStepGeneratorAction extends AnAction {
       //  final EditorGutter editorGutter = e.getData(EditorGutter.KEY);
 
       final Object lineObj = e.getDataContext().getData("EditorGutter.LOGICAL_LINE_AT_CURSOR");
-      final int line = lineObj != null ? Integer.parseInt(lineObj.toString()) : 1;
+      final int line = (lineObj != null ? Integer.parseInt(lineObj.toString()) : 1) + 1;
 
       final VirtualFile virtualFile = e.getDataContext().getData(CommonDataKeys.VIRTUAL_FILE);
       if (virtualFile == null)
@@ -61,6 +63,16 @@ public class TourStepGeneratorAction extends AnAction {
       final Optional<Tour> activeTour = StateManager.getActiveTour();
       if (activeTour.isPresent()) {
          final Step step = generateStep(virtualFile, line);
+
+         // Provide a dialog for step's description
+         final String updatedDescription = Messages.showMultilineInputDialog(project,
+               String.format("Edit Step's '%s' description", step.getTitle()),
+               "Edit Step",
+               step.getDescription(),
+               AllIcons.Actions.Edit, null);
+         if (updatedDescription != null)
+            step.setDescription(updatedDescription);
+
          activeTour.get().getSteps().add(step);
          stateManager.updateTour(activeTour.get());
 
