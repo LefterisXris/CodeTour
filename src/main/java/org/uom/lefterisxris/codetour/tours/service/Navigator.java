@@ -39,7 +39,8 @@ public class Navigator {
          }
 
          // Navigate
-         new OpenFileDescriptor(project, virtualFile.get(), step.getLine(), 1).navigate(true);
+         new OpenFileDescriptor(project, virtualFile.get(), Math.max(step.getLine() - 1, 0), 1)
+               .navigate(true);
 
          // Show a Balloon
          // CodeTourNotifier.notifyStepDescription(project, step.getDescription());

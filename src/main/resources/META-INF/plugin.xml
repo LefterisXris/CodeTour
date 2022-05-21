@@ -18,6 +18,8 @@
       <toolWindow id="Tours Navigation" anchor="left" icon="icon-xs.png"
                   factoryClass="org.uom.lefterisxris.codetour.tours.ui.ToolPaneWindowFactory"/>
       <notificationGroup id="CodeTour-Notification" displayType="BALLOON" icon="icon-xs.png"/>
+      <codeInsight.lineMarkerProvider language=""
+                                      implementationClass="org.uom.lefterisxris.codetour.tours.ui.TourLineMarkerProvider"/>
    </extensions>
 
    <applicationListeners>

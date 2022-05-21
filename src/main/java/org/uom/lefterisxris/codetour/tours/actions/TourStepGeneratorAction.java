@@ -42,7 +42,7 @@ public class TourStepGeneratorAction extends AnAction {
       //  final EditorGutter editorGutter = e.getData(EditorGutter.KEY);
 
       final Object lineObj = e.getDataContext().getData("EditorGutter.LOGICAL_LINE_AT_CURSOR");
-      final int line = lineObj != null ? Integer.parseInt(lineObj.toString()) : 1;
+      final int line = (lineObj != null ? Integer.parseInt(lineObj.toString()) : 1) + 1;
 
       final VirtualFile virtualFile = e.getDataContext().getData(CommonDataKeys.VIRTUAL_FILE);
       if (virtualFile == null)

@@ -39,6 +39,12 @@ public class StateManager {
    private final ToursState state = new ToursState();
    private final Project project;
 
+   // Caching
+   private final static Set<String> tourFileNames = new HashSet<>(); // the tour file names
+   private final static Set<String> tourTitles = new HashSet<>();
+   private final static Set<String> tourStepFiles = new HashSet<>();
+   private final static Set<String> tourStepFilesWithLines = new HashSet<>();
+
    public StateManager(Project project) {
       this.project = project;
    }
@@ -146,7 +152,22 @@ public class StateManager {
    }
 
    private List<Tour> loadTours(@NotNull Project project) {
-      return project.getBasePath() == null ? loadFromIndex(project) : loadFromFS();
+      final List<Tour> tours = project.getBasePath() == null ? loadFromIndex(project) : loadFromFS();
+      // Cache some info
+      tourFileNames.clear();
+      tourTitles.clear();
+      tourStepFiles.clear();
+      tourStepFilesWithLines.clear();
+
+      tours.forEach(tour -> {
+         tourFileNames.add(tour.getTourFile());
+         tourTitles.add(tour.getTitle());
+         tour.getSteps().forEach(step -> {
+            tourStepFiles.add(step.getFile());
+            tourStepFilesWithLines.add(String.format("%s:%s", step.getFile(), step.getLine()));
+         });
+      });
+      return tours;
    }
 
    private List<Tour> loadFromIndex(@NotNull Project project) {
@@ -281,6 +302,34 @@ public class StateManager {
       return Optional.empty();
    }
 
+   /**
+    * Tries to find the Step that is configured to navigate to the provided file and line, and if found,
+    * it activates its Tour and sets the step as active.
+    *
+    * @param fileName The file to which the Step is configured to navigate
+    * @param line     The line to which the Step is configured to navigate
+    * @return The Step (optional)
+    */
+   public Optional<Step> findStepByFileLine(String fileName, int line) {
+      final Optional<Tour> tourToActivate = getTours().stream()
+            .filter(tour -> tour.getSteps().stream()
+                  .anyMatch(step -> step.getFile().equals(fileName) && step.getLine() == line))
+            .findFirst();
+      if (tourToActivate.isEmpty()) return Optional.empty();
+      setActiveTour(tourToActivate.get());
+
+      final List<Step> steps = tourToActivate.get().getSteps();
+      for (int i = 0; i < steps.size(); i++) {
+         final Step step = steps.get(i);
+         if (step.getFile().equals(fileName) && step.getLine() == line) {
+            setActiveStepIndex(i);
+            return Optional.of(step);
+         }
+      }
+
+      return Optional.empty();
+   }
+
    public static void setActiveTour(Tour aTour) {
       activeTour = Optional.ofNullable(aTour);
    }
@@ -288,4 +337,13 @@ public class StateManager {
    public static void setActiveStepIndex(Integer index) {
       activeStepIndex = Optional.ofNullable(index);
    }
+
+   public static boolean isFileIncludedInAnyStep(String fileName) {
+      return tourStepFiles.contains(fileName);
+   }
+
+   public static boolean isValidStep(String fileName, Integer line) {
+      return tourStepFilesWithLines.contains(String.format("%s:%s", fileName, line));
+   }
+
 }
