@@ -3,7 +3,7 @@
 # CodeTour Changelog
 
 ## [Unreleased]
-### Added
+### Implemented
 - Load from json, Show In Tool Pane, Navigate with click
 - Navigate with Previous/Next buttons on Tool Pane
 - Create|Delete Tour from Tool Pane
