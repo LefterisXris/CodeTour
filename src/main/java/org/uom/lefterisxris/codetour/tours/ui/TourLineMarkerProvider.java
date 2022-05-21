@@ -15,7 +15,6 @@ import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.state.StepSelectionNotifier;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +24,7 @@ import java.util.Map;
  */
 public class TourLineMarkerProvider extends LineMarkerProviderDescriptor {
 
-   private Map<String, PsiElement> markedLines = new HashMap<>();
+   private final Map<String, PsiElement> markedLines = new HashMap<>();
 
    @Override
    public @Nullable("null means disabled") @GutterName String getName() {
@@ -65,9 +64,4 @@ public class TourLineMarkerProvider extends LineMarkerProviderDescriptor {
       return null;
    }
 
-
-   @Override
-   public @Nullable Icon getIcon() {
-      return Props.ICON_XS;
-   }
 }

@@ -45,17 +45,20 @@ import java.util.stream.Collectors;
  */
 public class ToolPaneWindow {
 
+   private static final String ID = "Tours Navigation";
    private static final Logger LOG = Logger.getInstance(ToolPaneWindow.class);
    private static final String TREE_TITLE = "Code Tours";
 
    private final JPanel panel;
    private Tree toursTree;
 
+   private final ToolWindow toolWindow;
    private final Project project;
    private final StateManager stateManager;
 
    public ToolPaneWindow(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
+      this.toolWindow = toolWindow;
       this.project = project;
       this.stateManager = new StateManager(project);
       panel = new JPanel(new BorderLayout());
@@ -83,7 +86,11 @@ public class ToolPaneWindow {
       });
 
       project.getMessageBus().connect().subscribe(StepSelectionNotifier.TOPIC, (step) -> {
-         StateManager.getActiveTour().ifPresent(tour -> selectTourStep(tour, StateManager.getActiveStepIndex()));
+         StateManager.getActiveTour().ifPresent(tour -> {
+            if (!toolWindow.isVisible())
+               toolWindow.show();
+            selectTourStep(tour, StateManager.getActiveStepIndex());
+         });
       });
    }
 

@@ -70,7 +70,7 @@ Features:
   Click on gutter</kbd> > <kbd>Add Tour Step</kbd>
 - HTML support for Step's description (markdown support soon)
 - Customizable (location, size, font etc) popup window for Step's description
-- Tree-like view of Tours and their Steps on a ToolPane
+- Tree-like view of Tours and their Steps on a Tool Window
 - Code Navigation with single click (on Steps available on Tours Tree)
 - Shortcuts for Navigating on Previous (<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Q</kbd>) and Next (<kbd>Ctrl</kbd>+<kbd>
   Alt</kbd>+<kbd>W</kbd>) Steps
