@@ -2,12 +2,17 @@ package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.util.SlowOperations;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Props;
@@ -210,11 +215,15 @@ public class ToolPaneWindow {
          final JMenuItem editAction = new JMenuItem("Edit Tour", AllIcons.Actions.Edit);
          editAction.addActionListener(d -> editTourListener(tour));
 
+         // Jump to Source Action
+         final JMenuItem jumpToSourceAction = new JMenuItem("Jump to .tour Source", AllIcons.Actions.EditSource);
+         jumpToSourceAction.addActionListener(d -> jumpToSourceTourListener(tour));
+
          // Delete Action
          final JMenuItem deleteAction = new JMenuItem("Delete Tour", AllIcons.Actions.DeleteTag);
          deleteAction.addActionListener(d -> deleteTourListener(tour));
 
-         Arrays.asList(newStepAction, editAction, deleteAction).forEach(menu::add);
+         Arrays.asList(newStepAction, editAction, jumpToSourceAction, deleteAction).forEach(menu::add);
          menu.show(toursTree, e.getX(), e.getY());
       }
    }
@@ -294,24 +303,11 @@ public class ToolPaneWindow {
 
    //region Tour Context menu actions
    private void addNewStepOnTourListener(Tour tour) {
-      final long index = tour.getSteps().stream()
-            .filter(step -> step.getTitle().startsWith("New Step"))
-            .count();
-
-      final String stepTitle = String.format("New Step%s", (index > 0) ? index : "");
-      tour.getSteps().add(Step.builder()
-            .title(stepTitle)
-            .description("Step Description")
-            .file("")
-            .line(1)
-            .build());
-      stateManager.updateTour(tour);
-      createToursTee(project);
-      CodeTourNotifier.notifyTourAction(project, tour, "New Step",
-            String.format("A New Step added on Tour '%s'", tour.getTitle()));
-
-      // Expand and select the last Step of the active Tour on the tree
-      selectTourLastStep(tour);
+      Messages.showMessageDialog(project,
+            "To create a new Tour Step, Navigate to the file you want to add a Step, " +
+                  "<kbd>Right Click on the Editor's Gutter</kbd> (i.e. next to line numbers) > <kbd>Add Tour Step</kbd>",
+            "Step Creation",
+            AllIcons.General.NotificationInfo);
    }
 
    private void editTourListener(Tour tour) {
@@ -331,6 +327,24 @@ public class ToolPaneWindow {
 
       // Expand and select the last Step of the active Tour on the tree
       selectTourLastStep(tour);
+   }
+
+   private void jumpToSourceTourListener(Tour tour) {
+      SlowOperations.allowSlowOperations(() -> {
+         final Collection<VirtualFile> virtualFiles = FilenameIndex.getVirtualFilesByName(tour.getTourFile(),
+               GlobalSearchScope.projectScope(project));
+         final Optional<VirtualFile> virtualFile = virtualFiles.stream()
+               .filter(file -> !file.isDirectory() && file.getName().equals(tour.getTourFile()))
+               .findFirst();
+         if (virtualFile.isEmpty()) {
+            CodeTourNotifier.error(project, String.format("Could not locate navigation target '%s' for Tour '%s'",
+                  tour.getTourFile(), tour.getTitle()));
+            return;
+         }
+
+         // Navigate
+         new OpenFileDescriptor(project, virtualFile.get(), 0).navigate(true);
+      });
    }
 
    private void deleteTourListener(Tour tour) {
