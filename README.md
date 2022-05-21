@@ -40,7 +40,7 @@ The following projects have been created for managing the whole Thesis (includin
 
 ## :wrench: Plugin Info :electric_plug:
 
-![Build](https://github.com/LefterisXris/CodeTrailer/workflows/Build/badge.svg)
+![Build](https://github.com/LefterisXris/CodeTour/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 
@@ -92,13 +92,12 @@ repo https://github.com/LefterisXris/CodeTour/discussions
 
 - Using IDE built-in plugin system:
 
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "CodeTrailer"</kbd> >
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "CodeTour"</kbd> >
   <kbd>Install Plugin</kbd>
 
 - Manually:
 
-  Download the [latest release](https://github.com/LefterisXris/CodeTrailer/releases/latest) and install it manually
-  using
+  Download the [latest release](https://github.com/LefterisXris/CodeTour/releases/latest) and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
 ## Conventions
