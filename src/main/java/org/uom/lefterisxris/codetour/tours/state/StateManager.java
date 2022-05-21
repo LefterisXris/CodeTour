@@ -71,6 +71,7 @@ public class StateManager {
             LOG.error("Failed to create tour file: " + e.getMessage(), e);
          }
       });
+      setActiveTour(tour);
       return tour;
    }
 
