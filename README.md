@@ -1,6 +1,6 @@
 # CodeTour
 
-MSc Thesis. University of Macedonia, Greece.
+CodeTour is an IntelliJ Plugin developed in the context of my MSc Thesis. University of Macedonia, Greece.
 
 **Original Name**: CodeTrailer
 > :exclamation: Renamed to CodeTour as a similar VSCode `GREAT` plugin already exist (https://github.com/microsoft/codetour), and thus this one would be compatible with it and would try to provide more enhanced experience.
