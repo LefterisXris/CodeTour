@@ -1,0 +1,20 @@
+{
+  "id": "70abd0f5-3fb7-4309-a9bf-97afeb28aa9b",
+  "tourFile": "sampleTour.tour",
+  "title": "Sample Tour",
+  "description": "A New Tour",
+  "steps": [
+    {
+      "title": "Intro Step",
+      "description": "Simple Navigation to StateManager.java:32",
+      "file": "StateManager.java",
+      "line": 32
+    },
+    {
+      "title": "StateManager.java:49",
+      "description": "An instance of \u003cstrong\u003eproject\u003c/strong\u003e is required \nas many operations of StateManager rely on it",
+      "file": "StateManager.java",
+      "line": 49
+    }
+  ]
+}
