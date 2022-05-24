@@ -1,4 +1,4 @@
-# CodeTour
+# CodeTour an IntelliJ Plugin
 
 CodeTour is an IntelliJ Plugin developed in the context of my MSc Thesis. University of Macedonia, Greece.
 
