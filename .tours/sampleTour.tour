@@ -5,16 +5,40 @@
   "description": "A New Tour",
   "steps": [
     {
-      "title": "Intro Step",
-      "description": "Simple Navigation to StateManager.java:32",
-      "file": "StateManager.java",
-      "line": 32
+      "title": "Plugin Introduction",
+      "description": "\u003ch1 id\u003d\"intro-step\"\u003eIntro Step\u003c/h1\u003e\n\u003cp\u003e\u003cstrong\u003eCodeTour\u003c/strong\u003e is an Intellij plugin, which allows you to record and play back guided walkthroughs of your codebase!\u003c/p\u003e\n\u003cp\u003eIdeal for:\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003eCode Reviews \u003cem\u003e-- e.g. Walkthrough the context of a Pull Request\u003c/em\u003e\u003c/li\u003e\n\u003cli\u003eFeature documentation \u003cem\u003e-- e.g. How a feature\u0026#39;s workflow is depicted on the code\u003c/em\u003e\u003c/li\u003e\n\u003cli\u003eVisualize bugs \u003cem\u003e-- e.g. follow a scenario that led to an error/bug/issue\u003c/em\u003e\u003c/li\u003e\n\u003cli\u003eOnboard or re-board to a project \u003cem\u003e-- Start learning the project through the interactive Tour Steps, without relying on\nhelp from others\u003c/em\u003e\u003c/li\u003e\n\u003c/ul\u003e",
+      "file": "plugin.xml",
+      "line": 2
     },
     {
-      "title": "StateManager.java:49",
-      "description": "An instance of \u003cstrong\u003eproject\u003c/strong\u003e is required \nas many operations of StateManager rely on it",
-      "file": "StateManager.java",
-      "line": 49
+      "title": "Generate and View Tours",
+      "description": "\u003ch1 id\u003d\"generate-and-view-tours\"\u003eGenerate and View Tours\u003c/h1\u003e\n\u003cp\u003eA tree-like view of the available Tours is provided by \u003cstrong\u003eCodeTour\u003c/strong\u003e Tool Window.\nTour \u003cstrong\u003eCRUD\u003c/strong\u003e operations are supported as context actions (\u003cem\u003eright click\u003c/em\u003e) as well as for the Tour Steps.\u003c/p\u003e\n\u003cp\u003eTo open Tours Tool Window, go to \u003cstrong\u003eView \u0026gt; Tool Windows \u0026gt; Tours Navigation\u003c/strong\u003e\u003c/p\u003e",
+      "file": "ToolPaneWindow.java",
+      "line": 46
+    },
+    {
+      "title": "Add Steps on a Tour",
+      "description": "\u003ch1 id\u003d\"adding-a-step\"\u003eAdding a Step\u003c/h1\u003e\n\u003cp\u003eAdding a Step is as easy as adding a new breakpoint on the code.\nUse the Editor\u0026#39;s Gutter Menu (the area where line numbers are) and hit right click to add a new Step.\u003c/p\u003e\n\u003cp\u003eThe \u003cstrong\u003etitle\u003c/strong\u003e of the new Step is automatically generated and can be edited from Step\u0026#39;s context menu (right click) on the tree.\u003c/p\u003e\n\u003cp\u003eAn editable text area will appear in which the user is prompted to input the \u003cstrong\u003edescription\u003c/strong\u003e of the step. The text area has \u003cstrong\u003eFULL HTML SUPPORT\u003c/strong\u003e (\u003cem\u003ewhen rendered on Step Navigation\u003c/em\u003e) while markdown is coming soon... Stay tuned!\u003c/p\u003e",
+      "file": "TourStepGeneratorAction.java",
+      "line": 27
+    },
+    {
+      "title": "Navigate between Steps",
+      "description": "\u003ch1 id\u003d\"navigating-between-steps\"\u003eNavigating between Steps\u003c/h1\u003e\n\u003cp\u003eNavigating to a Step is very easy and can be performed through Tours tree (Tool Window) by single click on Step.\u003c/p\u003e\n\u003cp\u003eAfter clicking on the Step, CodeTour Plugin will navigate you to the location that the Step indicates (file:line) and will render (\u003cstrong\u003eHTML supported\u003c/strong\u003e) the Step\u0026#39;s description\u003c/p\u003e\n\u003ch3 id\u003d\"navigation\"\u003eNavigation\u003c/h3\u003e\n\u003cul\u003e\n\u003cli\u003eNavigate to \u003cem\u003ePrevious\u003c/em\u003e Step:\u003cul\u003e\n\u003cli\u003eButton (modal): \u0026larr;\u003c/li\u003e\n\u003cli\u003eButton (tree): \u003cstrong\u003e\u003ckbd\u003ePrevious Step\u003c/kbd\u003e\u003c/strong\u003e\u003c/li\u003e\n\u003cli\u003eShortcut: \u003cstrong\u003e\u003ckbd\u003eCtrl+Alt+Q\u003c/kbd\u003e\u003c/strong\u003e\u003c/li\u003e\n\u003c/ul\u003e\n\u003c/li\u003e\n\u003cli\u003eNavigate to \u003cem\u003eNext\u003c/em\u003e Step:\u003cul\u003e\n\u003cli\u003eButton (modal): \u0026rarr;\u003c/li\u003e\n\u003cli\u003eButton (tree): \u003cstrong\u003e\u003ckbd\u003eNext Step\u003c/kbd\u003e\u003c/strong\u003e\u003c/li\u003e\n\u003cli\u003eShortcut: \u003cstrong\u003e\u003ckbd\u003eCtrl+Alt+W\u003c/kbd\u003e\u003c/strong\u003e\u003c/li\u003e\n\u003c/ul\u003e\n\u003c/li\u003e\n\u003c/ul\u003e",
+      "file": "Navigator.java",
+      "line": 23
+    },
+    {
+      "title": "Step Description Popup",
+      "description": "\u003ch1 id\u003d\"step-description-popup\"\u003eStep Description Popup\u003c/h1\u003e\n\u003cp\u003eStep\u0026#39;s description is rendered on a popup modal dialog, which supports HTML rendering (and soon markdown)\u003c/p\u003e\n\u003cp\u003eThe popup provides the following:\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003e\u003cstrong\u003eDescription\u003c/strong\u003e rendering with HTML support\u003c/li\u003e\n\u003cli\u003e\u003cstrong\u003eResizable\u003c/strong\u003e and \u003cstrong\u003eMovable\u003c/strong\u003e panel as a popup modal\u003c/li\u003e\n\u003cli\u003eAdjustable \u003cstrong\u003eFont Size\u003c/strong\u003e\u003c/li\u003e\n\u003cli\u003eButtons for navigating to Previous and Next Step\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003e\u003cstrong\u003eTip\u003c/strong\u003e: \u003cem\u003eShortcuts for navigating to Previous and Next Step are always active:\u003c/em\u003e\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003ePrevious Step: \u003cstrong\u003e\u003ckbd\u003eCtrl+Alt+Q\u003c/kbd\u003e\u003c/strong\u003e\u003c/li\u003e\n\u003cli\u003eNext Step: \u003cstrong\u003e\u003ckbd\u003eCtrl+Alt+W\u003c/kbd\u003e\u003c/strong\u003e\u003c/li\u003e\n\u003c/ul\u003e",
+      "file": "StepRenderer.java",
+      "line": 28
+    },
+    {
+      "title": "Examples and Best Practices",
+      "description": "\u003ch1 id\u003d\"examples-and-best-practices\"\u003eExamples and Best Practices\u003c/h1\u003e\n\u003cp\u003eNot sure how to structure your Tours? \u003c/p\u003e\n\u003cp\u003eTake a look at \u003ca href\u003d\"https://github.com/LefterisXris/CodeTour#examples -and-best-practices\"\u003eExamples and Best Practices\u003c/a\u003e section to get some ideas.\u003c/p\u003e\n\u003cp\u003e*As always, feel free to request more details, by opening an issue on \u003ca href\u003d\"https://github.com/LefterisXris/CodeTour/issues\"\u003eCode Tour GitHub\u003c/a\u003e\nor joining the \u003ca href\u003d\"https://github.com/LefterisXris/CodeTour/discussions\"\u003ediscussions\u003c/a\u003e section.\u003c/p\u003e",
+      "file": "README.md",
+      "line": 103
     }
   ]
 }

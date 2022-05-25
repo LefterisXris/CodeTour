@@ -100,6 +100,11 @@ repo https://github.com/LefterisXris/CodeTour/discussions
   Download the [latest release](https://github.com/LefterisXris/CodeTour/releases/latest) and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
+## Examples and Best Practices
+
+**TODO!**
+Examples and Best Practices will soon be provided
+
 ## Conventions
 
 ### Type of Commits
