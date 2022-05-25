@@ -9,7 +9,7 @@ CodeTour is an IntelliJ Plugin developed in the context of my MSc Thesis. Univer
 
 ## :scroll: Thesis Info :mortar_board:
 
-![alt text](code-tour-uom-logo-white-en.jpg)
+![Code Tour UoM - LefterisXris logo](assets/code-tour-uom-logo-white-en.jpg)
 
 ### Thesis tile: `Code Reading Challenges & Best Practices`
 
@@ -104,6 +104,44 @@ repo https://github.com/LefterisXris/CodeTour/discussions
 
 **TODO!**
 Examples and Best Practices will soon be provided
+
+## Demos
+
+### Open Tool Window
+
+![CodeTour Demo](assets/01-tool-window-open.gif)
+
+### Create New Tour
+
+![CodeTour Demo](assets/02-create-new-tour.gif)
+
+### Create New Step
+
+![CodeTour Demo](assets/03-create-new-step.gif)
+
+### Step Context Menu
+
+![CodeTour Demo](assets/04-step-context-menu.gif)
+
+### Navigation
+
+![CodeTour Demo](assets/05-step-navigation.gif)
+
+### Plugin Main
+
+![CodeTour Demo](assets/01-plugin-main.png)
+
+### Tools Menu & Shortcuts
+
+![CodeTour Demo](assets/02-shortcuts-tools-menu.png)
+
+### Tour Context Menu
+
+![CodeTour Demo](assets/03-tour-context-menu.png)
+
+### Step Context Menu
+
+![CodeTour Demo](assets/04-step-context-menu.png)
 
 ## Conventions
 

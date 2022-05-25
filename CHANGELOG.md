@@ -15,3 +15,5 @@
 - Gutter Icons for Steps on code
 - Jump to Tour source file (via Tree click)
 - Steps navigation through Step Documentation modal (arrow buttons)
+- Added sample Tours on codebase for demonstration
+- Added demo content on README (.gif and screenshots)
