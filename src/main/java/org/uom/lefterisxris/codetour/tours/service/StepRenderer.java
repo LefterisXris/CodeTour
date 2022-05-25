@@ -122,7 +122,7 @@ public class StepRenderer extends DialogWrapper {
             });
          }
       });
-      nextStepButton.setToolTipText("Navigate to the Next Step (Ctrl+Alt+Q)");
+      nextStepButton.setToolTipText("Navigate to the Next Step (Ctrl+Alt+W)");
       buttons.add(nextStepButton);
 
       dialogPanel.add(buttons, BorderLayout.SOUTH);

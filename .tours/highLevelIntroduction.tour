@@ -1,0 +1,86 @@
+{
+  "id": "aaa85252-f4a1-4e45-9bb1-4dc9593e72c2",
+  "tourFile": "highLevelIntroduction.tour",
+  "title": "High-Level Introduction",
+  "description": "A New Tour",
+  "steps": [
+    {
+      "title": "Tour Intro",
+      "description": "\u003ch1\u003eWelcome to General Info Tour!\u003c/h1\u003e\n\u003cp\u003eThe purpose of this tour is to provide a \u003cspan style\u003d\"text-decoration: underline;\"\u003ehigh-level\u003c/span\u003e introduction to the Source Code of \u003ca href\u003d\"https://github.com/LefterisXris/CodeTour\" target\u003d\"_blank\"\u003eCodeTour\u003c/a\u003e IntelliJ plugin. \u003c/p\u003e\n\u003cp\u003eAt the end of this Tour, the following knowledge would be acquired:\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003eUnderstand the Structure of the plugin\u003c/li\u003e\n  \u003cli\u003eIdentify plugin important configuration\u003c/li\u003e\n  \u003cli\u003eTours CRUD operations logic\u003c/li\u003e\n  \u003cli\u003eStep Navigation and Description Modal\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003e\n  \u003cem\u003eAs always, feel free to request more details, by opening an issue on \u003ca href\u003d\"https://github.com/LefterisXris/CodeTour/issues\" target\u003d\"_blank\"\u003eCode Tour GitHub\u003c/a\u003e. \u003c/em\u003e\n\u003c/p\u003e",
+      "file": "README.md",
+      "line": 1
+    },
+    {
+      "title": "README Contents",
+      "description": "\u003ch1\u003eREADME Contents\u003c/h1\u003e\n\u003cp\u003eREADME file is always the best place to look for information related to a project. CodeTours\u0027 README file (markdown) provides info about the following sections:\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003eCodeTour an IntelliJ Plugin (intro)\u003c/li\u003e\n  \u003cli\u003eThesis Information (Goals, Research, Survey link)\u003c/li\u003e\n  \u003cli\u003ePlugin Info (Vision \u0026amp; Description)\u003c/li\u003e\n  \u003cli\u003eInstallation instructions\u003c/li\u003e\n\u003c/ul\u003e",
+      "file": "README.md",
+      "line": 10
+    },
+    {
+      "title": "Project Properties",
+      "description": "\u003ch1\u003eProject Properties\u003c/h1\u003e\n\u003cp\u003eSome of the most important properties of CodeTour are gathered into a file \u003cstrong\u003e\n    \u003cem\u003egradle.properties\u003c/em\u003e\n  \u003c/strong\u003e providing a single point of reference for configuring them. \u003c/p\u003e\n\u003cp\u003eThe most important properties are:\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003epluginName \u003cem\u003e-- Value is being injected to gradle at build-time and plugin name is defined that way\u003c/em\u003e\n  \u003c/li\u003e\n  \u003cli\u003epluginSinceBuild \u003cem\u003e-- Backwards compatibility for IntelliJ version (for end-users who will try to install the Plugin)\u003c/em\u003e\n  \u003c/li\u003e\n  \u003cli\u003epluginUntilBuild -- Upwards compatibility\u003c/li\u003e\n\u003c/ul\u003e",
+      "file": "gradle.properties",
+      "line": 4
+    },
+    {
+      "title": "Properties Access",
+      "description": "\u003ch1\u003eProperties Access\u003c/h1\u003e\n\u003cp\u003eCodeTour uses \u003ca href\u003d\"https://docs.gradle.org/current/userguide/kotlin_dsl.html\" target\u003d\"_blank\"\u003eGradle Kotlin DSL\u003c/a\u003e and thus some very useful functions are provided by default. \u003c/p\u003e\n\u003cp\u003eOne of them is \u003cem\u003e\n    \u003ccode\u003eProject#findProperty(String key)\u003c/code\u003e\n  \u003c/em\u003e. An alias is provided here so that we can easily access our properties. \u003c/p\u003e\n\u003cp\u003eExample usage:\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003e\n    \u003cem\u003e\n      \u003ccode\u003eversion \u003d properties(\"pluginVersion\")\u003c/code\u003e -- pluginVersion is retrieved from \u003c/em\u003e\n    \u003cstrong\u003egradle.properties\u003c/strong\u003e\n    \u003cem\u003e file\u003c/em\u003e\n  \u003c/li\u003e\n\u003c/ul\u003e",
+      "file": "build.gradle.kts",
+      "line": 4
+    },
+    {
+      "title": "build.gradle Explanation",
+      "description": "\u003ch1\u003ebuild.gradle Explanation\u003c/h1\u003e\n\u003cp\u003eWithing the Gradle file, the following information can be found:\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003eGradle \u003cstrong\u003eplugins\u003c/strong\u003e that CodeTour uses along with \u003cspan style\u003d\"text-decoration: underline;\"\u003etheir configuration\u003c/span\u003e. e.g. Check the powerful \u003ca href\u003d\"https://github.com/JetBrains/gradle-changelog-plugin\" target\u003d\"_blank\"\u003echangelog\u003c/a\u003e plugin and its configuration (separate block) \u003c/li\u003e\n\u003c/ul\u003e\n\u003cp style\u003d\"padding-left: 40px;\"\u003e\n  \u003ccode\u003e id(\"org.jetbrains.changelog\") version \"1.3.1\" // the dependency\u003c/code\u003e\n  \u003cbr /\u003e\n  \u003ccode\u003e...\u003c/code\u003e\n  \u003cbr /\u003e\n  \u003ccode\u003echangelog { // configuration\u003c/code\u003e\n  \u003cbr /\u003e\n  \u003ccode\u003e\u0026nbsp; version.set(properties(\"pluginVersion\"))\u003c/code\u003e\n  \u003cbr /\u003e\n  \u003ccode\u003e\u0026nbsp; groups.set(emptyList())\u003c/code\u003e\n  \u003cbr /\u003e\n  \u003ccode\u003e}\u003c/code\u003e\n\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003eExecutable gradle \u003cstrong\u003eTaks\u003c/strong\u003e with some logic \u003c/li\u003e\n  \u003cli\u003e\n    \u003cstrong\u003eDependencies\u003c/strong\u003e of useful 3rd party libraries like \u003ca href\u003d\"https://projectlombok.org/\" target\u003d\"_blank\"\u003e\n      \u003cstrong\u003eLombok\u003c/strong\u003e\n    \u003c/a\u003e\n  \u003c/li\u003e\n\u003c/ul\u003e",
+      "file": "build.gradle.kts",
+      "line": 6
+    },
+    {
+      "title": "Plugin.xml, the plugin declaration",
+      "description": "\u003ch1\u003ePlugin.xml, the plugin declaration\u003c/h1\u003e\n\u003cp\u003eThe plugin configuration file is a \u003cstrong\u003eplugin.xml\u003c/strong\u003e file located in the \u003cem\u003esrc/main/resources/META-INF\u003c/em\u003e directory. It provides general information about the plugin, its dependencies, extensions, listeners, actions, etc. \u003c/p\u003e\n\u003cp\u003eMore information is available on \u003ca href\u003d\"https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html?from\u003dIJPluginTemplate\" target\u003d\"_blank\"\u003ePlugin Configuration File Documentation\u003c/a\u003e\n\u003c/p\u003e",
+      "file": "plugin.xml",
+      "line": 2
+    },
+    {
+      "title": "Tours StateManager",
+      "description": "\u003ch1\u003eTours StateManager\u003c/h1\u003e\n\u003cp\u003eStateManager is the class responsible for implementing all the \u003cstrong\u003eCRUD\u003c/strong\u003e operations for Tours and their Steps. \u003c/p\u003e\n\u003cp\u003eThe following are implemented here:\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003eLoad Tours from source files\u003c/li\u003e\n  \u003cli\u003eCreate/Edit/Delete a Tour\u003c/li\u003e\n  \u003cli\u003eCreate/Edit/Delete a Tour Step\u003c/li\u003e\n  \u003cli\u003eHold info ( \u003cstrong\u003estatic\u003c/strong\u003e) about the active Tour \u003c/li\u003e\n  \u003cli\u003eSome Validation methods\u003c/li\u003e\n\u003c/ul\u003e",
+      "file": "StateManager.java",
+      "line": 32
+    },
+    {
+      "title": "Tours Tree",
+      "description": "\u003ch1\u003eTours Tree\u003c/h1\u003e\n\u003cp\u003eThe component which renders the Tours along with their Steps in a tree view Tool Window.\u0026nbsp;\u003c/p\u003e\n\u003cp\u003eBesides the tree and its listeners, a very important section is related to the \u003cstrong\u003eMessageBus Listener\u003c/strong\u003e which is a messaging implementation so that UI (Tours tree) is always in-sync with user actions. \u003c/p\u003e",
+      "file": "ToolPaneWindow.java",
+      "line": 67
+    },
+    {
+      "title": "Navigation Implementation",
+      "description": "\u003ch1\u003eNavigation Implementation\u003c/h1\u003e\n\u003cp\u003eNavigator class that navigates the user to the location that a step indicates. \u003c/p\u003e\n\u003cp\u003eThe location is identified by the filename and line.\u003c/p\u003e\n\u003cp\u003eIn future releases, \u003cspan style\u003d\"text-decoration: underline;\"\u003emore flexibility\u003c/span\u003e will be provided.\u003c/p\u003e\n\u003cp\u003eAt the end, navigator also triggers the rendering of Step\u0027s description to the editor.\u003c/p\u003e",
+      "file": "Navigator.java",
+      "line": 23
+    },
+    {
+      "title": "Step Description Renderer",
+      "description": "\u003ch1\u003eStep Description Renderer\u003c/h1\u003e\n\u003cp\u003eStep Description Renderer is responsible for creating the modal containing the Step\u0027s description\u003c/p\u003e",
+      "file": "StepRenderer.java",
+      "line": 28
+    },
+    {
+      "title": "Step Generator",
+      "description": "\u003ch1\u003eStep Generator\u003c/h1\u003e\n\u003cp\u003eThe Step Generator, registers a listener action on Editor\u0027s gutter menu (right click), giving that way the ability to create a Step as simply as creating a Breakpoint.\u003c/p\u003e",
+      "file": "TourStepGeneratorAction.java",
+      "line": 27
+    },
+    {
+      "title": "CI/CD: Build",
+      "description": "\u003ch1\u003eCI/CD Build\u003c/h1\u003e\n\u003cp\u003eGitHub Actions Workflow created for testing and preparing the plugin release in following steps:\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003evalidate Gradle Wrapper,\u003c/li\u003e\n  \u003cli\u003erun \u0027test\u0027 and \u0027verifyPlugin\u0027 tasks,\u003c/li\u003e\n  \u003cli\u003erun Qodana inspections,\u003c/li\u003e\n  \u003cli\u003erun \u0027buildPlugin\u0027 task and prepare artifact for the further tests,\u003c/li\u003e\n  \u003cli\u003erun \u0027runPluginVerifier\u0027 task,\u003c/li\u003e\n  \u003cli\u003ecreate a draft release.\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003eWorkflow is triggered on \u003cstrong\u003epush\u003c/strong\u003e and \u003cstrong\u003epull_request\u003c/strong\u003e events. \u003c/p\u003e\n\u003cp\u003eGitHub Actions reference: \u003ca href\u003d\"https://help.github.com/en/actions\"\u003ehttps://help.github.com/en/actions\u003c/a\u003e\n\u003c/p\u003e",
+      "file": "build.yml",
+      "line": 15
+    },
+    {
+      "title": "CI/CD: Release",
+      "description": "\u003ch1\u003eCI/CD Release\u003c/h1\u003e\n\u003cpre\u003e\n\u003cem\u003eGitHub Actions Workflow created for handling the release process based on the draft release prepared with the Build workflow. \nRunning the publishPlugin task requires the PUBLISH_TOKEN secret provided.\u003c/em\u003e\n\u003c/pre\u003e",
+      "file": "release.yml",
+      "line": 4
+    }
+  ]
+}
