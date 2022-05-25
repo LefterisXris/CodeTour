@@ -3,6 +3,8 @@
 # CodeTour Changelog
 
 ## [Unreleased]
+
+## [0.0.2]
 ### Implemented
 - Load from json, Show In Tool Pane, Navigate with click
 - Navigate with Previous/Next buttons on Tool Pane
@@ -17,3 +19,4 @@
 - Steps navigation through Step Documentation modal (arrow buttons)
 - Added sample Tours on codebase for demonstration
 - Added demo content on README (.gif and screenshots)
+
