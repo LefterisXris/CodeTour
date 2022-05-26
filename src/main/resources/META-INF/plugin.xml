@@ -15,9 +15,9 @@
            Contains the tree representation of all the available Tours and provides
            easy single-click navigation on Steps and Prev/Next buttons
       -->
-      <toolWindow id="Tours Navigation" anchor="left" icon="icon-xs.png"
+      <toolWindow id="Tours Navigation" anchor="left" icon="CodeTourIcons.LOGO_S"
                   factoryClass="org.uom.lefterisxris.codetour.tours.ui.ToolPaneWindowFactory"/>
-      <notificationGroup id="CodeTour-Notification" displayType="BALLOON" icon="icon-xs.png"/>
+      <notificationGroup id="CodeTour-Notification" displayType="BALLOON" icon="CodeTourIcons.LOGO_S"/>
       <codeInsight.lineMarkerProvider language=""
                                       implementationClass="org.uom.lefterisxris.codetour.tours.ui.TourLineMarkerProvider"/>
    </extensions>
@@ -35,7 +35,7 @@
             - Next Step: Ctrl+Alt+W
       -->
       <group id="CodeTourGroupedActions" text="Code Tour" description="Code Tour related actions"
-             popup="true" icon="icon-xs.png">
+             popup="true" icon="CodeTourIcons.LOGO_S">
          <add-to-group group-id="ToolsMenu" anchor="last"/>
          <action id="PrevStepNav" class="org.uom.lefterisxris.codetour.tours.actions.NavigatePrevStepAction"
                  text="Previous Step" description="Navigate to the Previous Step"
