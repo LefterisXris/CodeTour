@@ -43,6 +43,7 @@ The following projects have been created for managing the whole Thesis (includin
 ![Build](https://github.com/LefterisXris/CodeTour/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/19227-codetour.svg)](https://plugins.jetbrains.com/plugin/19227-codetour)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/19227-codetour.svg)](https://plugins.jetbrains.com/plugin/19227-codetour)
+[![Rating](https://img.shields.io/jetbrains/plugin/r/rating/19227-codetour.svg)](https://plugins.jetbrains.com/plugin/19227-codetour)
 
 ## Vision
 
