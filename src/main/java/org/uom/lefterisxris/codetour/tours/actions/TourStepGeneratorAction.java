@@ -6,7 +6,10 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapperPeer;
+import com.intellij.openapi.ui.MessageMultilineInputDialog;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
@@ -15,6 +18,7 @@ import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.state.TourUpdateNotifier;
 import org.uom.lefterisxris.codetour.tours.ui.TourSelectionDialogWrapper;
 
+import javax.swing.text.JTextComponent;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
@@ -64,12 +68,20 @@ public class TourStepGeneratorAction extends AnAction {
       if (activeTour.isPresent()) {
          final Step step = generateStep(virtualFile, line);
 
+         // Show a MultiLine Input Dialog, so that user can input their description
+         final MessageMultilineInputDialog dialog =
+               new MessageMultilineInputDialog(project, String.format("Edit Step's '%s' description", step.getTitle()),
+                     "Edit Step", AllIcons.Actions.Edit, step.getDescription(), null,
+                     new String[]{Messages.getOkButton(), Messages.getCancelButton()}, 0);
+         final JTextComponent textField = dialog.getTextField();
+         final TextRange selection = TextRange.allOf(step.getDescription());
+         textField.select(selection.getStartOffset(), selection.getEndOffset());
+         textField.putClientProperty(DialogWrapperPeer.HAVE_INITIAL_SELECTION, true);
+
+         dialog.show();
+
          // Provide a dialog for step's description
-         final String updatedDescription = Messages.showMultilineInputDialog(project,
-               String.format("Edit Step's '%s' description", step.getTitle()),
-               "Edit Step",
-               step.getDescription(),
-               AllIcons.Actions.Edit, null);
+         final String updatedDescription = dialog.getInputString();
          if (updatedDescription == null)
             return; // i.e. cancel the step creation
 
