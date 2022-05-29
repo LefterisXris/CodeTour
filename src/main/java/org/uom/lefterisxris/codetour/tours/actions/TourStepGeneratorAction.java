@@ -70,8 +70,10 @@ public class TourStepGeneratorAction extends AnAction {
                "Edit Step",
                step.getDescription(),
                AllIcons.Actions.Edit, null);
-         if (updatedDescription != null)
-            step.setDescription(updatedDescription);
+         if (updatedDescription == null)
+            return; // i.e. cancel the step creation
+
+         step.setDescription(updatedDescription);
 
          activeTour.get().getSteps().add(step);
          stateManager.updateTour(activeTour.get());
