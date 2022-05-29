@@ -9,9 +9,9 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import icons.CodeTourIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.state.StepSelectionNotifier;
 
@@ -45,7 +45,7 @@ public class TourLineMarkerProvider extends LineMarkerProviderDescriptor {
                if (!markedLines.containsKey(fileLine) || element.equals(markedLines.get(fileLine))) {
                   markedLines.put(fileLine, element);
                   return new LineMarkerInfo<>(element, element.getTextRange(),
-                        Props.STEP,
+                        CodeTourIcons.STEP,
                         psiElement -> "Code Tour Step",
                         (e, elt) -> {
                            new StateManager(element.getProject()).findStepByFileLine(containingFile.getName(),

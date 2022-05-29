@@ -1,8 +1,8 @@
 package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.ui.render.LabelBasedRenderer;
+import icons.CodeTourIcons;
 import org.jetbrains.annotations.NotNull;
-import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
@@ -34,9 +34,9 @@ public class TreeRenderer extends LabelBasedRenderer.Tree {
          if (node.getUserObject() instanceof Tour) {
             final Tour tour = (Tour)node.getUserObject();
             if (tour.getId() != null && tour.getId().equals(selectedTourId))
-               setIcon(Props.ICON_XS);
+               setIcon(CodeTourIcons.LOGO_XS);
          } else if (node.getUserObject() instanceof Step) {
-            setIcon(Props.STEP);
+            setIcon(CodeTourIcons.STEP);
          }
       }
 

@@ -4,8 +4,8 @@ import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import icons.CodeTourIcons;
 import org.jetbrains.annotations.Nullable;
-import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 
 /**
@@ -22,7 +22,7 @@ public class CodeTourNotifier {
       NotificationGroupManager.getInstance()
             .getNotificationGroup("CodeTour-Notification")
             .createNotification(content, NotificationType.INFORMATION)
-            .setIcon(Props.ICON_XS)
+            .setIcon(CodeTourIcons.LOGO_S)
             .notify(project);
       LOG.info("CodeTourNotifier: " + content);
    }
@@ -31,7 +31,7 @@ public class CodeTourNotifier {
       NotificationGroupManager.getInstance()
             .getNotificationGroup("CodeTour-Notification")
             .createNotification("Tour action: " + action, content, NotificationType.INFORMATION)
-            .setIcon(Props.ICON_XS)
+            .setIcon(CodeTourIcons.LOGO_S)
             .notify(project);
       LOG.info("CodeTourNotifier: " + content);
    }
@@ -40,7 +40,7 @@ public class CodeTourNotifier {
       NotificationGroupManager.getInstance()
             .getNotificationGroup("CodeTour-Notification")
             .createNotification(content, NotificationType.WARNING)
-            .setIcon(Props.ICON_XS)
+            .setIcon(CodeTourIcons.LOGO_S)
             .notify(project);
       LOG.warn("CodeTourNotifier: " + content);
    }
@@ -49,7 +49,7 @@ public class CodeTourNotifier {
       NotificationGroupManager.getInstance()
             .getNotificationGroup("CodeTour-Notification")
             .createNotification(content, NotificationType.ERROR)
-            .setIcon(Props.ICON_XS)
+            .setIcon(CodeTourIcons.LOGO_S)
             .notify(project);
       LOG.error("CodeTourNotifier: " + content);
    }
