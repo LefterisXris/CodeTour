@@ -7,6 +7,8 @@
 ### Added
 
 - New Icons
+- New Step's Description default value is pre-selected for easier user input
+- Added markdown support
 
 ## [0.0.2]
 

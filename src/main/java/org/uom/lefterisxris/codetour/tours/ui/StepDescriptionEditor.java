@@ -35,14 +35,12 @@ public class StepDescriptionEditor extends MessageMultilineInputDialog {
 
    /**
     * Make the text preselected (for easier custom input)
-    *
-    * @return this for chaining
     */
-   private StepDescriptionEditor preselectText() {
+   private void preselectText() {
       final JTextComponent textField = getTextField();
       final TextRange selection = TextRange.allOf(textField.getText());
       textField.select(selection.getStartOffset(), selection.getEndOffset());
       textField.putClientProperty(DialogWrapperPeer.HAVE_INITIAL_SELECTION, true);
-      return this;
    }
+
 }
