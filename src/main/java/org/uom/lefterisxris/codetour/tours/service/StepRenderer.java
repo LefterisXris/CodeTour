@@ -8,6 +8,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.intellij.markdown.ast.ASTNode;
+import org.intellij.markdown.flavours.MarkdownFlavourDescriptor;
+import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor;
+import org.intellij.markdown.html.HtmlGenerator;
+import org.intellij.markdown.parser.MarkdownParser;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
@@ -59,7 +64,7 @@ public class StepRenderer extends DialogWrapper {
 
       final String stepDoc = renderFullDoc(
             String.format("Description of Step '%s'", step.getTitle()),
-            step.getDescription(),
+            getHtml(step.getDescription()),
             String.format("%s:%s", step.getFile(), step.getLine()));
 
       final DocumentationManager documentationManager = DocumentationManager.getInstance(project);
@@ -128,6 +133,12 @@ public class StepRenderer extends DialogWrapper {
       dialogPanel.add(buttons, BorderLayout.SOUTH);
       dialogPanel.setPreferredSize(new Dimension(320, 160));
       return dialogPanel;
+   }
+
+   private static String getHtml(String markdown) {
+      final MarkdownFlavourDescriptor flavour = new GFMFlavourDescriptor();
+      final ASTNode parsedTree = new MarkdownParser(flavour).buildMarkdownTreeFromString(markdown);
+      return new HtmlGenerator(markdown, parsedTree, flavour, false).generateHtml();
    }
 
    /**

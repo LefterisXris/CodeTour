@@ -69,7 +69,7 @@ Features:
 
 - Create new Tours and Steps easily through Editor's Gutter context menu (similar to adding breakpoints) <kbd>Right
   Click on gutter</kbd> > <kbd>Add Tour Step</kbd>
-- HTML support for Step's description (markdown support soon)
+- Markdown and HTML support for Step's description
 - Customizable (location, size, font etc) popup window for Step's description
 - Tree-like view of Tours and their Steps on a Tool Window
 - Code Navigation with single click (on Steps available on Tours Tree)
