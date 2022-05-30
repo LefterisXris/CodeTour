@@ -33,13 +33,15 @@ import java.util.Optional;
 public class StepRenderer extends DialogWrapper {
    private final Step step;
    private final Project project;
+   private final boolean navigationButtons;
 
    private static StepRenderer instance;
 
-   private StepRenderer(Step step, Project project) {
+   private StepRenderer(Step step, Project project, boolean navigationButtons) {
       super(true);
       this.step = step;
       this.project = project;
+      this.navigationButtons = navigationButtons;
       setTitle("Step Documentation");
       init();
       setModal(false);
@@ -47,6 +49,10 @@ public class StepRenderer extends DialogWrapper {
    }
 
    public static StepRenderer getInstance(Step step, Project project) {
+      return getInstance(step, project, true);
+   }
+
+   public static StepRenderer getInstance(Step step, Project project, boolean navigationButtons) {
 
       Optional<UserSettings> userSettings = Optional.empty();
       if (instance != null) {
@@ -55,7 +61,7 @@ public class StepRenderer extends DialogWrapper {
          instance.close(0);
       }
 
-      instance = new StepRenderer(step, project);
+      instance = new StepRenderer(step, project, navigationButtons);
       userSettings.ifPresent(settings -> settings.inject(instance));
       return instance;
    }
@@ -107,6 +113,7 @@ public class StepRenderer extends DialogWrapper {
       previousStepButton.addMouseListener(new MouseAdapter() {
          @Override
          public void mouseReleased(MouseEvent e) {
+            if (!navigationButtons) return;
             StateManager.getPrevStep().ifPresent(step -> {
                // Notify UI to select the step which will trigger its navigation
                project.getMessageBus().syncPublisher(StepSelectionNotifier.TOPIC).selectStep(step);
@@ -121,6 +128,7 @@ public class StepRenderer extends DialogWrapper {
       nextStepButton.addMouseListener(new MouseAdapter() {
          @Override
          public void mouseReleased(MouseEvent e) {
+            if (!navigationButtons) return;
             StateManager.getNextStep().ifPresent(step -> {
                // Notify UI to select the step which will trigger its navigation
                project.getMessageBus().syncPublisher(StepSelectionNotifier.TOPIC).selectStep(step);
@@ -129,6 +137,10 @@ public class StepRenderer extends DialogWrapper {
       });
       nextStepButton.setToolTipText("Navigate to the Next Step (Ctrl+Alt+W)");
       buttons.add(nextStepButton);
+
+      // Buttons can be disabled (e.g. for preview mode)
+      previousStepButton.setEnabled(navigationButtons);
+      nextStepButton.setEnabled(navigationButtons);
 
       dialogPanel.add(buttons, BorderLayout.SOUTH);
       dialogPanel.setPreferredSize(new Dimension(320, 160));

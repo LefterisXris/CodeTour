@@ -10,6 +10,8 @@
 - New Step's Description default value is pre-selected for easier user input
 - Added markdown support
 - Sample Tours (for demonstration)
+- Steps Reorder support (moveUp/moveDown)
+- Preview mode on Step Description Editor
 
 ## [0.0.2]
 
