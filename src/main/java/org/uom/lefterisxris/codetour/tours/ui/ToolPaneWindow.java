@@ -62,7 +62,6 @@ public class ToolPaneWindow {
       this.project = project;
       this.stateManager = new StateManager(project);
       panel = new JPanel(new BorderLayout());
-      panel.add(new JLabel("Tour Navigation UI"), BorderLayout.NORTH);
 
       createToursTee(project);
 
@@ -253,11 +252,18 @@ public class ToolPaneWindow {
          final JMenuItem editDescriptionAction = new JMenuItem("Edit Description", AllIcons.Actions.Edit);
          editDescriptionAction.addActionListener(d -> editStepDescriptionListener(step, tour));
 
+         // Move up-down
+         final JMenuItem moveUpAction = new JMenuItem("Move Up", AllIcons.Actions.MoveUp);
+         moveUpAction.addActionListener(d -> moveListener(step, tour, true));
+         final JMenuItem moveDownAction = new JMenuItem("Move Down", AllIcons.Actions.MoveDown);
+         moveDownAction.addActionListener(d -> moveListener(step, tour, false));
+
          // Delete Action
          final JMenuItem deleteAction = new JMenuItem("Delete Step", AllIcons.Actions.DeleteTag);
          deleteAction.addActionListener(d -> deleteStepListener(step, tour));
 
-         Arrays.asList(editTitleAction, editDescriptionAction, deleteAction).forEach(menu::add);
+         Arrays.asList(editTitleAction, editDescriptionAction, moveUpAction, moveDownAction, deleteAction)
+               .forEach(menu::add);
          menu.show(toursTree, e.getX(), e.getY());
          return;
       }
@@ -408,6 +414,24 @@ public class ToolPaneWindow {
       selectTourLastStep(tour);
    }
 
+   private void moveListener(Step step, Tour tour, boolean up) {
+      final int index = tour.getSteps().indexOf(step);
+      final int newIndex = up ? index - 1 : index + 1;
+      tour.getSteps().remove(index);
+      if (tour.getSteps().size() <= newIndex || newIndex < 0)
+         CodeTourNotifier.error(project, String.format("Cannot move Step '%s' %s!",
+               step.getTitle(), up ? "up" : "down"));
+
+      tour.getSteps().add(newIndex, step);
+
+      stateManager.updateTour(tour);
+      createToursTee(project);
+      CodeTourNotifier.notifyTourAction(project, tour, "Steps Order Update", "Steps have been re-arranged!");
+
+      // Expand and select the last Step of the active Tour on the tree
+      selectTourStep(tour, Optional.of(newIndex), false);
+   }
+
    private void deleteStepListener(Step step, Tour tour) {
       tour.getSteps().removeIf(tourStep -> tourStep.getTitle().equals(step.getTitle()));
       stateManager.updateTour(tour);
@@ -437,6 +461,10 @@ public class ToolPaneWindow {
    }
 
    private void selectTourStep(Tour tour, Optional<Integer> activeStepIndex) {
+      selectTourStep(tour, activeStepIndex, true);
+   }
+
+   private void selectTourStep(Tour tour, Optional<Integer> activeStepIndex, boolean navigate) {
       // Expand and select the given or the last Step of the active Tour on the tree
       for (int i = 0; i < toursTree.getRowCount(); i++) {
          if (!toursTree.getPathForRow(i).getLastPathComponent().toString().equals(tour.getTitle())) continue;
@@ -451,8 +479,9 @@ public class ToolPaneWindow {
                   final DefaultMutableTreeNode stepNodeToSelect =
                         (DefaultMutableTreeNode)pNode.getChildAt(activeStepIndex.get());
                   toursTree.getSelectionModel().setSelectionPath(new TreePath(stepNodeToSelect.getPath()));
-                  // Also navigate to that step
-                  Navigator.navigate((Step)stepNodeToSelect.getUserObject(), project);
+                  // Also navigate to that step (if set)
+                  if (navigate)
+                     Navigator.navigate((Step)stepNodeToSelect.getUserObject(), project);
                } else {
                   // otherwise, select the last step of the tour Node, and update the selected step index
                   toursTree.getSelectionModel().setSelectionPath(new TreePath(pNode.getLastLeaf().getPath()));
