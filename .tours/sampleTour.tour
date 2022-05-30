@@ -18,19 +18,19 @@
     },
     {
       "title": "Add Steps on a Tour",
-      "description": "# Adding a Step\n\nAdding a Step is as easy as adding a new breakpoint on the code. Use the Editor\u0027s Gutter Menu (the area where line numbers are) and hit right click to add a new Step.\n\nThe **title** of the new Step is automatically generated and can be edited from Step\u0027s context menu (right click) on the tree.\n\nAn editable text area will appear in which the user is prompted to input the **description** of the step. The text area has **FULL MARKDOWN SUPPORT** (*when rendered on Step Navigation*)",
+      "description": "# Adding a Step\n\nAdding a Step is as easy as adding a new breakpoint on the code. Use the Editor\u0027s Gutter Menu (the area where line numbers are) and hit right click to add a new Step.\n\nThe **title** of the new Step is automatically generated and can be edited from Step\u0027s context menu (right click) on the tree.\n\nAn editable text area will appear in which the user is prompted to input the **description** of the step. The text area has **FULL MARKDOWN/HTML SUPPORT** (*when rendered on Step Navigation*)",
       "file": "TourStepGeneratorAction.java",
       "line": 27
     },
     {
       "title": "Navigate between Steps",
-      "description": "# Navigating between Steps\n\nNavigating to a Step is very easy and can be performed through Tours tree (Tool Window) by single click on Step.\n\nAfter clicking on the Step, CodeTour Plugin will navigate you to the location that the Step indicates (file:line) and will render (**MARKDOWN supported**) the Step\u0027s description\n\n### Navigation\n\n- Navigate to _Previous_ Step:\n    - Button (modal): ←\n    - Button (tree): **Previous Step**\n    - Shortcut: **Ctrl+Alt+Q**\n- Navigate to _Next_ Step:\n    - Button (modal): →\n    - Button (tree): **Next Step**\n    - Shortcut: **Ctrl+Alt+W**",
+      "description": "# Navigating between Steps\n\nNavigating to a Step is very easy and can be performed through Tours tree (Tool Window) by single click on Step.\n\nAfter clicking on the Step, CodeTour Plugin will navigate you to the location that the Step indicates (file:line) and will render (**MARKDOWN/HTML supported**) the Step\u0027s description\n\n### Navigation\n\n- Navigate to _Previous_ Step:\n    - Button (modal): ←\n    - Button (tree): **Previous Step**\n    - Shortcut: **Ctrl+Alt+Q**\n- Navigate to _Next_ Step:\n    - Button (modal): →\n    - Button (tree): **Next Step**\n    - Shortcut: **Ctrl+Alt+W**",
       "file": "Navigator.java",
       "line": 23
     },
     {
       "title": "Step Description Popup",
-      "description": "# Step Description Popup\n\nStep\u0027s description is rendered on a popup modal dialog, which supports HTML rendering (and soon markdown)\n\nThe popup provides the following:\n\n- **Description** rendering with HTML support\n- **Resizable** and **Movable** panel as a popup modal\n- Adjustable **Font Size**\n- Buttons for navigating to Previous and Next Step\n\n**Tip**: *Shortcuts for navigating to Previous and Next Step are always active:*\n\n- Previous Step: **Ctrl+Alt+Q**\n- Next Step: **Ctrl+Alt+W**",
+      "description": "# Step Description Popup\n\nStep\u0027s description is rendered on a popup modal dialog, which supports MARKDOWN/HTML rendering\n\nThe popup provides the following:\n\n- **Description** rendering with HTML support\n- **Resizable** and **Movable** panel as a popup modal\n- Adjustable **Font Size**\n- Buttons for navigating to Previous and Next Step\n\n**Tip**: *Shortcuts for navigating to Previous and Next Step are always active:*\n\n- Previous Step: **Ctrl+Alt+Q**\n- Next Step: **Ctrl+Alt+W**",
       "file": "StepRenderer.java",
       "line": 28
     },

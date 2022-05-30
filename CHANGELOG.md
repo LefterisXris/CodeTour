@@ -9,6 +9,7 @@
 - New Icons
 - New Step's Description default value is pre-selected for easier user input
 - Added markdown support
+- Sample Tours (for demonstration)
 
 ## [0.0.2]
 

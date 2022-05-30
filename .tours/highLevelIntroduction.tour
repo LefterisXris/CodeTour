@@ -60,7 +60,7 @@
     },
     {
       "title": "Step Description Renderer",
-      "description": "# Step Description Renderer\n\nStep Description Renderer is responsible for creating the modal containing the Step\u0027s description\n\nStep Renderer includes:\n- a custom Dialog wrapper implementation\n- markdown formatter to display the content in a readable form\n- documentation-like sections (e.g. the source file)\n- buttons for navigation to Previous/Next step",
+      "description": "# Step Description Renderer\n\nStep Description Renderer is responsible for creating the modal containing the Step\u0027s description\n\nStep Renderer includes:\n- a custom Dialog wrapper implementation\n- markdown/html formatter to display the content in a readable form\n- documentation-like sections (e.g. the source file)\n- buttons for navigation to Previous/Next step",
       "file": "StepRenderer.java",
       "line": 28
     },
