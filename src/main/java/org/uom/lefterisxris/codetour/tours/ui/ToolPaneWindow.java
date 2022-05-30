@@ -252,11 +252,15 @@ public class ToolPaneWindow {
          final JMenuItem editDescriptionAction = new JMenuItem("Edit Description", AllIcons.Actions.Edit);
          editDescriptionAction.addActionListener(d -> editStepDescriptionListener(step, tour));
 
-         // Move up-down
+         // Move up Step
          final JMenuItem moveUpAction = new JMenuItem("Move Up", AllIcons.Actions.MoveUp);
          moveUpAction.addActionListener(d -> moveListener(step, tour, true));
+         moveUpAction.setEnabled(node.getPreviousSibling() != null);
+
+         // Move down Step
          final JMenuItem moveDownAction = new JMenuItem("Move Down", AllIcons.Actions.MoveDown);
          moveDownAction.addActionListener(d -> moveListener(step, tour, false));
+         moveDownAction.setEnabled(node.getNextSibling() != null);
 
          // Delete Action
          final JMenuItem deleteAction = new JMenuItem("Delete Step", AllIcons.Actions.DeleteTag);
