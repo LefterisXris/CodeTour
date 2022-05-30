@@ -342,8 +342,8 @@ public class ToolPaneWindow {
       CodeTourNotifier.notifyTourAction(project, tour, "Tour Update",
             String.format("Tour's '%s' Title has been updated", tour.getTitle()));
 
-      // Expand and select the last Step of the active Tour on the tree
-      selectTourLastStep(tour);
+      // Expand and select the first Step of the active Tour on the tree
+      selectTourStep(tour, tour.getSteps().isEmpty() ? Optional.empty() : Optional.of(0), false);
    }
 
    private void jumpToSourceTourListener(Tour tour) {
@@ -385,6 +385,7 @@ public class ToolPaneWindow {
          CodeTourNotifier.warn(project, String.format("Could not find Step '%s'. Edit failed", step.getTitle()));
          return;
       }
+      final int index = tour.getSteps().indexOf(origStep.get());
       origStep.get().setTitle(updatedTitle);
 
       stateManager.updateTour(tour);
@@ -392,8 +393,8 @@ public class ToolPaneWindow {
       CodeTourNotifier.notifyTourAction(project, tour, "Step Update",
             String.format("Step's '%s' Title has been updated", step.getTitle()));
 
-      // Expand and select the last Step of the active Tour on the tree
-      selectTourLastStep(tour);
+      // Expand and select the Step on the tree
+      selectTourStep(tour, Optional.of(index), false);
    }
 
    private void editStepDescriptionListener(Step step, Tour tour) {
@@ -407,6 +408,7 @@ public class ToolPaneWindow {
          CodeTourNotifier.warn(project, String.format("Could not find Step '%s'. Edit failed", step.getTitle()));
          return;
       }
+      final int index = tour.getSteps().indexOf(origStep.get());
       origStep.get().setDescription(updatedDescription);
 
       stateManager.updateTour(tour);
@@ -414,8 +416,8 @@ public class ToolPaneWindow {
       CodeTourNotifier.notifyTourAction(project, tour, "Step Update",
             String.format("Step's '%s' Description has been updated", step.getTitle()));
 
-      // Expand and select the last Step of the active Tour on the tree
-      selectTourLastStep(tour);
+      // Expand and select the Step on the tree
+      selectTourStep(tour, Optional.of(index), false);
    }
 
    private void moveListener(Step step, Tour tour, boolean up) {
@@ -437,14 +439,15 @@ public class ToolPaneWindow {
    }
 
    private void deleteStepListener(Step step, Tour tour) {
-      tour.getSteps().removeIf(tourStep -> tourStep.getTitle().equals(step.getTitle()));
+      final int index = tour.getSteps().indexOf(step);
+      tour.getSteps().remove(index);
       stateManager.updateTour(tour);
       createToursTee(project);
       CodeTourNotifier.notifyTourAction(project, tour, "Step Deletion", String.format("Step " +
             "'%s' has been removed from Tour '%s'", step.getTitle(), tour.getTitle()));
 
-      // Expand and select the last Step of the active Tour on the tree
-      selectTourLastStep(tour);
+      // Expand and select a Step on the tree (on the same index)
+      selectTourStep(tour, Optional.of(Math.min(tour.getSteps().size() - 1, index)), false);
    }
    //endregion
 
