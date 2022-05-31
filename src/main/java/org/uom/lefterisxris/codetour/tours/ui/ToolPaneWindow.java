@@ -249,7 +249,7 @@ public class ToolPaneWindow {
          editTitleAction.addActionListener(d -> editStepTitleListener(step, tour));
 
          // Edit Description Action
-         final JMenuItem editDescriptionAction = new JMenuItem("Edit Description", AllIcons.Actions.Edit);
+         final JMenuItem editDescriptionAction = new JMenuItem("Edit Description", AllIcons.Actions.EditScheme);
          editDescriptionAction.addActionListener(d -> editStepDescriptionListener(step, tour));
 
          // Move up Step
