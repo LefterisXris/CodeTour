@@ -12,6 +12,7 @@
 - Sample Tours (for demonstration)
 - Steps Reorder support (moveUp/moveDown)
 - Preview mode on Step Description Editor
+- Implemented a new enhanced Step Editor
 
 ## [0.0.2]
 
