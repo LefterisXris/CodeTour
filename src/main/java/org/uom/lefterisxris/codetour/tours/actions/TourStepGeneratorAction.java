@@ -33,13 +33,6 @@ public class TourStepGeneratorAction extends AnAction {
       if (isNull(project) || isNull(project.getBasePath()))
          return;
 
-      // TODO: Get the current location and add it on active Tour
-      //  check e.getData(CommonDataKeys.EDITOR).getGutter()
-      //  NavigationGutterIconRenderer
-      //  PsiTreeUtil.getParentOfType(e.getData(CommonDataKeys.PSI_FILE).findElementAt(editor.getCaretModel().getOffset()), com.intellij.psi.PsiMethod.class);
-      //  final Editor editor = e.getData(CommonDataKeys.EDITOR);
-      //  final EditorGutter editorGutter = e.getData(EditorGutter.KEY);
-
       final Object lineObj = e.getDataContext().getData("EditorGutter.LOGICAL_LINE_AT_CURSOR");
       final int line = (lineObj != null ? Integer.parseInt(lineObj.toString()) : 1) + 1;
 

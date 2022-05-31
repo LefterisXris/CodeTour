@@ -49,11 +49,10 @@ public class StateManager {
       this.project = project;
    }
 
+   /**
+    * Persists the provided Tour to filesystem
+    */
    public Tour createTour(Tour tour) {
-      //TODO:
-      // 1. Check that title is unique
-      // 2. Persist to file
-      // 3. Reload the StateManager
       if (project.getBasePath() == null) return null;
       final String fileName = tour.getTourFile();
 
@@ -81,53 +80,35 @@ public class StateManager {
       return tour;
    }
 
-   public Tour updateTour(String tourId, Tour tour) {
-      //TODO:
-      // 1. Find Tour with given name
-      // 2. Check whether the title has changed. If so, delete and create the new tour
-      // 2. Persist the new object to file
-      // 3. Reload the StateManager
-      deleteTour(tourId);
-      createTour(tour);
-      return tour;
-   }
-
+   /**
+    * Updates the given tour by deleting and recreating it
+    *
+    * @param tour The tour to persist
+    * @return the updated tour
+    */
    public Tour updateTour(Tour tour) {
-      //TODO:
-      // 1. Find Tour with given name
-      // 2. Check whether the title has changed. If so, delete and create the new tour
-      // 2. Persist the new object to file
-      // 3. Reload the StateManager
-      deleteTour(tour);
+      deleteTour(tour, false);
       createTour(tour);
       return tour;
-   }
-
-   public void deleteTour(String tourId) {
-      //TODO:
-      // 1. Find the file corresponding to the given tourId
-      // 2. Delete the file
-      // 3. Reload the StateManager
-      findTourFile(tourId).ifPresent(virtualFile -> {
-         try {
-            virtualFile.delete(this);
-         } catch (IOException e) {
-            e.printStackTrace();
-         }
-      });
-      reloadState();
    }
 
    public Tour deleteTour(Tour tour) {
-      //TODO:
-      // 1. Find the file corresponding to the given tour
-      // 2. Delete the file
-      // 3. Reload the StateManager
+      return deleteTour(tour, true);
+   }
+
+   /**
+    * Tries to find the corresponding file for the give tour, and if found it deletes it
+    *
+    * @param tour The tour to delete
+    * @return the deleted tour
+    */
+   public Tour deleteTour(Tour tour, boolean reload) {
       findTourFile(tour).ifPresent(virtualFile -> {
          WriteAction.runAndWait(() -> {
             try {
                virtualFile.delete(this);
-               reloadState();
+               if (reload)
+                  reloadState();
             } catch (IOException e) {
                e.printStackTrace();
             }
