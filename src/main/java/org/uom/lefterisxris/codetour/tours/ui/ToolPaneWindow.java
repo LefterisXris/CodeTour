@@ -249,7 +249,7 @@ public class ToolPaneWindow {
          editTitleAction.addActionListener(d -> editStepTitleListener(step, tour));
 
          // Edit Description Action
-         final JMenuItem editDescriptionAction = new JMenuItem("Edit Description", AllIcons.Actions.EditScheme);
+         final JMenuItem editDescriptionAction = new JMenuItem("Edit Step", AllIcons.Actions.EditScheme);
          editDescriptionAction.addActionListener(d -> editStepDescriptionListener(step, tour));
 
          // Move up Step
@@ -398,23 +398,20 @@ public class ToolPaneWindow {
    }
 
    private void editStepDescriptionListener(Step step, Tour tour) {
-      final String updatedDescription = StepDescriptionEditor.show(project, step, false);
-      if (updatedDescription == null || updatedDescription.equals(step.getDescription())) return;
+      final int index = tour.getSteps().indexOf(step);
 
-      final Optional<Step> origStep = tour.getSteps().stream()
-            .filter(s -> s.getTitle().equals(step.getTitle()))
-            .findFirst();
-      if (origStep.isEmpty()) {
-         CodeTourNotifier.warn(project, String.format("Could not find Step '%s'. Edit failed", step.getTitle()));
-         return;
-      }
-      final int index = tour.getSteps().indexOf(origStep.get());
-      origStep.get().setDescription(updatedDescription);
+      // Prompt dialog for Step update
+      final StepEditor stepEditor = new StepEditor(project, step);
+      final boolean okSelected = stepEditor.showAndGet();
+      if (!okSelected || !stepEditor.isDirty()) return;
+
+      final Step updatedStep = stepEditor.getUpdatedStep();
+      tour.getSteps().set(index, updatedStep);
 
       stateManager.updateTour(tour);
       createToursTee(project);
       CodeTourNotifier.notifyTourAction(project, tour, "Step Update",
-            String.format("Step's '%s' Description has been updated", step.getTitle()));
+            String.format("Step '%s' has been updated", step.getTitle()));
 
       // Expand and select the Step on the tree
       selectTourStep(tour, Optional.of(index), false);
