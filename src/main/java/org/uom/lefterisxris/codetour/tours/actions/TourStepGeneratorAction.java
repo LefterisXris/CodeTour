@@ -11,7 +11,7 @@ import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.state.TourUpdateNotifier;
-import org.uom.lefterisxris.codetour.tours.ui.StepDescriptionEditor;
+import org.uom.lefterisxris.codetour.tours.ui.StepEditor;
 import org.uom.lefterisxris.codetour.tours.ui.TourSelectionDialogWrapper;
 
 import java.util.Optional;
@@ -32,13 +32,6 @@ public class TourStepGeneratorAction extends AnAction {
       final Project project = e.getProject();
       if (isNull(project) || isNull(project.getBasePath()))
          return;
-
-      // TODO: Get the current location and add it on active Tour
-      //  check e.getData(CommonDataKeys.EDITOR).getGutter()
-      //  NavigationGutterIconRenderer
-      //  PsiTreeUtil.getParentOfType(e.getData(CommonDataKeys.PSI_FILE).findElementAt(editor.getCaretModel().getOffset()), com.intellij.psi.PsiMethod.class);
-      //  final Editor editor = e.getData(CommonDataKeys.EDITOR);
-      //  final EditorGutter editorGutter = e.getData(EditorGutter.KEY);
 
       final Object lineObj = e.getDataContext().getData("EditorGutter.LOGICAL_LINE_AT_CURSOR");
       final int line = (lineObj != null ? Integer.parseInt(lineObj.toString()) : 1) + 1;
@@ -63,14 +56,13 @@ public class TourStepGeneratorAction extends AnAction {
       if (activeTour.isPresent()) {
          final Step step = generateStep(virtualFile, line);
 
-         // Provide a dialog for step's description
-         final String updatedDescription = StepDescriptionEditor.show(project, step, true);
-         if (updatedDescription == null)
-            return; // i.e. cancel the step creation
+         // Provide a dialog for Step editing
+         final StepEditor stepEditor = new StepEditor(project, step);
+         final boolean okSelected = stepEditor.showAndGet();
+         if (!okSelected) return; // i.e. cancel the step creation
 
-         step.setDescription(updatedDescription);
-
-         activeTour.get().getSteps().add(step);
+         final Step updatedStep = stepEditor.getUpdatedStep();
+         activeTour.get().getSteps().add(updatedStep);
          stateManager.updateTour(activeTour.get());
 
          // Notify UI to re-render

@@ -215,7 +215,7 @@ public class ToolPaneWindow {
 
          // Add new Step
          final JMenuItem newStepAction = new JMenuItem("Add new Step", AllIcons.Actions.AddFile);
-         newStepAction.addActionListener(d -> addNewStepOnTourListener(tour));
+         newStepAction.addActionListener(d -> addNewStepOnTourListener());
 
          // Edit Action
          final JMenuItem editAction = new JMenuItem("Edit Tour", AllIcons.Actions.Edit);
@@ -244,13 +244,9 @@ public class ToolPaneWindow {
       if (e.getButton() == MouseEvent.BUTTON3) {
          final JBPopupMenu menu = new JBPopupMenu("Tour Context Menu");
 
-         // Edit Title Action
-         final JMenuItem editTitleAction = new JMenuItem("Edit Title", AllIcons.Actions.Edit);
-         editTitleAction.addActionListener(d -> editStepTitleListener(step, tour));
-
-         // Edit Description Action
-         final JMenuItem editDescriptionAction = new JMenuItem("Edit Description", AllIcons.Actions.Edit);
-         editDescriptionAction.addActionListener(d -> editStepDescriptionListener(step, tour));
+         // Edit Step Action
+         final JMenuItem editDescriptionAction = new JMenuItem("Edit Step", AllIcons.Actions.EditScheme);
+         editDescriptionAction.addActionListener(d -> editStepListener(step, tour));
 
          // Move up Step
          final JMenuItem moveUpAction = new JMenuItem("Move Up", AllIcons.Actions.MoveUp);
@@ -266,7 +262,7 @@ public class ToolPaneWindow {
          final JMenuItem deleteAction = new JMenuItem("Delete Step", AllIcons.Actions.DeleteTag);
          deleteAction.addActionListener(d -> deleteStepListener(step, tour));
 
-         Arrays.asList(editTitleAction, editDescriptionAction, moveUpAction, moveDownAction, deleteAction)
+         Arrays.asList(editDescriptionAction, moveUpAction, moveDownAction, deleteAction)
                .forEach(menu::add);
          menu.show(toursTree, e.getX(), e.getY());
          return;
@@ -319,7 +315,7 @@ public class ToolPaneWindow {
    }
 
    //region Tour Context menu actions
-   private void addNewStepOnTourListener(Tour tour) {
+   private void addNewStepOnTourListener() {
       Messages.showMessageDialog(project,
             "To create a new Tour Step, Navigate to the file you want to add a Step, " +
                   "<kbd>Right Click on the Editor's Gutter</kbd> (i.e. next to line numbers) > <kbd>Add Tour Step</kbd>",
@@ -373,48 +369,21 @@ public class ToolPaneWindow {
    //endregion
 
    //region Step Context menu actions
-   private void editStepTitleListener(Step step, Tour tour) {
-      final String updatedTitle = Messages.showInputDialog(project, "Edit Step's title",
-            "Edit Step", AllIcons.Actions.Edit, step.getTitle(), null);
-      if (updatedTitle == null || updatedTitle.equals(step.getTitle())) return;
+   private void editStepListener(Step step, Tour tour) {
+      final int index = tour.getSteps().indexOf(step);
 
-      final Optional<Step> origStep = tour.getSteps().stream()
-            .filter(s -> s.getTitle().equals(step.getTitle()))
-            .findFirst();
-      if (origStep.isEmpty()) {
-         CodeTourNotifier.warn(project, String.format("Could not find Step '%s'. Edit failed", step.getTitle()));
-         return;
-      }
-      final int index = tour.getSteps().indexOf(origStep.get());
-      origStep.get().setTitle(updatedTitle);
+      // Prompt dialog for Step update
+      final StepEditor stepEditor = new StepEditor(project, step);
+      final boolean okSelected = stepEditor.showAndGet();
+      if (!okSelected || !stepEditor.isDirty()) return;
+
+      final Step updatedStep = stepEditor.getUpdatedStep();
+      tour.getSteps().set(index, updatedStep);
 
       stateManager.updateTour(tour);
       createToursTee(project);
       CodeTourNotifier.notifyTourAction(project, tour, "Step Update",
-            String.format("Step's '%s' Title has been updated", step.getTitle()));
-
-      // Expand and select the Step on the tree
-      selectTourStep(tour, Optional.of(index), false);
-   }
-
-   private void editStepDescriptionListener(Step step, Tour tour) {
-      final String updatedDescription = StepDescriptionEditor.show(project, step, false);
-      if (updatedDescription == null || updatedDescription.equals(step.getDescription())) return;
-
-      final Optional<Step> origStep = tour.getSteps().stream()
-            .filter(s -> s.getTitle().equals(step.getTitle()))
-            .findFirst();
-      if (origStep.isEmpty()) {
-         CodeTourNotifier.warn(project, String.format("Could not find Step '%s'. Edit failed", step.getTitle()));
-         return;
-      }
-      final int index = tour.getSteps().indexOf(origStep.get());
-      origStep.get().setDescription(updatedDescription);
-
-      stateManager.updateTour(tour);
-      createToursTee(project);
-      CodeTourNotifier.notifyTourAction(project, tour, "Step Update",
-            String.format("Step's '%s' Description has been updated", step.getTitle()));
+            String.format("Step '%s' has been updated", step.getTitle()));
 
       // Expand and select the Step on the tree
       selectTourStep(tour, Optional.of(index), false);
