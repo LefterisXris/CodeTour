@@ -2,7 +2,6 @@ package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.codeInsight.documentation.DocumentationComponent;
 import com.intellij.codeInsight.documentation.DocumentationManager;
-import com.intellij.icons.AllIcons;
 import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -14,6 +13,7 @@ import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UI;
 import com.intellij.util.ui.UIUtil;
+import icons.CodeTourIcons;
 import org.intellij.markdown.ast.ASTNode;
 import org.intellij.markdown.flavours.MarkdownFlavourDescriptor;
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor;
@@ -82,8 +82,8 @@ public class StepEditor extends DialogWrapper {
       final JPanel textAreaPanel = UI.PanelFactory.panel(descriptionPane)
             .withLabel("Step description:")
             .anchorLabelOn(UI.Anchor.Top)
-            .withComment("Markdown and HTML is supported.")
-            .withCommentIcon(AllIcons.Xml.Html5)
+            .withComment("Markdown and HTML are supported.")
+            .withCommentIcon(CodeTourIcons.MARKDOWN)
             .resizeX(true).resizeY(true).createPanel();
 
       final JPanel panel = new JPanel();
