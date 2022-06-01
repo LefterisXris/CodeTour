@@ -144,6 +144,10 @@ Examples and Best Practices will soon be provided
 
 ![CodeTour Demo](assets/04-step-context-menu.png)
 
+### Step Editor
+
+![CodeTour Demo](assets/05-step-editor.png)
+
 ## Conventions
 
 ### Type of Commits
