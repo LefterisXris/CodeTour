@@ -29,6 +29,12 @@
       "line": 23
     },
     {
+      "title": "A MessageBus Listener",
+      "description": "# The Message Bus\n\nIt supports:\n- listen to changes\n- react to **important** notifications",
+      "file": "ToolPaneWindow.java",
+      "line": 85
+    },
+    {
       "title": "Step Description Popup",
       "description": "# Step Description Popup\n\nStep\u0027s description is rendered on a popup modal dialog, which supports MARKDOWN/HTML rendering\n\nThe popup provides the following:\n\n- **Description** rendering with HTML support\n- **Resizable** and **Movable** panel as a popup modal\n- Adjustable **Font Size**\n- Buttons for navigating to Previous and Next Step\n\n**Tip**: *Shortcuts for navigating to Previous and Next Step are always active:*\n\n- Previous Step: **Ctrl+Alt+Q**\n- Next Step: **Ctrl+Alt+W**",
       "file": "StepRenderer.java",
