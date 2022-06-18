@@ -18,7 +18,31 @@ If there isn't, proceed on opening the new issue following the structure of the 
 
 - To open Pull Requests, please use the available [Pull Request template](https://github.com/LefterisXris/CodeTour/tree/main/.github/PULL_REQUEST_TEMPLATE)
 - Make sure your code is documented enough for the review process
+- Format your code based on the Code Conventions mentioned below
 - Commit only changes related to the context of this PR
 - Ensure all automation status (build, test, compatibility, code analysis, signing) have passed
 - Update CHANGELOG.md with a short description of your change
 - Request review
+
+## Code Conventions
+
+### Code Style
+- Max line limit: `120`
+- Line Separator: `LF`
+- Indent Spaces: `3`
+
+### Development Guidelines
+- Communication should be performed only through `Message Bus` in a publish-subscribe logic. It's preferable to use a new TOPIC for different features
+- For utilizing IntelliJ SDK please refer to [IntelliJ Platform SDK DevGuide](https://plugins.jetbrains.com/docs/intellij/welcome.html)
+- To find SDK examples from other plugins please refer to [IntelliJ Platform Explorer](https://plugins.jetbrains.com/intellij-platform-explorer/extensions)
+- For UI related issues, always check [IntelliJ Platform UI Guidelines](https://jetbrains.github.io/ui/)
+
+### Type of Commits
+
+- `feat`: A new feature adding to a particular application
+- `fix`: A bug fix
+- `style`: Feature and updates related to styling
+- `refactor`: Refactoring a specific section of the codebase
+- `test`: Everything related to testing
+- `docs`: Everything related to documentation
+- `chore`: Regular code maintenance
