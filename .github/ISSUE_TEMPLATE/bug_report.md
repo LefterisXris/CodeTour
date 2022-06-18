@@ -1,9 +1,6 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: BUG
-labels: bug
-assignees: LefterisXris
+name: Bug report about: Create a report to help us improve title: BUG: [bug title]
+labels: bug assignees: LefterisXris
 
 ---
 
@@ -23,10 +20,12 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - IDE [e.g. IntelliJ Ultimat, PyCharm, GoLand, CLion etc]
- - Version [e.g. 2022.1.3]
+**System (please complete the following information):**
+
+- OS: [e.g. Windows 10, Linux+Distro, Mac]
+- IDE [e.g. IntelliJ Ultimate, PyCharm, GoLand, CLion etc]
+- IDE Version [e.g. 2022.1.3]
+- Plugin Version
 
 **Additional context**
 Add any other context about the problem here. [stack traces are also helpful if exist]

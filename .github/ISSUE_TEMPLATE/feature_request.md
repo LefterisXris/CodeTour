@@ -1,9 +1,6 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: FEATURE
-labels: feature
-assignees: LefterisXris
+name: Feature request about: Suggest an idea for this project title: FEATURE: [feature title]
+labels: feature assignees: LefterisXris
 
 ---
 
