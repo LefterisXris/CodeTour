@@ -145,7 +145,8 @@ public class StateManager {
          tourTitles.add(tour.getTitle());
          tour.getSteps().forEach(step -> {
             tourStepFiles.add(step.getFile());
-            tourStepFilesWithLines.add(String.format("%s:%s", step.getFile(), step.getLine()));
+            if (step.getFile() != null)
+               tourStepFilesWithLines.add(String.format("%s:%s", step.getFile(), step.getLine()));
          });
       });
       return tours;

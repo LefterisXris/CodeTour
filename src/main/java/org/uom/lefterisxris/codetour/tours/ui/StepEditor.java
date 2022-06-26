@@ -24,6 +24,9 @@ import org.uom.lefterisxris.codetour.tours.domain.Step;
 
 import javax.swing.*;
 
+import static org.uom.lefterisxris.codetour.tours.service.Utils.equalInt;
+import static org.uom.lefterisxris.codetour.tours.service.Utils.equalStr;
+
 /**
  * Editor (as dialog) for Step editing. Supports preview
  *
@@ -68,7 +71,8 @@ public class StepEditor extends DialogWrapper {
       descriptionPane.putClientProperty(UIUtil.KEEP_BORDER_SIDES, SideBorder.ALL);
 
       titleTextField = new JBTextField(step.getTitle());
-      referenceTextField = new JBTextField(String.format("%s:%s", step.getFile(), step.getLine()));
+      referenceTextField =
+            new JBTextField(step.getFile() != null ? String.format("%s:%s", step.getFile(), step.getLine()) : "");
 
       final JPanel textFieldsGridPanel = UI.PanelFactory.grid()
             .add(UI.PanelFactory.panel(titleTextField)
@@ -154,18 +158,25 @@ public class StepEditor extends DialogWrapper {
       final String[] reference = referenceTextField.getText().trim().split(":");
 
       step.setTitle(titleTextField.getText().trim());
-      step.setFile(reference[0]);
-      step.setLine(Integer.parseInt(reference[1]));
       step.setDescription(descriptionTextArea.getText().trim());
+
+      // optional file:line
+      final String file = reference[0] != null && !reference[0].isEmpty() ? reference[0] : null;
+      final Integer line = reference.length > 1 && reference[1] != null && !reference[1].isEmpty()
+            ? Integer.parseInt(reference[1])
+            : null;
+
+      step.setFile(file);
+      step.setLine(line);
 
       return step;
    }
 
    public boolean isDirty() {
       final String[] reference = referenceTextField.getText().trim().split(":");
-      return !step.getTitle().equals(titleTextField.getText())
-            || !step.getDescription().equals(descriptionTextArea.getText())
-            || !step.getFile().equals(reference[0])
-            || !(step.getLine() == Integer.parseInt(reference[1]));
+      return !equalStr(step.getTitle(), titleTextField.getText())
+            || !equalStr(step.getDescription(), descriptionTextArea.getText())
+            || !equalStr(step.getFile(), reference[0])
+            || !equalInt(step.getLine(), reference.length > 1 ? Integer.parseInt(reference[1]) : null);
    }
 }

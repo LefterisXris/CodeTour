@@ -26,21 +26,25 @@ public class Navigator {
       if (project.getBasePath() == null) return;
 
       SlowOperations.allowSlowOperations(() -> {
-         final Collection<VirtualFile> virtualFiles = FilenameIndex.getVirtualFilesByName(step.getFile(),
-               GlobalSearchScope.projectScope(project));
-         //TODO: What if multiple files are found?
-         final Optional<VirtualFile> virtualFile = virtualFiles.stream()
-               .filter(file -> !file.isDirectory() && file.getName().equals(step.getFile()))
-               .findFirst();
-         if (virtualFile.isEmpty()) {
-            CodeTourNotifier.error(project, String.format("Could not locate navigation target '%s' for Step '%s'",
-                  step.getFile(), step.getTitle()));
-            return;
-         }
 
-         // Navigate
-         new OpenFileDescriptor(project, virtualFile.get(), Math.max(step.getLine() - 1, 0), 1)
-               .navigate(true);
+         // Navigation is optional
+         if (step.getFile() != null) {
+            final Collection<VirtualFile> virtualFiles = FilenameIndex.getVirtualFilesByName(step.getFile(),
+                  GlobalSearchScope.projectScope(project));
+            //TODO: What if multiple files are found?
+            final Optional<VirtualFile> virtualFile = virtualFiles.stream()
+                  .filter(file -> !file.isDirectory() && file.getName().equals(step.getFile()))
+                  .findFirst();
+            if (virtualFile.isEmpty()) {
+               CodeTourNotifier.error(project, String.format("Could not locate navigation target '%s' for Step '%s'",
+                     step.getFile(), step.getTitle()));
+               return;
+            }
+
+            final int line = step.getLine() != null ? step.getLine() - 1 : 0;
+            new OpenFileDescriptor(project, virtualFile.get(), Math.max(line, 0), 1)
+                  .navigate(true);
+         }
 
          // Show a Balloon
          // CodeTourNotifier.notifyStepDescription(project, step.getDescription());

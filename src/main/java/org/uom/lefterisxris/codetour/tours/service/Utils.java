@@ -31,4 +31,20 @@ public class Utils {
       return StringUtils.uncapitalize(sb.append(Props.TOUR_EXTENSION_FULL).toString());
    }
 
+   public static boolean equalStr(String s1, String s2) {
+      if (s1 == null && s2 == null) return true;
+      return getOrDef(s1, "").equals(getOrDef(s2, ""));
+   }
+
+   public static boolean equalInt(Integer i1, Integer i2) {
+      if (i1 == null && i2 == null) return true;
+      return getOrDef(i1, Integer.MIN_VALUE).equals(getOrDef(i2, Integer.MIN_VALUE));
+   }
+
+   /**
+    * normalize (remove nulls)
+    */
+   private static <T> T getOrDef(T s, T def) {return s != null ? s : def;}
+
+
 }
