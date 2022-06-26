@@ -2,7 +2,6 @@ package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.codeInsight.documentation.DocumentationComponent;
 import com.intellij.codeInsight.documentation.DocumentationManager;
-import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.SideBorder;
@@ -14,18 +13,12 @@ import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UI;
 import com.intellij.util.ui.UIUtil;
 import icons.CodeTourIcons;
-import org.intellij.markdown.ast.ASTNode;
-import org.intellij.markdown.flavours.MarkdownFlavourDescriptor;
-import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor;
-import org.intellij.markdown.html.HtmlGenerator;
-import org.intellij.markdown.parser.MarkdownParser;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 
 import javax.swing.*;
 
-import static org.uom.lefterisxris.codetour.tours.service.Utils.equalInt;
-import static org.uom.lefterisxris.codetour.tours.service.Utils.equalStr;
+import static org.uom.lefterisxris.codetour.tours.service.Utils.*;
 
 /**
  * Editor (as dialog) for Step editing. Supports preview
@@ -80,7 +73,7 @@ public class StepEditor extends DialogWrapper {
                   .withComment("Step title"))
             .add(UI.PanelFactory.panel(referenceTextField)
                   .withLabel("&Navigation reference:")
-                  .withComment("Code location where this step will Navigate to on click"))
+                  .withComment("Code location where this step will Navigate to on click (optional)"))
             .createPanel();
 
       final JPanel textAreaPanel = UI.PanelFactory.panel(descriptionPane)
@@ -101,8 +94,8 @@ public class StepEditor extends DialogWrapper {
 
    private JComponent createPreviewPanel() {
       stepDoc = renderFullDoc(
-            String.format("Description of Step '%s'", titleTextField.getText()),
-            getHtml(descriptionTextArea.getText()),
+            titleTextField.getText(),
+            descriptionTextArea.getText(),
             referenceTextField.getText());
 
       final DocumentationManager documentationManager = DocumentationManager.getInstance(project);
@@ -117,39 +110,10 @@ public class StepEditor extends DialogWrapper {
       return panel;
    }
 
-   private String renderFullDoc(String title, String description, String file) {
-      StringBuilder sb = new StringBuilder();
-      sb.append(DocumentationMarkup.DEFINITION_START);
-      sb.append(title);
-      sb.append(DocumentationMarkup.DEFINITION_END);
-      sb.append(DocumentationMarkup.CONTENT_START);
-      sb.append(description);
-      sb.append(DocumentationMarkup.CONTENT_END);
-      sb.append(DocumentationMarkup.SECTIONS_START);
-      addKeyValueSection("File:", file, sb);
-      sb.append(DocumentationMarkup.SECTIONS_END);
-      return sb.toString();
-   }
-
-   private void addKeyValueSection(String key, String value, StringBuilder sb) {
-      sb.append(DocumentationMarkup.SECTION_HEADER_START);
-      sb.append(key);
-      sb.append(DocumentationMarkup.SECTION_SEPARATOR);
-      sb.append("<p>");
-      sb.append(value);
-      sb.append(DocumentationMarkup.SECTION_END);
-   }
-
-   private String getHtml(String markdown) {
-      final MarkdownFlavourDescriptor flavour = new GFMFlavourDescriptor();
-      final ASTNode parsedTree = new MarkdownParser(flavour).buildMarkdownTreeFromString(markdown);
-      return new HtmlGenerator(markdown, parsedTree, flavour, false).generateHtml();
-   }
-
    private void updatePreviewComponent() {
       stepDoc = renderFullDoc(
-            String.format("Description of Step '%s'", titleTextField.getText()),
-            getHtml(descriptionTextArea.getText()),
+            titleTextField.getText(),
+            descriptionTextArea.getText(),
             referenceTextField.getText());
       previewComponent.setData(null, stepDoc, null, null, null);
    }

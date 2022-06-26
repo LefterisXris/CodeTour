@@ -3,16 +3,10 @@ package org.uom.lefterisxris.codetour.tours.service;
 import com.intellij.codeInsight.documentation.DocumentationComponent;
 import com.intellij.codeInsight.documentation.DocumentationManager;
 import com.intellij.icons.AllIcons;
-import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.intellij.markdown.ast.ASTNode;
-import org.intellij.markdown.flavours.MarkdownFlavourDescriptor;
-import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor;
-import org.intellij.markdown.html.HtmlGenerator;
-import org.intellij.markdown.parser.MarkdownParser;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
@@ -23,6 +17,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Optional;
+
+import static org.uom.lefterisxris.codetour.tours.service.Utils.renderFullDoc;
 
 /**
  * Renders a Popup which includes the Step Documentation
@@ -69,8 +65,8 @@ public class StepRenderer extends DialogWrapper {
    private JComponent getComponent() {
 
       final String stepDoc = renderFullDoc(
-            String.format("Description of Step '%s'", step.getTitle()),
-            getHtml(step.getDescription()),
+            step.getTitle(),
+            step.getDescription(),
             step.getFile() != null ? String.format("%s:%s", step.getFile(), step.getLine()) : "");
 
       final DocumentationManager documentationManager = DocumentationManager.getInstance(project);
@@ -78,29 +74,6 @@ public class StepRenderer extends DialogWrapper {
       component.setData(null, stepDoc, null, null, null);
 
       return component;
-   }
-
-   private String renderFullDoc(String title, String description, String file) {
-      StringBuilder sb = new StringBuilder();
-      sb.append(DocumentationMarkup.DEFINITION_START);
-      sb.append(title);
-      sb.append(DocumentationMarkup.DEFINITION_END);
-      sb.append(DocumentationMarkup.CONTENT_START);
-      sb.append(description);
-      sb.append(DocumentationMarkup.CONTENT_END);
-      sb.append(DocumentationMarkup.SECTIONS_START);
-      addKeyValueSection("File:", file, sb);
-      sb.append(DocumentationMarkup.SECTIONS_END);
-      return sb.toString();
-   }
-
-   private void addKeyValueSection(String key, String value, StringBuilder sb) {
-      sb.append(DocumentationMarkup.SECTION_HEADER_START);
-      sb.append(key);
-      sb.append(DocumentationMarkup.SECTION_SEPARATOR);
-      sb.append("<p>");
-      sb.append(value);
-      sb.append(DocumentationMarkup.SECTION_END);
    }
 
    @Override
@@ -145,12 +118,6 @@ public class StepRenderer extends DialogWrapper {
       dialogPanel.add(buttons, BorderLayout.SOUTH);
       dialogPanel.setPreferredSize(new Dimension(320, 160));
       return dialogPanel;
-   }
-
-   private static String getHtml(String markdown) {
-      final MarkdownFlavourDescriptor flavour = new GFMFlavourDescriptor();
-      final ASTNode parsedTree = new MarkdownParser(flavour).buildMarkdownTreeFromString(markdown);
-      return new HtmlGenerator(markdown, parsedTree, flavour, false).generateHtml();
    }
 
    /**
