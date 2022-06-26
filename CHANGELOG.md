@@ -2,10 +2,16 @@
 
 # CodeTour Changelog
 
-## [Unreleased]
+## [0.0.4]
+
+### Added
+
+- Description-Only Step (file:line made optional for a Step)
 
 ## [0.0.3]
+
 ### Added
+
 - New Icons
 - New Step's Description default value is pre-selected for easier user input
 - Added markdown support
