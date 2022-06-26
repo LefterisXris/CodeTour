@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.JBPopupMenu;
+import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
@@ -215,7 +216,7 @@ public class ToolPaneWindow {
 
          // Add new Step
          final JMenuItem newStepAction = new JMenuItem("Add new Step", AllIcons.Actions.AddFile);
-         newStepAction.addActionListener(d -> addNewStepOnTourListener());
+         newStepAction.addActionListener(d -> addNewStepOnTourListener(tour));
 
          // Edit Action
          final JMenuItem editAction = new JMenuItem("Edit Tour", AllIcons.Actions.Edit);
@@ -315,12 +316,34 @@ public class ToolPaneWindow {
    }
 
    //region Tour Context menu actions
-   private void addNewStepOnTourListener() {
-      Messages.showMessageDialog(project,
-            "To create a new Tour Step, Navigate to the file you want to add a Step, " +
-                  "<kbd>Right Click on the Editor's Gutter</kbd> (i.e. next to line numbers) > <kbd>Add Tour Step</kbd>",
-            "Step Creation",
-            AllIcons.General.NotificationInfo);
+   private void addNewStepOnTourListener(Tour tour) {
+      MessageDialogBuilder.yesNo("", "");
+      final boolean createDescriptionOnlyStep =
+            MessageDialogBuilder.yesNo("Step Creation - Create a Description-Only Step?",
+                        "To create a new Tour Step with navigation, go to the file you want to add a Step, " +
+                              "<kbd>Right Click on the Editor's Gutter</kbd> (i.e. next to line numbers) > <kbd>Add Tour Step</kbd>" +
+                              "\nHowever, you can create a Description-only Step (without navigation) from this option." +
+                              "\nDo you want to create a Description-Only Step?")
+                  .ask(project);
+
+      if (createDescriptionOnlyStep) {
+         final Step step = Step.builder()
+               .title("A Description-Only Step")
+               .description("# Simple Description\nI won't navigate you anywhere")
+               .build();
+
+         // Provide a dialog for Step editing
+         final StepEditor stepEditor = new StepEditor(project, step);
+         final boolean okSelected = stepEditor.showAndGet();
+         if (!okSelected) return; // i.e. cancel the step creation
+
+         final Step updatedStep = stepEditor.getUpdatedStep();
+         tour.getSteps().add(updatedStep);
+         stateManager.updateTour(tour);
+
+         // Notify UI to re-render
+         project.getMessageBus().syncPublisher(TourUpdateNotifier.TOPIC).tourUpdated(tour);
+      }
    }
 
    private void editTourListener(Tour tour) {
