@@ -295,6 +295,7 @@ public class StateManager {
    public Optional<Step> findStepByFileLine(String fileName, int line) {
       final Optional<Tour> tourToActivate = getTours().stream()
             .filter(tour -> tour.getSteps().stream()
+                  .filter(step -> step.getFile() != null)
                   .anyMatch(step -> step.getFile().equals(fileName) && step.getLine() == line))
             .findFirst();
       if (tourToActivate.isEmpty()) return Optional.empty();
@@ -303,7 +304,7 @@ public class StateManager {
       final List<Step> steps = tourToActivate.get().getSteps();
       for (int i = 0; i < steps.size(); i++) {
          final Step step = steps.get(i);
-         if (step.getFile().equals(fileName) && step.getLine() == line) {
+         if (step.getFile() != null && step.getFile().equals(fileName) && step.getLine() == line) {
             setActiveStepIndex(i);
             return Optional.of(step);
          }

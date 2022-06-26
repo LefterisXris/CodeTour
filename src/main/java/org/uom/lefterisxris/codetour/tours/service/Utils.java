@@ -53,6 +53,9 @@ public class Utils {
       sb.append(String.format("Description of Step '%s'", title));
       sb.append(DocumentationMarkup.DEFINITION_END);
       sb.append(DocumentationMarkup.CONTENT_START);
+      if (description != null)
+         // For formatting purposes, add <br/> tag when there are 2 consecutive empty lines
+         description = description.replaceAll("\\n\\n\\n", "\n\n<br/>\n\n");
       sb.append(mdToHtml(description));
       sb.append(DocumentationMarkup.CONTENT_END);
       if (StringUtils.isNotEmpty(file)) {
