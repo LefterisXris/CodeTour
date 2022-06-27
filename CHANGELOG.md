@@ -4,8 +4,15 @@
 
 ## [Unreleased]
 
-## [0.0.3]
 ### Added
+
+- Description-Only Step (file:line made optional for a Step) so that a Step can render only the related description,
+  with no navigation at all
+
+## [0.0.3]
+
+### Added
+
 - New Icons
 - New Step's Description default value is pre-selected for easier user input
 - Added markdown support

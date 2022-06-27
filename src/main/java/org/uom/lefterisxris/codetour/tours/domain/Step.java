@@ -8,7 +8,7 @@ public class Step {
    private String title; // Step's title (visible on the tree)
    private String description; // The description of the Step (visible on the Editor)
    private String file; // File for navigation
-   private int line; // Line for navigation
+   private Integer line; // Line for navigation
    private String directory;
    private String uri;
    private String pattern;
@@ -17,7 +17,7 @@ public class Step {
    }
 
    @Builder
-   public Step(String description, String file, String directory, String uri, int line, String pattern,
+   public Step(String description, String file, String directory, String uri, Integer line, String pattern,
                String title) {
       this.description = description;
       this.file = file;
