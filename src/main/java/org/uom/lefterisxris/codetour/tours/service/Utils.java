@@ -56,14 +56,14 @@ public class Utils {
       if (description != null)
          // For formatting purposes, add <br/> tag when there are 2 consecutive empty lines
          description = description.replaceAll("\\n\\n\\n", "\n\n<br/>\n\n");
-      sb.append(mdToHtml(description));
+      sb.append("\n\n").append(description).append("\n");
       sb.append(DocumentationMarkup.CONTENT_END);
       if (StringUtils.isNotEmpty(file)) {
          sb.append(DocumentationMarkup.SECTIONS_START);
          addKeyValueSection("File:", file, sb);
          sb.append(DocumentationMarkup.SECTIONS_END);
       }
-      return sb.toString();
+      return mdToHtml(sb.toString());
    }
 
    private static String mdToHtml(String markdown) {
