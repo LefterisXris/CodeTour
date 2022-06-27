@@ -6,7 +6,8 @@
 
 ### Added
 
-- Description-Only Step (file:line made optional for a Step)
+- Description-Only Step (file:line made optional for a Step) so that a Step can render only the related description,
+  with no navigation at all
 
 ## [0.0.3]
 
