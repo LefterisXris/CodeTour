@@ -17,4 +17,14 @@ public class UtilsTests {
       System.out.println(actual);
       Assert.assertEquals(expected, actual);
    }
+
+   @Test
+   public void testMdToHtml() {
+      final String md = "# Hey there\n\nHow are you **today**?";
+      final String expectedHtml = "<body><h1>Hey there</h1><p>How are you <strong>today</strong>?</p></body>";
+
+      final String html = Utils.mdToHtml(md);
+
+      Assert.assertEquals(expectedHtml, html);
+   }
 }
