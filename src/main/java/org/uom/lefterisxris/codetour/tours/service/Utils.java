@@ -7,6 +7,7 @@ import org.intellij.markdown.flavours.MarkdownFlavourDescriptor;
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor;
 import org.intellij.markdown.html.HtmlGenerator;
 import org.intellij.markdown.parser.MarkdownParser;
+import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Props;
 
 /**
@@ -14,6 +15,31 @@ import org.uom.lefterisxris.codetour.tours.domain.Props;
  * Date: 21/5/2022
  */
 public class Utils {
+
+   /**
+    * Custom TagRenderer for md to html, as for some strange reason there is no default implementation now
+    * in the related Jetbrains library
+    */
+   private static final HtmlGenerator.TagRenderer TAG_RENDERER = new HtmlGenerator.TagRenderer() {
+      @NotNull
+      @Override
+      public CharSequence printHtml(@NotNull CharSequence charSequence) {
+         return charSequence;
+      }
+
+      @NotNull
+      @Override
+      public CharSequence openTag(@NotNull ASTNode astNode, @NotNull CharSequence charSequence,
+                                  @NotNull CharSequence[] charSequences, boolean b) {
+         return String.format("<%s>", charSequence);
+      }
+
+      @NotNull
+      @Override
+      public CharSequence closeTag(@NotNull CharSequence charSequence) {
+         return String.format("</%s>", charSequence);
+      }
+   };
 
    /**
     * Removes whitespaces and transforms the given title in camelCase
@@ -66,10 +92,10 @@ public class Utils {
       return mdToHtml(sb.toString());
    }
 
-   private static String mdToHtml(String markdown) {
+   public static String mdToHtml(String markdown) {
       final MarkdownFlavourDescriptor flavour = new GFMFlavourDescriptor();
       final ASTNode parsedTree = new MarkdownParser(flavour).buildMarkdownTreeFromString(markdown);
-      return new HtmlGenerator(markdown, parsedTree, flavour, false).generateHtml();
+      return new HtmlGenerator(markdown, parsedTree, flavour, false).generateHtml(TAG_RENDERER);
    }
 
    private static void addKeyValueSection(String key, String value, StringBuilder sb) {
