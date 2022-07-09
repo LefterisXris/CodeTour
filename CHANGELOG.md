@@ -3,6 +3,8 @@
 # CodeTour Changelog
 
 ## [Unreleased]
+
+## [0.0.5]
 ### Added
 - Compatibility with intelliJ 2022-*
 
