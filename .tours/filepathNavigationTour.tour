@@ -1,0 +1,56 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "tourFile": "supportPathInStepFileProperty.tour",
+  "title": "Support path in Step file property",
+  "description": "Support for path in the step file property and in directory property of the step",
+  "steps": [
+    {
+      "file": "src/main/java/org/uom/lefterisxris/codetour/tours/service/Navigator.java",
+      "description": "tryNavigateToStep will return true if the step file was navigated",
+      "line": 32,
+      "title": "TryNavigate"
+    },
+    {
+      "file": "src/main/java/org/uom/lefterisxris/codetour/tours/service/Navigator.java",
+      "description": "if file in step - since it is optional\r\n\r\ncannot navigate - returns false",
+      "line": 46,
+      "title": "No file in step"
+    },
+    {
+      "file": "src/main/java/org/uom/lefterisxris/codetour/tours/service/Navigator.java",
+      "description": "extract filename from the filepath/filename that is in the step file",
+      "line": 50,
+      "title": "extract step file name"
+    },
+    {
+      "file": "src/main/java/org/uom/lefterisxris/codetour/tours/service/Navigator.java",
+      "description": "step is a file reference, so if the file is a directory it is guranteed to not match",
+      "line": 72,
+      "title": "case directory"
+    },
+    {
+      "file": "src/main/java/org/uom/lefterisxris/codetour/tours/service/Navigator.java",
+      "description": "consider the directory of the step. if specified",
+      "line": 76,
+      "title": "extract step directory"
+    },
+    {
+      "file": "src/main/java/org/uom/lefterisxris/codetour/tours/service/Navigator.java",
+      "description": "construct the file path of the step (with platform-independent path)",
+      "line": 77,
+      "title": "platform-independent stepPath"
+    },
+    {
+      "file": "src/main/java/org/uom/lefterisxris/codetour/tours/service/Navigator.java",
+      "description": "make a platform-independent path from the VirtualFile path in question",
+      "line": 78,
+      "title": "platform-independent filePath"
+    },
+    {
+      "file": "src/main/java/org/uom/lefterisxris/codetour/tours/service/Navigator.java",
+      "description": "since step file path can be relative to the project dir\r\n\r\nthe comparison is based on \"endsWith\"\r\n\r\nso if the file path ends with the stepFilePath it's a match",
+      "line": 80,
+      "title": "endsWith comparison"
+    }
+  ]
+}

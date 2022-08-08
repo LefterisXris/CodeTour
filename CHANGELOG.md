@@ -3,6 +3,9 @@
 # CodeTour Changelog
 
 ## [Unreleased]
+### Added
+- navigation support for directory attribute in step
+- navigation support for file path in step file attribute
 
 ## [0.0.5]
 ### Added
