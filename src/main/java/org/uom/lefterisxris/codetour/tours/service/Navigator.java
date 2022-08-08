@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.ui.CodeTourNotifier;
 
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -28,23 +29,7 @@ public class Navigator {
       SlowOperations.allowSlowOperations(() -> {
 
          // Navigation is optional
-         if (step.getFile() != null) {
-            final Collection<VirtualFile> virtualFiles = FilenameIndex.getVirtualFilesByName(step.getFile(),
-                  GlobalSearchScope.projectScope(project));
-            //TODO: What if multiple files are found?
-            final Optional<VirtualFile> virtualFile = virtualFiles.stream()
-                  .filter(file -> !file.isDirectory() && file.getName().equals(step.getFile()))
-                  .findFirst();
-            if (virtualFile.isEmpty()) {
-               CodeTourNotifier.error(project, String.format("Could not locate navigation target '%s' for Step '%s'",
-                     step.getFile(), step.getTitle()));
-               return;
-            }
-
-            final int line = step.getLine() != null ? step.getLine() - 1 : 0;
-            new OpenFileDescriptor(project, virtualFile.get(), Math.max(line, 0), 1)
-                  .navigate(true);
-         }
+         if (!tryNavigateToStep(step, project)) return;
 
          // Show a Balloon
          // CodeTourNotifier.notifyStepDescription(project, step.getDescription());
@@ -56,5 +41,44 @@ public class Navigator {
          renderer.show();
       });
    }
+
+   private static boolean tryNavigateToStep(@NotNull Step step, @NotNull Project project) {
+      if (step.getFile() == null) {
+         return false;
+      }
+
+      String stepFileName = Paths.get(step.getFile()).getFileName().toString();
+      final Collection<VirtualFile> virtualFiles =
+              FilenameIndex.getVirtualFilesByName(stepFileName, GlobalSearchScope.projectScope(project));
+      //TODO: What if multiple files are found?
+      final Optional<VirtualFile> virtualFile = virtualFiles.stream()
+              .filter(file -> isFileMatchesStep(file, step))
+              .findFirst();
+
+      if (virtualFile.isEmpty()) {
+         CodeTourNotifier.error(project, String.format("Could not locate navigation target '%s' for Step '%s'",
+                 step.getFile(), step.getTitle()));
+         return false;
+      }
+
+      final int line = step.getLine() != null ? step.getLine() - 1 : 0;
+      new OpenFileDescriptor(project, virtualFile.get(), Math.max(line, 0), 1)
+              .navigate(true);
+
+      return true;
+   }
+
+   private static boolean isFileMatchesStep(VirtualFile file, @NotNull Step step) {
+      if (file.isDirectory()) {
+         return false;
+      }
+
+      String stepDirectory = step.getDirectory() != null ? step.getDirectory() : "";
+      String stepFilePath = Paths.get(stepDirectory, step.getFile()).toString();
+      String filePath = Paths.get(file.getPath()).toString();
+
+      return filePath.endsWith(stepFilePath);
+   }
+
 
 }
