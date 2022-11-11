@@ -44,6 +44,7 @@ public class StateManager {
    private final static Set<String> tourTitles = new HashSet<>();
    private final static Set<String> tourStepFiles = new HashSet<>();
    private final static Set<String> tourStepFilesWithLines = new HashSet<>();
+   private final static Map<String, String> stepMetaLabels = new HashMap<>(); // string info to be used as label
 
    public StateManager(Project project) {
       this.project = project;
@@ -139,15 +140,24 @@ public class StateManager {
       tourTitles.clear();
       tourStepFiles.clear();
       tourStepFilesWithLines.clear();
+      stepMetaLabels.clear();
 
       tours.forEach(tour -> {
          tourFileNames.add(tour.getTourFile());
          tourTitles.add(tour.getTitle());
-         tour.getSteps().forEach(step -> {
+         int currentStepIndex = 0;
+         final int totalSteps = tour.getSteps().size();
+         for (Step step : tour.getSteps()) {
+            currentStepIndex++;
             tourStepFiles.add(step.getFile());
             if (step.getFile() != null)
                tourStepFilesWithLines.add(String.format("%s:%s", step.getFile(), step.getLine()));
-         });
+
+            // cache it's label to be used more performant when needed
+            final String metaLabel = String.format("<strong>CodeTour</strong> <em>Step #%s of %s (%s)</em>",
+                  currentStepIndex, totalSteps, tour.getTitle());
+            stepMetaLabels.put(step.getTitle(), metaLabel);
+         }
       });
       return tours;
    }
@@ -327,6 +337,12 @@ public class StateManager {
 
    public static boolean isValidStep(String fileName, Integer line) {
       return tourStepFilesWithLines.contains(String.format("%s:%s", fileName, line));
+   }
+
+   public static Optional<String> getStepMetaLabel(String stepTitle) {
+      if (stepMetaLabels.containsKey(stepTitle))
+         return Optional.of(stepMetaLabels.get(stepTitle));
+      return Optional.empty();
    }
 
 }
