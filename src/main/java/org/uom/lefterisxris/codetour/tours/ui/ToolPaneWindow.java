@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.service.AppSettingsState;
 import org.uom.lefterisxris.codetour.tours.service.Navigator;
 import org.uom.lefterisxris.codetour.tours.service.TourValidator;
 import org.uom.lefterisxris.codetour.tours.service.Utils;
@@ -203,7 +204,15 @@ public class ToolPaneWindow {
          final JMenuItem newTourAction = new JMenuItem("Create New Tour", AllIcons.Actions.AddFile);
          newTourAction.addActionListener(d -> createNewTourListener());
 
-         menu.add(newTourAction);
+         // Enable/Disable Virtual Onboarding Assistant
+         final JMenuItem toggleOnboardTourAction = new JMenuItem("Enable/Disable Virtual Onboarding Assistant",
+               AllIcons.General.Tip);
+         toggleOnboardTourAction.addActionListener(d -> {
+            AppSettingsState.getInstance().toggleOnboardingAssistant();
+            createToursTee(project);
+         });
+
+         Arrays.asList(newTourAction, toggleOnboardTourAction).forEach(menu::add);
          menu.show(toursTree, e.getX(), e.getY());
       }
    }

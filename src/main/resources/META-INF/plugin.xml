@@ -20,6 +20,15 @@
       <notificationGroup id="CodeTour-Notification" displayType="BALLOON" icon="CodeTourIcons.LOGO_S"/>
       <codeInsight.lineMarkerProvider language=""
                                       implementationClass="org.uom.lefterisxris.codetour.tours.ui.TourLineMarkerProvider"/>
+
+      <!-- Code Tour Settings -->
+      <applicationService serviceImplementation="org.uom.lefterisxris.codetour.tours.service.AppSettingsState"/>
+      <applicationConfigurable
+            parentId="tools"
+            instance="org.uom.lefterisxris.codetour.tours.service.AppSettingsConfigurable"
+            id="org.uom.lefterisxris.codetour.tours.service.AppSettingsConfigurable"
+            displayName="CodeTour Plugin Settings"/>
+
    </extensions>
 
    <applicationListeners>
