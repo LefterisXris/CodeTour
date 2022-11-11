@@ -278,6 +278,28 @@ public class StateManager {
       return getNextOrPrevStep(false);
    }
 
+   public static boolean hasPrevStep() {
+      return hasNextOrPrevStep(false);
+   }
+
+   public static boolean hasNextStep() {
+      return hasNextOrPrevStep(true);
+   }
+
+   private static boolean hasNextOrPrevStep(boolean next) {
+      final Optional<Tour> activeTour = getActiveTour();
+      if (activeTour.isEmpty()) return false;
+
+      final Optional<Integer> activeIndex = getActiveStepIndex();
+      if (activeIndex.isEmpty()) return false;
+
+      final int totalSteps = activeTour.get().getSteps().size();
+      final int candidateStep = next ? activeIndex.get() + 1 : activeIndex.get() - 1;
+
+      // if candidate is in range, then it exists!
+      return candidateStep >= 0 && candidateStep < totalSteps;
+   }
+
    private static Optional<Step> getNextOrPrevStep(boolean next) {
       final Optional<Tour> activeTour = getActiveTour();
       if (activeTour.isEmpty()) return Optional.empty();
