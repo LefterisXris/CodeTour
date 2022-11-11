@@ -42,7 +42,7 @@ public class Navigator {
          final String stepFileName = Paths.get(step.getFile()).getFileName().toString();
          final List<VirtualFile> validVirtualFiles = FilenameIndex
                .getVirtualFilesByName(stepFileName, GlobalSearchScope.projectScope(project)).stream()
-               .filter(file -> isFileMatchesStep(file, step))
+               .filter(file -> Utils.isFileMatchesStep(file, step))
                .collect(Collectors.toList());
 
          if (validVirtualFiles.isEmpty()) {
@@ -91,17 +91,5 @@ public class Navigator {
       final StepRenderer renderer = StepRenderer.getInstance(step, project);
       renderer.show();
    }
-
-   private static boolean isFileMatchesStep(VirtualFile file, @NotNull Step step) {
-      if (file.isDirectory())
-         return false;
-
-      final String stepDirectory = step.getDirectory() != null ? step.getDirectory() : "";
-      final String stepFilePath = Paths.get(stepDirectory, step.getFile()).toString();
-      final String filePath = Paths.get(file.getPath()).toString();
-
-      return filePath.endsWith(stepFilePath);
-   }
-
 
 }

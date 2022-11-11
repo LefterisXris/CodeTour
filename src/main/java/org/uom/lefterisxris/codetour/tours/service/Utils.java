@@ -1,6 +1,7 @@
 package org.uom.lefterisxris.codetour.tours.service;
 
 import com.intellij.lang.documentation.DocumentationMarkup;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang3.StringUtils;
 import org.intellij.markdown.ast.ASTNode;
 import org.intellij.markdown.flavours.MarkdownFlavourDescriptor;
@@ -9,6 +10,9 @@ import org.intellij.markdown.html.HtmlGenerator;
 import org.intellij.markdown.parser.MarkdownParser;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Props;
+import org.uom.lefterisxris.codetour.tours.domain.Step;
+
+import java.nio.file.Paths;
 
 /**
  * @author Eleftherios Chrysochoidis
@@ -96,6 +100,17 @@ public class Utils {
       final MarkdownFlavourDescriptor flavour = new GFMFlavourDescriptor();
       final ASTNode parsedTree = new MarkdownParser(flavour).buildMarkdownTreeFromString(markdown);
       return new HtmlGenerator(markdown, parsedTree, flavour, false).generateHtml(TAG_RENDERER);
+   }
+
+   public static boolean isFileMatchesStep(VirtualFile file, @NotNull Step step) {
+      if (file.isDirectory())
+         return false;
+
+      final String stepDirectory = step.getDirectory() != null ? step.getDirectory() : "";
+      final String stepFilePath = Paths.get(stepDirectory, step.getFile()).toString();
+      final String filePath = Paths.get(file.getPath()).toString();
+
+      return filePath.endsWith(stepFilePath);
    }
 
    private static void addKeyValueSection(String key, String value, StringBuilder sb) {

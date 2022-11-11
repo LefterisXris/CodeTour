@@ -20,6 +20,7 @@ import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ public class StateManager {
    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
    private final ToursState state = new ToursState();
    private final Project project;
+   private static LocalDateTime lastValidationTime = LocalDateTime.now().minusHours(2); // to trigger validation on init
 
    // Caching
    private final static Set<String> tourFileNames = new HashSet<>(); // the tour file names
@@ -159,6 +161,14 @@ public class StateManager {
             stepMetaLabels.put(step.getTitle(), metaLabel);
          }
       });
+
+      // Validate them at most once in an hour
+      final LocalDateTime now = LocalDateTime.now();
+      if (now.isAfter(lastValidationTime.plusHours(1))) {
+         Validator.validateTours(project, tours);
+         lastValidationTime = now;
+      }
+
       return tours;
    }
 
