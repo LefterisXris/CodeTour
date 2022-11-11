@@ -111,9 +111,9 @@ public class StepRenderer extends DialogWrapper {
       nextStepButton.setToolTipText("Navigate to the Next Step (Ctrl+Alt+W)");
       buttons.add(nextStepButton);
 
-      // Buttons can be disabled (e.g. for preview mode)
-      previousStepButton.setEnabled(navigationButtons);
-      nextStepButton.setEnabled(navigationButtons);
+      // Buttons should be disabled properly (e.g. for preview mode)
+      previousStepButton.setEnabled(StateManager.hasPrevStep());
+      nextStepButton.setEnabled(StateManager.hasNextStep());
 
       dialogPanel.add(buttons, BorderLayout.SOUTH);
       dialogPanel.setPreferredSize(new Dimension(320, 160));
