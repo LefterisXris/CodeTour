@@ -4,8 +4,11 @@
 
 ## [Unreleased]
 ### Added
-- navigation support for directory attribute in step
-- navigation support for file path in step file attribute
+- Enhance File path handling for more flexible Navigation (includes directory path as prefix)
+- Tour's summary on Step's description including the current and the total number of Steps of the Tour
+- Fix potential conflict with existence of files with the same name by prompting a picker dialog to user
+- Disable Prev/Next buttons when no Prev/Next Step exists accordingly
+- Introduce validation logic to make sure available tours are valid (currently checks for target file existence)
 
 ## [0.0.5]
 ### Added
