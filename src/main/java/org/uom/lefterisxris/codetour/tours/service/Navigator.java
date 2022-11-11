@@ -43,9 +43,8 @@ public class Navigator {
    }
 
    private static boolean tryNavigateToStep(@NotNull Step step, @NotNull Project project) {
-      if (step.getFile() == null) {
+      if (step.getFile() == null)
          return false;
-      }
 
       String stepFileName = Paths.get(step.getFile()).getFileName().toString();
       final Collection<VirtualFile> virtualFiles =
@@ -69,13 +68,12 @@ public class Navigator {
    }
 
    private static boolean isFileMatchesStep(VirtualFile file, @NotNull Step step) {
-      if (file.isDirectory()) {
+      if (file.isDirectory())
          return false;
-      }
 
-      String stepDirectory = step.getDirectory() != null ? step.getDirectory() : "";
-      String stepFilePath = Paths.get(stepDirectory, step.getFile()).toString();
-      String filePath = Paths.get(file.getPath()).toString();
+      final String stepDirectory = step.getDirectory() != null ? step.getDirectory() : "";
+      final String stepFilePath = Paths.get(stepDirectory, step.getFile()).toString();
+      final String filePath = Paths.get(file.getPath()).toString();
 
       return filePath.endsWith(stepFilePath);
    }
