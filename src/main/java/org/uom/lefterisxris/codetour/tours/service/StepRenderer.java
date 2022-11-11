@@ -65,7 +65,7 @@ public class StepRenderer extends DialogWrapper {
    private JComponent getComponent() {
 
       final String stepDoc = renderFullDoc(
-            step.getTitle(),
+            StateManager.getStepMetaLabel(step.getTitle()).orElse("Step " + step.getTitle()),
             step.getDescription(),
             step.getFile() != null ? String.format("%s:%s", step.getFile(), step.getLine()) : "");
 

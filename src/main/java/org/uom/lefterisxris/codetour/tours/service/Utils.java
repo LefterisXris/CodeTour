@@ -76,7 +76,7 @@ public class Utils {
    public static String renderFullDoc(String title, String description, String file) {
       StringBuilder sb = new StringBuilder();
       sb.append(DocumentationMarkup.DEFINITION_START);
-      sb.append(String.format("Description of Step '%s'", title));
+      sb.append(title);
       sb.append(DocumentationMarkup.DEFINITION_END);
       sb.append(DocumentationMarkup.CONTENT_START);
       if (description != null)

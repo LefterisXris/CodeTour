@@ -15,6 +15,7 @@ import com.intellij.util.ui.UIUtil;
 import icons.CodeTourIcons;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
+import org.uom.lefterisxris.codetour.tours.state.StateManager;
 
 import javax.swing.*;
 
@@ -94,7 +95,7 @@ public class StepEditor extends DialogWrapper {
 
    private JComponent createPreviewPanel() {
       stepDoc = renderFullDoc(
-            titleTextField.getText(),
+            StateManager.getStepMetaLabel(titleTextField.getText()).orElse(titleTextField.getText()),
             descriptionTextArea.getText(),
             referenceTextField.getText());
 
@@ -112,7 +113,7 @@ public class StepEditor extends DialogWrapper {
 
    private void updatePreviewComponent() {
       stepDoc = renderFullDoc(
-            titleTextField.getText(),
+            StateManager.getStepMetaLabel(titleTextField.getText()).orElse(titleTextField.getText()),
             descriptionTextArea.getText(),
             referenceTextField.getText());
       previewComponent.setData(null, stepDoc, null, null, null);
