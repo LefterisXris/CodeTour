@@ -16,6 +16,7 @@ import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.SlowOperations;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.uom.lefterisxris.codetour.tours.domain.OnboardingAssistant;
 import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
@@ -182,9 +183,7 @@ public class ToolPaneWindow {
       reloadButton.setToolTipText("Reload the tours from the related files");
       reloadButton.addActionListener(e -> {
          LOG.info("Re-creating the tree");
-         stateManager.reloadState();
-         updateActiveTour(null); // reset the activeTour
-         createToursTee(project);
+         reloadToursState();
       });
 
       final JPanel buttonsPanel = new JPanel();
@@ -205,11 +204,15 @@ public class ToolPaneWindow {
          newTourAction.addActionListener(d -> createNewTourListener());
 
          // Enable/Disable Virtual Onboarding Assistant
-         final JMenuItem toggleOnboardTourAction = new JMenuItem("Enable/Disable Virtual Onboarding Assistant",
-               AllIcons.General.Tip);
+         final String title = String.format("%s Virtual Onboarding Assistant",
+               AppSettingsState.getInstance().isOnboardingAssistantOn() ? "Disable" : "Enable");
+         final Icon icon = AppSettingsState.getInstance().isOnboardingAssistantOn()
+               ? AllIcons.Actions.IntentionBulbGrey
+               : AllIcons.Actions.IntentionBulb;
+         final JMenuItem toggleOnboardTourAction = new JMenuItem(title, icon);
          toggleOnboardTourAction.addActionListener(d -> {
             AppSettingsState.getInstance().toggleOnboardingAssistant();
-            createToursTee(project);
+            reloadToursState();
          });
 
          Arrays.asList(newTourAction, toggleOnboardTourAction).forEach(menu::add);
@@ -238,6 +241,20 @@ public class ToolPaneWindow {
          // Delete Action
          final JMenuItem deleteAction = new JMenuItem("Delete Tour", AllIcons.Actions.DeleteTag);
          deleteAction.addActionListener(d -> deleteTourListener(tour));
+
+         if (tour.getTitle().equals(OnboardingAssistant.ONBOARD_ASSISTANT_TITLE)) {
+            // Disable Onboarding Assistant Action
+            final JMenuItem disableOnboardAssistantAction = new JMenuItem("Disable Onboarding Assistant",
+                  AllIcons.Actions.IntentionBulbGrey);
+            disableOnboardAssistantAction.addActionListener(d -> {
+               AppSettingsState.getInstance().setOnboardingAssistant(false);
+               reloadToursState();
+            });
+            menu.add(disableOnboardAssistantAction);
+
+            Arrays.asList(newStepAction, editAction, jumpToSourceAction, deleteAction)
+                  .forEach(item -> item.setEnabled(false));
+         }
 
          Arrays.asList(newStepAction, editAction, jumpToSourceAction, deleteAction).forEach(menu::add);
          menu.show(toursTree, e.getX(), e.getY());
@@ -271,6 +288,11 @@ public class ToolPaneWindow {
          // Delete Action
          final JMenuItem deleteAction = new JMenuItem("Delete Step", AllIcons.Actions.DeleteTag);
          deleteAction.addActionListener(d -> deleteStepListener(step, tour));
+
+         if (tour.getTitle().equals(OnboardingAssistant.ONBOARD_ASSISTANT_TITLE)) {
+            Arrays.asList(editDescriptionAction, moveUpAction, moveDownAction, deleteAction)
+                  .forEach(item -> item.setEnabled(false));
+         }
 
          Arrays.asList(editDescriptionAction, moveUpAction, moveDownAction, deleteAction)
                .forEach(menu::add);
@@ -498,5 +520,11 @@ public class ToolPaneWindow {
             }
          }
       }
+   }
+
+   private void reloadToursState() {
+      stateManager.reloadState();
+      updateActiveTour(null); // reset the activeTour
+      createToursTee(project);
    }
 }

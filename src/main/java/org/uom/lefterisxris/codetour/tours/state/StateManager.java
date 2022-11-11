@@ -13,9 +13,11 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import org.jetbrains.annotations.NotNull;
+import org.uom.lefterisxris.codetour.tours.domain.OnboardingAssistant;
 import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
+import org.uom.lefterisxris.codetour.tours.service.AppSettingsState;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -136,7 +138,17 @@ public class StateManager {
    }
 
    private List<Tour> loadTours(@NotNull Project project) {
-      final List<Tour> tours = project.getBasePath() == null ? loadFromIndex(project) : loadFromFS();
+
+      final List<Tour> tours = new ArrayList<>();
+
+      // Add the Onboarding Tour if configured
+      if (AppSettingsState.getInstance().isOnboardingAssistantOn()) {
+         final Tour onboardingTour = OnboardingAssistant.getInstance().getTour();
+         if (onboardingTour != null)
+            tours.add(onboardingTour);
+      }
+
+      tours.addAll(project.getBasePath() == null ? loadFromIndex(project) : loadFromFS());
       // Cache some info
       tourFileNames.clear();
       tourTitles.clear();

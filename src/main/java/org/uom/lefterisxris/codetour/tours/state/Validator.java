@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
+import org.uom.lefterisxris.codetour.tours.domain.OnboardingAssistant;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.service.Utils;
@@ -33,6 +34,8 @@ public class Validator {
 
       // All steps should point to a valid file reference (if configured)
       for (Tour tour : tours) {
+         if (tour.getTitle().equals(OnboardingAssistant.ONBOARD_ASSISTANT_TITLE)) continue;
+
          for (Step step : tour.getSteps()) {
             if (step.getFile() == null) continue;
 

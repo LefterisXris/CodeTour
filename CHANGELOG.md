@@ -9,6 +9,7 @@
 - Fix potential conflict with existence of files with the same name by prompting a picker dialog to user
 - Disable Prev/Next buttons when no Prev/Next Step exists accordingly
 - Introduce validation logic to make sure available tours are valid (currently checks for target file existence)
+- Added a default Virtual Onboarding Assistant as a sample Tour. Enabled by default
 
 ## [0.0.5]
 ### Added
