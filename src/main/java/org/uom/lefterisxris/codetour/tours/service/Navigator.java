@@ -32,66 +32,64 @@ public class Navigator {
 
       SlowOperations.allowSlowOperations(() -> {
 
-         // Navigation is optional
-         if (!tryNavigateToStep(step, project)) return;
+         if (step.getFile() == null) {
+            // Nothing more to do. Just show Step's popup and return
+            renderStepPopup(step, project);
+            return;
+         }
 
-         // Show a Popup
-         final StepRenderer renderer = StepRenderer.getInstance(step, project);
-         renderer.show();
+         // Try finding the appropriate file to navigate to
+         final String stepFileName = Paths.get(step.getFile()).getFileName().toString();
+         final List<VirtualFile> validVirtualFiles = FilenameIndex
+               .getVirtualFilesByName(stepFileName, GlobalSearchScope.projectScope(project)).stream()
+               .filter(file -> isFileMatchesStep(file, step))
+               .collect(Collectors.toList());
+
+         if (validVirtualFiles.isEmpty()) {
+            // Case for configured but not found file
+            CodeTourNotifier.error(project, String.format("Could not locate navigation target '%s' for Step '%s'",
+                  step.getFile(), step.getTitle()));
+         } else if (validVirtualFiles.size() > 1) {
+            // In case there is more than one file that matches with the Step, prompt User to pick the appropriate one
+            final String prompt = "More Than One Target File Found! Select the One You Want to Navigate to:";
+            JBPopupFactory.getInstance()
+                  .createListPopup(new BaseListPopupStep<>(prompt, validVirtualFiles) {
+                     @Override
+                     public @Nullable PopupStep<?> onChosen(VirtualFile selectedValue, boolean finalChoice) {
+
+                        navigate(step, project, selectedValue);
+
+                        // Show a Popup
+                        renderStepPopup(step, project);
+
+                        return super.onChosen(selectedValue, finalChoice);
+                     }
+                  }).showInFocusCenter();
+
+            // Notify user to be more specific
+            CodeTourNotifier.warn(project, "Tip: A Step's file path can be more specific either by having a " +
+                  "relative path ('file' property) or by setting the 'directory' property on Step's definition");
+            return; // Make sure we return here, because PopUp runs on another Thread (no wait for User input)
+         } else {
+            // Case for exactly one match. Just use it
+            navigate(step, project, validVirtualFiles.get(0));
+         }
+
+         // Show Step's popup and return
+         renderStepPopup(step, project);
       });
-   }
-
-   private static boolean tryNavigateToStep(@NotNull Step step, @NotNull Project project) {
-      if (step.getFile() == null)
-         return false;
-
-      final String stepFileName = Paths.get(step.getFile()).getFileName().toString();
-      final List<VirtualFile> validVirtualFiles = FilenameIndex
-            .getVirtualFilesByName(stepFileName, GlobalSearchScope.projectScope(project)).stream()
-            .filter(file -> isFileMatchesStep(file, step))
-            .collect(Collectors.toList());
-
-      // Case for not found file
-      if (validVirtualFiles.isEmpty()) {
-         CodeTourNotifier.error(project, String.format("Could not locate navigation target '%s' for Step '%s'",
-               step.getFile(), step.getTitle()));
-         return false;
-      }
-
-      // In case there is more than one file that matches with the Step, prompt User to pick the appropriate one
-      if (validVirtualFiles.size() > 1) {
-
-         final String prompt = "More Than One Target File Found! Select the One You Want to Navigate to:";
-         JBPopupFactory.getInstance()
-               .createListPopup(new BaseListPopupStep<>(prompt, validVirtualFiles) {
-                  @Override
-                  public @Nullable PopupStep<?> onChosen(VirtualFile selectedValue, boolean finalChoice) {
-
-                     navigate(step, project, selectedValue);
-
-                     // Show a Popup
-                     final StepRenderer renderer = StepRenderer.getInstance(step, project);
-                     renderer.show();
-
-                     return super.onChosen(selectedValue, finalChoice);
-                  }
-               }).showInFocusCenter();
-
-         // Notify user to be more specific
-         CodeTourNotifier.warn(project, "Tip: A Step's file path can be more specific either by having a " +
-               "relative path ('file' property) or by setting the 'directory' property on Step's definition");
-         return false;
-      } else {
-         // Otherwise (exactly one match) just use it
-         navigate(step, project, validVirtualFiles.get(0));
-         return true;
-      }
    }
 
    private static void navigate(@NotNull Step step, @NotNull Project project, VirtualFile targetVirtualFile) {
       final int line = step.getLine() != null ? step.getLine() - 1 : 0;
       new OpenFileDescriptor(project, targetVirtualFile, Math.max(line, 0), 1)
             .navigate(true);
+   }
+
+   private static void renderStepPopup(@NotNull Step step, @NotNull Project project) {
+      // Show a Popup
+      final StepRenderer renderer = StepRenderer.getInstance(step, project);
+      renderer.show();
    }
 
    private static boolean isFileMatchesStep(VirtualFile file, @NotNull Step step) {
