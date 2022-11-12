@@ -3,6 +3,8 @@
 # CodeTour Changelog
 
 ## [Unreleased]
+
+## [0.0.6]
 ### Added
 - Enhance File path handling for more flexible Navigation (includes directory path as prefix)
 - Tour's summary on Step's description including the current and the total number of Steps of the Tour
