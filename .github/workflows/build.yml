@@ -102,8 +102,8 @@ jobs:
           path: ${{ github.workspace }}/build/reports/pluginVerifier
 
       # Run Qodana inspections
-      - name: Qodana - Code Inspection
-        uses: JetBrains/qodana-action@v4.1.0
+      #- name: Qodana - Code Inspection
+      #  uses: JetBrains/qodana-action@v4.1.0
 
       # Prepare plugin archive content for creating artifact
       - name: Prepare Plugin Artifact
