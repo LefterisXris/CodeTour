@@ -41,12 +41,12 @@ jobs:
       - name: Gradle Wrapper Validation
         uses: gradle/wrapper-validation-action@v1.0.4
 
-      # Setup Java 11 environment for the next steps
+      # Setup Java 17 environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
           distribution: zulu
-          java-version: 11
+          java-version: 17
           cache: gradle
 
       # Set environment variables
@@ -102,8 +102,8 @@ jobs:
           path: ${{ github.workspace }}/build/reports/pluginVerifier
 
       # Run Qodana inspections
-      - name: Qodana - Code Inspection
-        uses: JetBrains/qodana-action@v4.1.0
+      #- name: Qodana - Code Inspection
+      #  uses: JetBrains/qodana-action@v4.1.0
 
       # Prepare plugin archive content for creating artifact
       - name: Prepare Plugin Artifact

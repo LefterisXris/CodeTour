@@ -4,12 +4,20 @@
 
 ## [Unreleased]
 
-## [0.0.7]
 ### Support
+
+- Support for Jetbrains' products 2023.* releases
+
+## [0.0.7]
+
+### Support
+
 - Support for Jetbrains' products 2022.3 and future releases
 
 ## [0.0.6]
+
 ### Added
+
 - Enhance File path handling for more flexible Navigation (includes directory path as prefix)
 - Tour's summary on Step's description including the current and the total number of Steps of the Tour
 - Fix potential conflict with existence of files with the same name by prompting a picker dialog to user
