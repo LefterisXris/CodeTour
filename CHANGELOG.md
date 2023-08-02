@@ -4,14 +4,20 @@
 
 ## Unreleased
 
-## 0.0.8 - 2023-05-02
+### Support
+
+- Support for all future Jetbrains' products 2023.* releases
+
+## 0.0.8
 
 ### Support
+
 - Support for Jetbrains' products 2023.* releases
 
 ## 0.0.7
 
 ### Support
+
 - Support for Jetbrains' products 2022.3 and future releases
 
 ## 0.0.6
