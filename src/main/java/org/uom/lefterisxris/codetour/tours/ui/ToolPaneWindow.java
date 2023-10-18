@@ -81,13 +81,13 @@ public class ToolPaneWindow {
     * Handle plugin messaging
     */
    public void registerMessageBusListener() {
-      project.getMessageBus().connect().subscribe(TourUpdateNotifier.TOPIC, (tour) -> {
+      project.getMessageBus().connect().subscribe(TourUpdateNotifier.TOPIC, (TourUpdateNotifier)(tour) -> {
          stateManager.reloadState();
          createToursTee(project);
          selectTourLastStep(tour);
       });
 
-      project.getMessageBus().connect().subscribe(StepSelectionNotifier.TOPIC, (step) -> {
+      project.getMessageBus().connect().subscribe(StepSelectionNotifier.TOPIC, (StepSelectionNotifier)(step) -> {
          StateManager.getActiveTour().ifPresent(tour -> {
             if (!toolWindow.isVisible())
                toolWindow.show();
