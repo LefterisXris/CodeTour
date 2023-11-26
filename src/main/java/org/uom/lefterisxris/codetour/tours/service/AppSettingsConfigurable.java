@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.ui.AppSettingsComponent;
 
 import javax.swing.*;
+import java.util.Optional;
 
 /**
  * Provides controller functionality for application settings.
@@ -41,19 +42,26 @@ public class AppSettingsConfigurable implements Configurable {
    @Override
    public boolean isModified() {
       AppSettingsState settings = AppSettingsState.getInstance();
-      return settingsComponent.isOnboardingAssistantOn() != settings.isOnboardingAssistantOn();
+      return settingsComponent.isOnboardingAssistantOn() != settings.isOnboardingAssistant()
+            || (settingsComponent.getSortOption() != settings.getSortOption())
+            || (settingsComponent.getSortDirection() != settings.getSortDirection());
    }
 
    @Override
    public void apply() {
       AppSettingsState settings = AppSettingsState.getInstance();
       settings.setOnboardingAssistant(settingsComponent.isOnboardingAssistantOn());
+      settings.setSortDirection(settingsComponent.getSortDirection());
+      settings.setSortOption(Optional.ofNullable(settingsComponent.getSortOption())
+            .orElse(AppSettingsState.SortOptionE.TITLE));
    }
 
    @Override
    public void reset() {
       AppSettingsState settings = AppSettingsState.getInstance();
-      settingsComponent.setOnboardingAssistant(settings.isOnboardingAssistantOn());
+      settingsComponent.setOnboardingAssistant(settings.isOnboardingAssistant());
+      settingsComponent.setSortOption(settings.getSortOption());
+      settingsComponent.setSortDirection(settings.getSortDirection());
    }
 
    @Override

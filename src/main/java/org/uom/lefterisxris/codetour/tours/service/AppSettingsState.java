@@ -5,6 +5,8 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,9 +22,13 @@ import org.jetbrains.annotations.Nullable;
       name = "org.uom.lefterisxris.codetour.tours.service.AppSettingsState",
       storages = @Storage("CodeTourSettings.xml")
 )
+@Getter
+@Setter
 public class AppSettingsState implements PersistentStateComponent<AppSettingsState> {
 
    private boolean onboardingAssistant = true;
+   private SortOptionE sortOption = SortOptionE.TITLE;
+   private SortDirectionE sortDirection = SortDirectionE.ASC;
 
    public static AppSettingsState getInstance() {
       return ApplicationManager.getApplication().getService(AppSettingsState.class);
@@ -39,15 +45,17 @@ public class AppSettingsState implements PersistentStateComponent<AppSettingsSta
       XmlSerializerUtil.copyBean(state, this);
    }
 
-   public boolean isOnboardingAssistantOn() {
-      return onboardingAssistant;
-   }
-
-   public void setOnboardingAssistant(boolean onboardingAssistant) {
-      this.onboardingAssistant = onboardingAssistant;
-   }
+   public boolean isOnboardingAssistantOn() {return onboardingAssistant;}
 
    public void toggleOnboardingAssistant() {
       onboardingAssistant = !onboardingAssistant;
+   }
+
+   public enum SortOptionE {
+      TITLE, FILENAME, CREATION_DATE;
+   }
+
+   public enum SortDirectionE {
+      ASC, DESC;
    }
 }

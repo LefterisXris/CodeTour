@@ -38,7 +38,9 @@ public class StateManager {
    private static Optional<Integer> activeStepIndex = Optional.empty();
    private static final Logger LOG = Logger.getInstance(StateManager.class);
 
-   private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+   private final Gson GSON = new GsonBuilder().setPrettyPrinting()
+         .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+         .create();
    private final ToursState state = new ToursState();
    private final Project project;
    private static LocalDateTime lastValidationTime = LocalDateTime.now().minusHours(2); // to trigger validation on init
@@ -140,15 +142,30 @@ public class StateManager {
    private List<Tour> loadTours(@NotNull Project project) {
 
       final List<Tour> tours = new ArrayList<>();
+      var settings = AppSettingsState.getInstance();
 
       // Add the Onboarding Tour if configured
-      if (AppSettingsState.getInstance().isOnboardingAssistantOn()) {
+      if (settings.isOnboardingAssistantOn()) {
          final Tour onboardingTour = OnboardingAssistant.getInstance().getTour();
          if (onboardingTour != null)
             tours.add(onboardingTour);
       }
 
-      tours.addAll(project.getBasePath() == null ? loadFromIndex(project) : loadFromFS());
+      var userTours = project.getBasePath() == null ? loadFromIndex(project) : loadFromFS();
+
+      // Sort User Tours. By default, they are sorted base on Title. Otherwise, it follows User Settings
+      Comparator<Tour> comparator = Comparator.comparing(Tour::getTitle);
+      switch (settings.getSortOption()) {
+         case FILENAME -> comparator = Comparator.comparing(Tour::getTourFile);
+         case CREATION_DATE ->
+               comparator = Comparator.comparing(Tour::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
+      }
+      if (AppSettingsState.SortDirectionE.DESC.equals(settings.getSortDirection()))
+         comparator = comparator.reversed(); // ASC,DESC
+      LOG.info("Sorting Tours using: %s - %s".formatted(settings.getSortOption(), settings.getSortDirection()));
+      userTours.sort(comparator);
+
+      tours.addAll(userTours);
       // Cache some info
       tourFileNames.clear();
       tourTitles.clear();
@@ -190,7 +207,7 @@ public class StateManager {
                      Tour tour;
                      try {
                         LOG.info("Reading (from Index) Tour from file: " + virtualFile.getName());
-                        tour = new Gson().fromJson(new InputStreamReader(virtualFile.getInputStream()), Tour.class);
+                        tour = GSON.fromJson(new InputStreamReader(virtualFile.getInputStream()), Tour.class);
                      } catch (IOException e) {
                         LOG.error("Skipping file: " + virtualFile.getName(), e);
                         return null;
@@ -224,10 +241,9 @@ public class StateManager {
       try {
          LOG.info("Reading (from FS) Tour from file: " + file.getName());
          return Optional.of(
-               new Gson().fromJson(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8), Tour.class));
-      } catch (IOException e) {
-         e.printStackTrace();
-         LOG.error("Skipping file: " + file.getName());
+               GSON.fromJson(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8), Tour.class));
+      } catch (Exception e) {
+         LOG.error("Skipping file: " + file.getName(), e);
       }
       return Optional.empty();
    }

@@ -34,6 +34,7 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -313,6 +314,7 @@ public class ToolPaneWindow {
             .touFile("newTour" + Props.TOUR_EXTENSION_FULL)
             .title("A New Tour")
             .description("A New Tour")
+            .createdAt(LocalDateTime.now())
             .steps(new ArrayList<>())
             .build();
 
