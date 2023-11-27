@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+### Features
+
+- Sort Options on Tours (defaults to Alphabetic) with User Settings support. Tours should be `Reload` from the related
+  button after changing Settings
+
+## 0.0.9
+
 ### Support
 
 - Support for all future Jetbrains' products 2023.* releases

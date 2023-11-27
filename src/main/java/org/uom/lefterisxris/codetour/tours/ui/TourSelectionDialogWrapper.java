@@ -11,6 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Optional;
 
+import static org.uom.lefterisxris.codetour.tours.domain.OnboardingAssistant.ONBOARD_ASSISTANT_TITLE;
+
 /**
  * @author Eleftherios Chrysochoidis
  * Date: 7/5/2022
@@ -32,10 +34,15 @@ public class TourSelectionDialogWrapper extends DialogWrapper {
       JPanel dialogPanel = new JPanel(new BorderLayout());
 
       final StateManager stateManager = new StateManager(project);
-      final int toursSize = stateManager.getTours().size();
+      var tours = stateManager.getTours();
+
+      // Onboarding Assistant should not be present in this selection
+      tours.removeIf(tour -> ONBOARD_ASSISTANT_TITLE.equals(tour.getTitle()));
+
+      final int toursSize = tours.size();
       final Tour[] toursOptions = new Tour[toursSize];
       for (int i = 0; i < toursSize; i++)
-         toursOptions[i] = stateManager.getTours().get(i);
+         toursOptions[i] = tours.get(i);
 
       final ComboBox<Tour> comboBox = new ComboBox<>(toursOptions);
       comboBox.addActionListener(e -> {
