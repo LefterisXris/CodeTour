@@ -34,6 +34,7 @@ import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,13 +82,13 @@ public class ToolPaneWindow {
     * Handle plugin messaging
     */
    public void registerMessageBusListener() {
-      project.getMessageBus().connect().subscribe(TourUpdateNotifier.TOPIC, (tour) -> {
+      project.getMessageBus().connect().subscribe(TourUpdateNotifier.TOPIC, (TourUpdateNotifier)(tour) -> {
          stateManager.reloadState();
          createToursTee(project);
          selectTourLastStep(tour);
       });
 
-      project.getMessageBus().connect().subscribe(StepSelectionNotifier.TOPIC, (step) -> {
+      project.getMessageBus().connect().subscribe(StepSelectionNotifier.TOPIC, (StepSelectionNotifier)(step) -> {
          StateManager.getActiveTour().ifPresent(tour -> {
             if (!toolWindow.isVisible())
                toolWindow.show();
@@ -313,6 +314,7 @@ public class ToolPaneWindow {
             .touFile("newTour" + Props.TOUR_EXTENSION_FULL)
             .title("A New Tour")
             .description("A New Tour")
+            .createdAt(LocalDateTime.now())
             .steps(new ArrayList<>())
             .build();
 
