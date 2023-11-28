@@ -4,27 +4,26 @@
 
 ## Unreleased
 
-### Features
+## 0.0.10 - 2023-11-28
 
+### Features
 - Sort Options on Tours (defaults to Alphabetic) with User Settings support. Tours should be `Reload` from the related
   button after changing Settings
+- Update Github Actions
 
 ## 0.0.9
 
 ### Support
-
 - Support for all future Jetbrains' products 2023.* releases
 
 ## 0.0.8
 
 ### Support
-
 - Support for Jetbrains' products 2023.* releases
 
 ## 0.0.7
 
 ### Support
-
 - Support for Jetbrains' products 2022.3 and future releases
 
 ## 0.0.6
