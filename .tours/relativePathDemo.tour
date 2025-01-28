@@ -1,0 +1,39 @@
+{
+  "id": "f52e6cd1-d58d-402d-9571-7212eb705f57",
+  "tourFile": "relativePathDemo.tour",
+  "title": "Relative Path Demo",
+  "description": "A New Tour",
+  "createdAt": "2025-01-28 20:53:17",
+  "steps": [
+    {
+      "title": "Simple README - prompt for selection",
+      "description": "Simple Navigation to the README file user selected (on prompt)",
+      "file": "README.md",
+      "line": 103
+    },
+    {
+      "title": "MAIN README",
+      "description": "Simple Navigation to MAIN README.md",
+      "file": "CodeTour/README.md",
+      "line": 1
+    },
+    {
+      "title": "Code README",
+      "description": "Simple Navigation to Code README.md",
+      "file": "java/org/uom/lefterisxris/codetour/tours/README.md",
+      "line": 1
+    },
+    {
+      "title": "Test README.md",
+      "description": "Simple Navigation to Test README.md",
+      "file": "src/test/java/README.md",
+      "line": 1
+    },
+    {
+      "title": "Resources README",
+      "description": "Simple Navigation to Resources README.md",
+      "file": "src/main/resources/README.md",
+      "line": 1
+    }
+  ]
+}
