@@ -1,5 +1,6 @@
 package org.uom.lefterisxris.codetour.tours.service;
 
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
@@ -38,12 +39,12 @@ public class Navigator {
             return;
          }
 
-         // Try finding the appropriate file to navigate to
+         // Try finding the appropriate file to navigate to. The index lookup requires a read action
          final String stepFileName = Paths.get(step.getFile()).getFileName().toString();
-         final List<VirtualFile> validVirtualFiles = FilenameIndex
+         final List<VirtualFile> validVirtualFiles = ReadAction.compute(() -> FilenameIndex
                .getVirtualFilesByName(stepFileName, GlobalSearchScope.projectScope(project)).stream()
                .filter(file -> Utils.isFileMatchesStep(file, step))
-               .collect(Collectors.toList());
+               .collect(Collectors.toList()));
 
          if (validVirtualFiles.isEmpty()) {
             // Case for configured but not found file
