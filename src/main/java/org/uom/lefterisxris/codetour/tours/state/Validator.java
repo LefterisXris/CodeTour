@@ -1,5 +1,6 @@
 package org.uom.lefterisxris.codetour.tours.state;
 
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageDialogBuilder;
@@ -41,10 +42,10 @@ public class Validator {
 
             // Try finding the appropriate file
             final String stepFileName = Paths.get(step.getFile()).getFileName().toString();
-            final List<VirtualFile> validVirtualFiles = FilenameIndex
+            final List<VirtualFile> validVirtualFiles = ReadAction.compute(() -> FilenameIndex
                   .getVirtualFilesByName(stepFileName, GlobalSearchScope.projectScope(project)).stream()
                   .filter(file -> Utils.isFileMatchesStep(file, step))
-                  .collect(Collectors.toList());
+                  .collect(Collectors.toList()));
 
             if (validVirtualFiles.isEmpty())
                errors.add(String.format("Step '%s' of Tour '%s' points to a non valid file: '%s'!\n",

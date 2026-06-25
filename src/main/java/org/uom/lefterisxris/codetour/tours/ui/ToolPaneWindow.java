@@ -1,6 +1,7 @@
 package org.uom.lefterisxris.codetour.tours.ui;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -400,8 +401,8 @@ public class ToolPaneWindow {
 
    private void jumpToSourceTourListener(Tour tour) {
       SlowOperations.allowSlowOperations(() -> {
-         final Collection<VirtualFile> virtualFiles = FilenameIndex.getVirtualFilesByName(tour.getTourFile(),
-               GlobalSearchScope.projectScope(project));
+         final Collection<VirtualFile> virtualFiles = ReadAction.compute(() ->
+               FilenameIndex.getVirtualFilesByName(tour.getTourFile(), GlobalSearchScope.projectScope(project)));
          final Optional<VirtualFile> virtualFile = virtualFiles.stream()
                .filter(file -> !file.isDirectory() && file.getName().equals(tour.getTourFile()))
                .findFirst();
