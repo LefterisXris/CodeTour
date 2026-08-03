@@ -65,8 +65,7 @@ public class StepEditor extends DialogWrapper {
       descriptionPane.putClientProperty(UIUtil.KEEP_BORDER_SIDES, SideBorder.ALL);
 
       titleTextField = new JBTextField(step.getTitle());
-      referenceTextField =
-            new JBTextField(step.getFile() != null ? String.format("%s:%s", step.getFile(), step.getLine()) : "");
+      referenceTextField = new JBTextField(formatNavigationReference(step));
 
       final JPanel textFieldsGridPanel = UI.PanelFactory.grid()
             .add(UI.PanelFactory.panel(titleTextField)
@@ -131,8 +130,15 @@ public class StepEditor extends DialogWrapper {
             ? Integer.parseInt(reference[1])
             : null;
 
-      step.setFile(file);
-      step.setLine(line);
+      final boolean navigationChanged = !equalStr(step.getFile(), file)
+            || !equalInt(step.getNavigationLine(), line);
+      if (navigationChanged) {
+         // A manually edited file:line no longer describes the recorded range.
+         // Clear it so the user's new legacy navigation reference takes effect.
+         step.setSelection(null);
+         step.setFile(file);
+         step.setLine(line);
+      }
 
       return step;
    }
@@ -142,6 +148,6 @@ public class StepEditor extends DialogWrapper {
       return !equalStr(step.getTitle(), titleTextField.getText())
             || !equalStr(step.getDescription(), descriptionTextArea.getText())
             || !equalStr(step.getFile(), reference[0])
-            || !equalInt(step.getLine(), reference.length > 1 ? Integer.parseInt(reference[1]) : null);
+            || !equalInt(step.getNavigationLine(), reference.length > 1 ? Integer.parseInt(reference[1]) : null);
    }
 }

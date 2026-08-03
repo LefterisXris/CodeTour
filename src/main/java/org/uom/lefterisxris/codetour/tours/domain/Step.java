@@ -12,13 +12,14 @@ public class Step {
    private String directory;
    private String uri;
    private String pattern;
+   private StepSelection selection;
 
    public Step() {
    }
 
    @Builder
    public Step(String description, String file, String directory, String uri, Integer line, String pattern,
-               String title) {
+               String title, StepSelection selection) {
       this.description = description;
       this.file = file;
       this.directory = directory;
@@ -26,6 +27,18 @@ public class Step {
       this.line = line;
       this.pattern = pattern;
       this.title = title;
+      this.selection = selection;
+   }
+
+   /**
+    * A Microsoft-compatible selection step does not need a separate line field.
+    * Use the selection start wherever the plugin needs a single navigation line,
+    * such as gutter markers or legacy line-based navigation.
+    */
+   public Integer getNavigationLine() {
+      if (selection != null && selection.getStart() != null && selection.getStart().getLine() != null)
+         return selection.getStart().getLine();
+      return line;
    }
 
    @Override

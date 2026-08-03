@@ -11,6 +11,7 @@ import org.intellij.markdown.parser.MarkdownParser;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Props;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
+import org.uom.lefterisxris.codetour.tours.domain.StepSelection;
 
 import java.nio.file.Paths;
 
@@ -111,6 +112,19 @@ public class Utils {
       final String filePath = Paths.get(file.getPath()).toString();
 
       return filePath.endsWith(stepFilePath);
+   }
+
+   public static String formatNavigationReference(@NotNull Step step) {
+      if (step.getFile() == null) return "";
+
+      final StepSelection selection = step.getSelection();
+      if (selection != null && selection.isComplete()) {
+         return String.format("%s:%s:%s-%s:%s", step.getFile(),
+               selection.getStart().getLine(), selection.getStart().getCharacter(),
+               selection.getEnd().getLine(), selection.getEnd().getCharacter());
+      }
+
+      return step.getLine() != null ? String.format("%s:%s", step.getFile(), step.getLine()) : step.getFile();
    }
 
    private static void addKeyValueSection(String key, String value, StringBuilder sb) {

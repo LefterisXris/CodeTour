@@ -181,8 +181,8 @@ public class StateManager {
          for (Step step : tour.getSteps()) {
             currentStepIndex++;
             tourStepFiles.add(step.getFile());
-            if (step.getFile() != null)
-               tourStepFilesWithLines.add(String.format("%s:%s", step.getFile(), step.getLine()));
+            if (step.getFile() != null && step.getNavigationLine() != null)
+               tourStepFilesWithLines.add(String.format("%s:%s", step.getFile(), step.getNavigationLine()));
 
             // cache it's label to be used more performant when needed
             final String metaLabel = String.format("<strong>CodeTour</strong> <em>Step #%s of %s (%s)</em>",
@@ -366,7 +366,7 @@ public class StateManager {
       final Optional<Tour> tourToActivate = getTours().stream()
             .filter(tour -> tour.getSteps().stream()
                   .filter(step -> step.getFile() != null)
-                  .anyMatch(step -> step.getFile().equals(fileName) && step.getLine() == line))
+                  .anyMatch(step -> step.getFile().equals(fileName) && Objects.equals(step.getNavigationLine(), line)))
             .findFirst();
       if (tourToActivate.isEmpty()) return Optional.empty();
       setActiveTour(tourToActivate.get());
@@ -374,7 +374,8 @@ public class StateManager {
       final List<Step> steps = tourToActivate.get().getSteps();
       for (int i = 0; i < steps.size(); i++) {
          final Step step = steps.get(i);
-         if (step.getFile() != null && step.getFile().equals(fileName) && step.getLine() == line) {
+         if (step.getFile() != null && step.getFile().equals(fileName)
+               && Objects.equals(step.getNavigationLine(), line)) {
             setActiveStepIndex(i);
             return Optional.of(step);
          }
