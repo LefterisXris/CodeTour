@@ -1,22 +1,24 @@
 package org.uom.lefterisxris.codetour.tours.service;
 
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.ScrollType;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.SlowOperations;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
+import org.uom.lefterisxris.codetour.tours.domain.StepPosition;
+import org.uom.lefterisxris.codetour.tours.domain.StepSelection;
 import org.uom.lefterisxris.codetour.tours.ui.CodeTourNotifier;
 
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Navigator class that navigates the user to the location that a step indicates.
@@ -39,11 +41,7 @@ public class Navigator {
          }
 
          // Try finding the appropriate file to navigate to
-         final String stepFileName = Paths.get(step.getFile()).getFileName().toString();
-         final List<VirtualFile> validVirtualFiles = FilenameIndex
-               .getVirtualFilesByName(stepFileName, GlobalSearchScope.projectScope(project)).stream()
-               .filter(file -> Utils.isFileMatchesStep(file, step))
-               .collect(Collectors.toList());
+         final List<VirtualFile> validVirtualFiles = Utils.findStepFiles(project, step);
 
          if (validVirtualFiles.isEmpty()) {
             // Case for configured but not found file
@@ -81,9 +79,44 @@ public class Navigator {
    }
 
    private static void navigate(@NotNull Step step, @NotNull Project project, VirtualFile targetVirtualFile) {
-      final int line = step.getLine() != null ? step.getLine() - 1 : 0;
-      new OpenFileDescriptor(project, targetVirtualFile, Math.max(line, 0), 1)
-            .navigate(true);
+      final StepSelection selection = step.getSelection();
+      if (selection != null && selection.isComplete()) {
+         // CodeTour stores selection positions as one-based values. Open the editor at the
+         // selection start, then translate both endpoints to IntelliJ document offsets.
+         final int line = Math.max(selection.getStart().getLine() - 1, 0);
+         final int column = Math.max(selection.getStart().getCharacter() - 1, 0);
+         final Editor editor = FileEditorManager.getInstance(project)
+               .openTextEditor(new OpenFileDescriptor(project, targetVirtualFile, line, column), true);
+         if (editor == null) return;
+
+         final int startOffset = positionToOffset(editor.getDocument(), selection.getStart());
+         final int endOffset = positionToOffset(editor.getDocument(), selection.getEnd());
+         final int selectionStart = Math.min(startOffset, endOffset);
+         final int selectionEnd = Math.max(startOffset, endOffset);
+
+         editor.getSelectionModel().setSelection(selectionStart, selectionEnd);
+         editor.getCaretModel().moveToOffset(selectionStart);
+         editor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
+         return;
+      }
+
+      final Integer navigationLine = step.getNavigationLine();
+      final int line = navigationLine != null ? navigationLine - 1 : 0;
+      new OpenFileDescriptor(project, targetVirtualFile, Math.max(line, 0), 1).navigate(true);
+   }
+
+   /**
+    * Converts a one-based CodeTour position to a safe IntelliJ document offset.
+    * Hand-authored tours can outlive edits to the target file, so both the line
+    * and character are clamped instead of allowing a stale tour to crash playback.
+    */
+   static int positionToOffset(@NotNull Document document, @NotNull StepPosition position) {
+      final int requestedLine = position.getLine() != null ? position.getLine() - 1 : 0;
+      final int line = Math.max(0, Math.min(requestedLine, document.getLineCount() - 1));
+      final int lineStart = document.getLineStartOffset(line);
+      final int lineEnd = document.getLineEndOffset(line);
+      final int requestedColumn = position.getCharacter() != null ? position.getCharacter() - 1 : 0;
+      return Math.max(lineStart, Math.min(lineStart + requestedColumn, lineEnd));
    }
 
    private static void renderStepPopup(@NotNull Step step, @NotNull Project project) {

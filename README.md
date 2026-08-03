@@ -73,6 +73,8 @@ Features:
 - Customizable (location, size, font etc) popup window for Step's description
 - Tree-like view of Tours and their Steps on a Tool Window
 - Code Navigation with single click (on Steps available on Tours Tree)
+- Microsoft-compatible code selection ranges. Selection steps highlight and reveal the configured code chunk, and
+  creating a step while text is selected records the range automatically
 - Shortcuts for Navigating on Previous (<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Q</kbd>) and Next (<kbd>Ctrl</kbd>+<kbd>
   Alt</kbd>+<kbd>W</kbd>) Steps
 

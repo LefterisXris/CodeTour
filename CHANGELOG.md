@@ -8,6 +8,12 @@
 
 - Sort Options on Tours (defaults to Alphabetic) with User Settings support. Tours should be `Reload` from the related
   button after changing Settings
+- Support Microsoft-compatible `selection.start` / `selection.end` ranges and highlight the selected code during
+  navigation. Creating a step while text is selected records that range automatically.
+
+### Fixed
+
+- Defer tour file validation until project indexing completes, avoiding false "Invalid Steps" dialogs during startup.
 
 ## 0.0.9
 

@@ -4,10 +4,14 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.uom.lefterisxris.codetour.tours.domain.Step;
+import org.uom.lefterisxris.codetour.tours.domain.StepPosition;
+import org.uom.lefterisxris.codetour.tours.domain.StepSelection;
 import org.uom.lefterisxris.codetour.tours.domain.Tour;
 import org.uom.lefterisxris.codetour.tours.state.StateManager;
 import org.uom.lefterisxris.codetour.tours.state.TourUpdateNotifier;
@@ -54,7 +58,7 @@ public class TourStepGeneratorAction extends AnAction {
 
       final Optional<Tour> activeTour = StateManager.getActiveTour();
       if (activeTour.isPresent()) {
-         final Step step = generateStep(virtualFile, line);
+         final Step step = generateStep(virtualFile, line, e.getData(CommonDataKeys.EDITOR));
 
          // Provide a dialog for Step editing
          final StepEditor stepEditor = new StepEditor(project, step);
@@ -71,15 +75,45 @@ public class TourStepGeneratorAction extends AnAction {
 
    }
 
-   private Step generateStep(VirtualFile virtualFile, int line) {
-      final String title = String.format("%s:%s", virtualFile.getName(), line);
+   private Step generateStep(VirtualFile virtualFile, int line, Editor editor) {
+      StepSelection selection = null;
+      int navigationLine = line;
+      if (editor != null && editor.getSelectionModel().hasSelection()) {
+         final Document document = editor.getDocument();
+         final int startOffset = editor.getSelectionModel().getSelectionStart();
+         final int endOffset = editor.getSelectionModel().getSelectionEnd();
+         final int startLine = document.getLineNumber(startOffset);
+         final int endLine = document.getLineNumber(endOffset);
+
+         // CodeTour persists one-based positions, while IntelliJ editor offsets are zero-based.
+         // Deriving characters from document offsets preserves exact text columns, including tabs.
+         selection = StepSelection.builder()
+               .start(StepPosition.builder()
+                     .line(startLine + 1)
+                     .character(startOffset - document.getLineStartOffset(startLine) + 1)
+                     .build())
+               .end(StepPosition.builder()
+                     .line(endLine + 1)
+                     .character(endOffset - document.getLineStartOffset(endLine) + 1)
+                     .build())
+               .build();
+         navigationLine = startLine + 1;
+      }
+
+      final String title = String.format("%s:%s", virtualFile.getName(), navigationLine);
       LOG.info("Generating Step: " + title);
-      return Step.builder()
+      final Step.StepBuilder stepBuilder = Step.builder()
             .title(title)
             .description("Simple Navigation to " + title)
-            .file(virtualFile.getName())
-            .line(line)
-            .build();
+            .file(virtualFile.getName());
+
+      if (selection != null) {
+         stepBuilder.selection(selection);
+      } else {
+         stepBuilder.line(line);
+      }
+
+      return stepBuilder.build();
    }
 
 }
