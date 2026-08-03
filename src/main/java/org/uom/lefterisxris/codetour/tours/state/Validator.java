@@ -1,6 +1,7 @@
 package org.uom.lefterisxris.codetour.tours.state;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -28,6 +29,16 @@ public class Validator {
    private static final Logger LOG = Logger.getInstance(Validator.class);
 
    public static void validateTours(@NotNull Project project, List<Tour> tours) {
+
+      if (DumbService.isDumb(project)) {
+         // FilenameIndex is intentionally unavailable while an IntelliJ Platform IDE is indexing.
+         // Treating an empty index as missing files creates a false "Invalid Steps" dialog on
+         // startup, so validate the same snapshot as soon as Rider/IntelliJ enters smart mode.
+         LOG.info("CodeTours Validation deferred until project indexing completes");
+         final List<Tour> toursSnapshot = new ArrayList<>(tours);
+         DumbService.getInstance(project).runWhenSmart(() -> validateTours(project, toursSnapshot));
+         return;
+      }
 
       LOG.info("CodeTours Validation started at: " + LocalDateTime.now());
       final List<String> errors = new ArrayList<>();
