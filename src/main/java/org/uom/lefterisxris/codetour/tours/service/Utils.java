@@ -1,7 +1,11 @@
 package org.uom.lefterisxris.codetour.tours.service;
 
 import com.intellij.lang.documentation.DocumentationMarkup;
+import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import org.apache.commons.lang3.StringUtils;
 import org.intellij.markdown.ast.ASTNode;
 import org.intellij.markdown.flavours.MarkdownFlavourDescriptor;
@@ -14,6 +18,9 @@ import org.uom.lefterisxris.codetour.tours.domain.Step;
 import org.uom.lefterisxris.codetour.tours.domain.StepSelection;
 
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Eleftherios Chrysochoidis
@@ -112,6 +119,33 @@ public class Utils {
       final String filePath = Paths.get(file.getPath()).toString();
 
       return filePath.endsWith(stepFilePath);
+   }
+
+   /**
+    * Resolves a CodeTour step against the project root before consulting the IDE index.
+    * A Rider solution may intentionally omit repository folders (for example, server projects
+    * beside a Unity solution), but repository-relative CodeTour paths must still navigate there.
+    */
+   public static List<VirtualFile> findStepFiles(@NotNull Project project, @NotNull Step step) {
+      if (step.getFile() == null) return Collections.emptyList();
+
+      final String stepDirectory = step.getDirectory() != null ? step.getDirectory() : "";
+      final String relativePath = Paths.get(stepDirectory, step.getFile()).normalize().toString()
+            .replace('\\', '/');
+      final VirtualFile projectRoot = project.getBaseDir();
+      if (projectRoot != null) {
+         final VirtualFile directMatch = projectRoot.findFileByRelativePath(relativePath);
+         if (directMatch != null && !directMatch.isDirectory()) return Collections.singletonList(directMatch);
+      }
+
+      // FilenameIndex supports intentionally short or ambiguous references, but it cannot be
+      // queried safely while indexing and it excludes files outside the loaded solution model.
+      if (DumbService.isDumb(project)) return Collections.emptyList();
+
+      final String stepFileName = Paths.get(step.getFile()).getFileName().toString();
+      return FilenameIndex.getVirtualFilesByName(stepFileName, GlobalSearchScope.projectScope(project)).stream()
+            .filter(file -> isFileMatchesStep(file, step))
+            .collect(Collectors.toList());
    }
 
    public static String formatNavigationReference(@NotNull Step step) {

@@ -10,8 +10,6 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.PopupStep;
 import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.SlowOperations;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,9 +18,7 @@ import org.uom.lefterisxris.codetour.tours.domain.StepPosition;
 import org.uom.lefterisxris.codetour.tours.domain.StepSelection;
 import org.uom.lefterisxris.codetour.tours.ui.CodeTourNotifier;
 
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Navigator class that navigates the user to the location that a step indicates.
@@ -45,11 +41,7 @@ public class Navigator {
          }
 
          // Try finding the appropriate file to navigate to
-         final String stepFileName = Paths.get(step.getFile()).getFileName().toString();
-         final List<VirtualFile> validVirtualFiles = FilenameIndex
-               .getVirtualFilesByName(stepFileName, GlobalSearchScope.projectScope(project)).stream()
-               .filter(file -> Utils.isFileMatchesStep(file, step))
-               .collect(Collectors.toList());
+         final List<VirtualFile> validVirtualFiles = Utils.findStepFiles(project, step);
 
          if (validVirtualFiles.isEmpty()) {
             // Case for configured but not found file
